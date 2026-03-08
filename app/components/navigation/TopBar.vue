@@ -45,7 +45,13 @@
           v-for="item in navItems"
           :key="item.key"
           :to="localePath(item.to)"
-          :class="['nav-link font-mono text-uppercase text-caption', { 'router-link-exact-active': item.exact && route.path === localePath(item.to) }]"
+          :class="[
+            'nav-link font-mono text-uppercase text-caption',
+            {
+              'router-link-exact-active':
+                item.exact && route.path === localePath(item.to),
+            },
+          ]"
           :exact="item.exact"
         >
           {{ $t(`nav.${item.key}`) }}
@@ -57,16 +63,21 @@
         class="nav-icon-btn lang-toggle font-mono"
         @click="switchLocale(locale === 'fr' ? 'en' : 'fr')"
       >
-        {{ locale === 'fr' ? 'EN' : 'FR' }}
+        {{ locale === "fr" ? "EN" : "FR" }}
       </button>
 
       <!-- Theme toggle -->
       <button
         class="nav-icon-btn theme-toggle"
-        :aria-label="isDark ? $t('theme.toggle_light') : $t('theme.toggle_dark')"
+        :aria-label="
+          isDark ? $t('theme.toggle_light') : $t('theme.toggle_dark')
+        "
         @click="toggleTheme($event)"
       >
-        <v-icon :icon="isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'" size="18" />
+        <v-icon
+          :icon="isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+          size="18"
+        />
       </button>
 
       <!-- Mobile menu -->
@@ -83,7 +94,7 @@
     location="right"
     width="280"
     temporary
-    color="background"
+    color="surface-2"
   >
     <v-list class="pt-8 px-4">
       <v-list-item
@@ -172,25 +183,47 @@ onMounted(() => {
 }
 @keyframes drawH {
   //         Draw H first
-  0%   { stroke-dashoffset: 150; }
-  15%  { stroke-dashoffset: 0; }
+  0% {
+    stroke-dashoffset: 150;
+  }
+  15% {
+    stroke-dashoffset: 0;
+  }
   //         Stay visible while B draws + pause
-  62%  { stroke-dashoffset: 0; }
+  62% {
+    stroke-dashoffset: 0;
+  }
   //         Erase H last (reverse direction: 0 → 150)
-  78%  { stroke-dashoffset: 150; }
-  100% { stroke-dashoffset: 150; }
+  78% {
+    stroke-dashoffset: 150;
+  }
+  100% {
+    stroke-dashoffset: 150;
+  }
 }
 @keyframes drawB {
   //         Wait for H to draw
-  0%   { stroke-dashoffset: 150; }
-  15%  { stroke-dashoffset: 150; }
+  0% {
+    stroke-dashoffset: 150;
+  }
+  15% {
+    stroke-dashoffset: 150;
+  }
   //         Draw B second
-  30%  { stroke-dashoffset: 0; }
+  30% {
+    stroke-dashoffset: 0;
+  }
   //         Stay visible (pause)
-  48%  { stroke-dashoffset: 0; }
+  48% {
+    stroke-dashoffset: 0;
+  }
   //         Erase B first (reverse direction: 0 → 150)
-  62%  { stroke-dashoffset: 150; }
-  100% { stroke-dashoffset: 150; }
+  62% {
+    stroke-dashoffset: 150;
+  }
+  100% {
+    stroke-dashoffset: 150;
+  }
 }
 
 .nav-link {
@@ -214,7 +247,9 @@ onMounted(() => {
   cursor: pointer;
   border-radius: 4px;
   color: rgb(var(--v-theme-muted));
-  transition: color 0.25s, border-color 0.25s;
+  transition:
+    color 0.25s,
+    border-color 0.25s;
   &:hover {
     color: rgb(var(--v-theme-primary));
     border-color: rgba(var(--v-theme-primary), 0.25);
