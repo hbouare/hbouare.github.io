@@ -68,11 +68,17 @@
 
         <!-- RIGHT: stats -->
         <v-col cols="12" md="5" class="d-none d-md-flex justify-end animate-4">
-          <v-row class="stats-grid" no-gutters>
-            <v-col v-for="stat in stats" :key="stat.key" cols="6">
+          <v-row ref="statsRef" class="stats-grid" no-gutters>
+            <v-col v-for="(stat, index) in stats" :key="stat.key" cols="6">
               <v-card class="stat-box pa-5" color="surface" variant="outlined">
                 <div class="stat-number font-playfair text-primary">
-                  {{ stat.value }}
+                  <template v-if="stat.numeric !== undefined">
+                    <span>{{ statsStarted ? animatedValues[index] : 0 }}</span>
+                    <span v-if="stat.suffix" class="stat-suffix">{{ stat.suffix }}</span>
+                  </template>
+                  <template v-else>
+                    {{ stat.value }}
+                  </template>
                 </div>
                 <div class="stat-label font-mono text-muted mt-1">
                   {{ $t(`hero.${stat.key}`) }}
@@ -105,11 +111,53 @@ const countries = computed(() => [
 ])
 
 const stats = [
-  { value: "8+", key: "stat_years" },
-  { value: "3", key: "stat_countries" },
-  { value: "20+", key: "stat_projects" },
+  { value: "8+", key: "stat_years", numeric: 8, suffix: "+" },
+  { value: "3", key: "stat_countries", numeric: 3 },
+  { value: "20+", key: "stat_projects", numeric: 20, suffix: "+" },
   { value: "∞", key: "stat_curiosity" },
 ]
+
+// Animated counter
+const statsRef = ref<HTMLElement | null>(null)
+const statsStarted = ref(false)
+const animatedValues = ref<number[]>(stats.map(() => 0))
+
+const animateCountUp = () => {
+  const duration = 2500
+  const startTime = performance.now()
+  const targets = stats.map((s) => s.numeric ?? 0)
+
+  const step = (now: number) => {
+    const progress = Math.min((now - startTime) / duration, 1)
+    const eased = 1 - Math.pow(1 - progress, 3) // ease-out cubic
+
+    animatedValues.value = targets.map((target) => Math.round(target * eased))
+
+    if (progress < 1) {
+      requestAnimationFrame(step)
+    }
+  }
+
+  requestAnimationFrame(step)
+}
+
+onMounted(() => {
+  const el = statsRef.value?.$el ?? statsRef.value
+  if (!el) return
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0]?.isIntersecting && !statsStarted.value) {
+        statsStarted.value = true
+        animateCountUp()
+        observer.disconnect()
+      }
+    },
+    { threshold: 0.2 },
+  )
+
+  observer.observe(el)
+})
 </script>
 
 <style scoped lang="scss">
@@ -184,6 +232,11 @@ const stats = [
   font-size: 2.6rem;
   font-weight: 700;
   line-height: 1;
+}
+.stat-suffix {
+  font-size: 0.65em;
+  vertical-align: super;
+  margin-left: 1px;
 }
 .stat-label {
   font-size: 0.6rem;
