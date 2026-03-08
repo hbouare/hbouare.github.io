@@ -233,3 +233,24 @@ onMounted(() => {
   padding: 0;
 }
 </style>
+
+<!-- Unscoped: v-navigation-drawer is teleported to body, scoped styles won't reach it -->
+<style lang="scss">
+.v-navigation-drawer {
+  .v-list-item {
+    color: rgb(var(--v-theme-muted)) !important;
+    transition: color 0.25s;
+
+    &:hover,
+    &:focus-visible {
+      color: rgb(var(--v-theme-primary)) !important;
+    }
+    &.router-link-active {
+      color: rgb(var(--v-theme-primary)) !important;
+    }
+  }
+  .v-list-item__overlay {
+    display: none !important;
+  }
+}
+</style>
