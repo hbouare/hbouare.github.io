@@ -156,32 +156,41 @@ onMounted(() => {
   color: rgb(var(--v-theme-primary));
 }
 
-// Handwriting draw + erase animation
+// Handwriting draw + reverse-erase animation
+// Draw: H then B | Erase: B then H (exact reverse)
+// Erase retraces the stroke backward (0 → 150), not forward (-150)
 .logo-letter {
   fill: none;
   stroke-dasharray: 150;
   stroke-dashoffset: 150;
 }
 .letter-1 {
-  animation: drawH 7s ease infinite;
+  animation: drawH 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 .letter-2 {
-  animation: drawB 7s ease infinite;
+  animation: drawB 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 @keyframes drawH {
-  0%  { stroke-dashoffset: 150; }
-  20% { stroke-dashoffset: 0; }
-  55% { stroke-dashoffset: 0; }
-  75% { stroke-dashoffset: -150; }
-  100% { stroke-dashoffset: -150; }
+  //         Draw H first
+  0%   { stroke-dashoffset: 150; }
+  15%  { stroke-dashoffset: 0; }
+  //         Stay visible while B draws + pause
+  62%  { stroke-dashoffset: 0; }
+  //         Erase H last (reverse direction: 0 → 150)
+  78%  { stroke-dashoffset: 150; }
+  100% { stroke-dashoffset: 150; }
 }
 @keyframes drawB {
-  0%  { stroke-dashoffset: 150; }
-  10% { stroke-dashoffset: 150; }
-  30% { stroke-dashoffset: 0; }
-  50% { stroke-dashoffset: 0; }
-  65% { stroke-dashoffset: -150; }
-  100% { stroke-dashoffset: -150; }
+  //         Wait for H to draw
+  0%   { stroke-dashoffset: 150; }
+  15%  { stroke-dashoffset: 150; }
+  //         Draw B second
+  30%  { stroke-dashoffset: 0; }
+  //         Stay visible (pause)
+  48%  { stroke-dashoffset: 0; }
+  //         Erase B first (reverse direction: 0 → 150)
+  62%  { stroke-dashoffset: 150; }
+  100% { stroke-dashoffset: 150; }
 }
 
 .nav-link {
