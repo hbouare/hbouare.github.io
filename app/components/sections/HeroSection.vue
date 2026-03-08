@@ -165,7 +165,7 @@ onMounted(() => {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  scroll-snap-align: start;
+
 }
 .hero-bg-text {
   position: absolute;

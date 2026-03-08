@@ -198,6 +198,7 @@ const submitForm = async () => {
   padding: 6.5rem 0;
   background: rgb(var(--v-theme-background));
 
+
   @media (max-width: 959px) {
     padding: 4.5rem 0;
   }
