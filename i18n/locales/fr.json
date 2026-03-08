@@ -1,0 +1,91 @@
+{
+  "nav": {
+    "about": "À propos",
+    "experience": "Parcours",
+    "projects": "Projets",
+    "blog": "Blog",
+    "contact": "Contact",
+    "hire": "Me recruter"
+  },
+  "hero": {
+    "tag": "Full-Stack · Data Engineer · DevOps",
+    "title_1": "Construire",
+    "title_em": "l'avenir",
+    "title_3": "ligne par ligne",
+    "subtitle": "Ingénieur et docteur, je travaille sur la conception et le développement de systèmes numériques, de la modélisation des données jusqu’au déploiement en production. Au fil de mes projets, j’ai été amené à intervenir sur différentes étapes de la chaîne : structurer des problématiques liées aux données, développer les services backend qui les traitent, concevoir les interfaces permettant d’y accéder et participer au maintien de l’infrastructure qui les supporte.",
+    "cta_projects": "Voir mes projets",
+    "cta_contact": "Me contacter",
+    "intl_label": "Expérience internationale",
+    "stat_years": "Années d'exp.",
+    "stat_countries": "Pays",
+    "stat_projects": "Projets livrés",
+    "stat_curiosity": "Curiosité",
+    "country_france": "🇫🇷 France",
+    "country_uk": "🇬🇧 Royaume-Uni",
+    "country_algeria": "🇩🇿 Algérie"
+  },
+  "about": {
+    "section": "01 — À Propos",
+    "title_1": "Développeur",
+    "title_em": "polyvalent",
+    "title_3": "& curieux du monde",
+    "p1": " J'ai eu l'occasion de travailler dans plusieurs pays, une expérience qui a façonné ma manière d'aborder les projets : écouter avant de proposer, m'adapter aux contextes, et collaborer avec des équipes aux cultures différentes.",
+    "p2": "Je crois que le meilleur logiciel est celui qui simplifie le travail des gens et leur libère du temps pour ce qui compte vraiment.",
+    "p3": "Cette conviction guide mes choix techniques autant que ma façon de travailler avec les équipes métier."
+  },
+  "experience": {
+    "section": "02 — Parcours",
+    "title_1": "Où j'ai",
+    "title_em": "construit"
+  },
+  "projects": {
+    "section": "03 — Projets",
+    "title_1": "Ce que j'ai",
+    "title_em": "bâti",
+    "featured": "Projet phare",
+    "view_all": "Voir tous les projets",
+    "meta_desc": "Projets et réalisations en développement full-stack, data engineering et DevOps."
+  },
+  "blog": {
+    "section": "04 — Blog",
+    "title_1": "Pensées &",
+    "title_em": "articles",
+    "read_more": "Lire l'article",
+    "view_all": "Voir tous les articles",
+    "min_read": "min de lecture",
+    "no_posts": "Aucun article disponible pour le moment.",
+    "meta_desc": "Articles sur le développement, la data engineering et les technologies web."
+  },
+  "travel": {
+    "section": "05 — International",
+    "title_1": "Une carrière",
+    "title_em": "sans frontières",
+    "desc": "Travailler dans des cultures différentes m'a appris à communiquer avec précision, à m'adapter rapidement, et à concevoir des solutions universelles dans des contextes variés."
+  },
+  "contact": {
+    "section": "06 — Contact",
+    "title_1": "Travaillons",
+    "title_em": "ensemble.",
+    "desc": "Ouvert aux missions freelance et aux collaborations techniques. N’hésitez pas à me contacter pour en discuter.",
+    "form_name": "Nom",
+    "form_email": "Email",
+    "form_message": "Message",
+    "form_send": "Envoyer le message",
+    "form_success": "Message envoyé avec succès !",
+    "socials": "Me retrouver"
+  },
+  "footer": {
+    "available": "Disponible pour de nouveaux projets",
+    "rights": "Tous droits réservés"
+  },
+  "theme": {
+    "toggle_dark": "Mode sombre",
+    "toggle_light": "Mode clair"
+  },
+  "skills": {
+    "backend": "Backend",
+    "frontend": "Frontend",
+    "devops": "DevOps",
+    "data": "Data"
+  }
+}

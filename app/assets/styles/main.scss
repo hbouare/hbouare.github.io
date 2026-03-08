@@ -1,0 +1,132 @@
+// app/assets/styles/main.scss
+
+// ── Font utility classes ─────────────────────────────────────
+// Use .v-application prefix to beat Vuetify's font-family without !important
+.v-application .font-playfair { font-family: 'Playfair Display', serif; }
+.v-application .font-mono     { font-family: 'DM Mono', monospace; }
+.v-application .font-syne     { font-family: 'Syne', sans-serif; }
+
+// ── Fluid typography ───────────────────────────────────────────
+// Base font-size scales with viewport:
+//   320px → ~13px  |  768px → ~15px  |  1440px → ~18px
+html {
+  font-size: clamp(13px, 0.45vw + 11.5px, 18px);
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ── Global resets ──────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'Syne', sans-serif;
+}
+
+// ── Scrollbar ──────────────────────────────────────────────────
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(var(--v-theme-primary), 0.5); border-radius: 2px; }
+
+// ── Vuetify overrides ──────────────────────────────────────────
+// Use doubled selectors or parent context for specificity
+.v-application {
+  font-family: 'Syne', sans-serif;
+}
+
+// App bar: transparent by default, handled by TopBar scoped styles
+.v-application .v-app-bar {
+  background: transparent;
+}
+
+// Card outlined: use our primary border color instead of Vuetify's currentColor
+.v-application .v-card.v-card--variant-outlined {
+  border-color: rgba(var(--v-theme-primary), 0.12);
+}
+
+// Card flat with manual border: ensure flat cards have no border by default
+.v-application .v-card.v-card--variant-flat {
+  border-color: rgba(var(--v-theme-primary), 0.08);
+}
+
+// ── View Transition - Theme toggle clip-path animation ─────────
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+// ── Global reusable utilities ──────────────────────────────────
+.v-application .text-muted { color: rgb(var(--v-theme-muted)); }
+
+.section-pad {
+  padding: 6.5rem 0;
+  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.12);
+  scroll-snap-align: start;
+}
+
+.section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 28px; height: 1px;
+    background: currentColor;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+}
+
+.section-surface {
+  background: rgb(var(--v-theme-surface));
+}
+
+// ── Page transitions ─────────────────────────────────────────
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+// ── Reduced motion — accessibility ──────────────────────────
+// These !important are intentional: accessibility overrides must win over everything
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .page-enter-active,
+  .page-leave-active {
+    transition: none;
+  }
+  .reveal-block {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+// Link defaults
+a { color: inherit; }
+
+// Prose
+p { line-height: 1.8; }

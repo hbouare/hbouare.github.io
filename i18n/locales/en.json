@@ -1,0 +1,91 @@
+{
+  "nav": {
+    "about": "About",
+    "experience": "Experience",
+    "projects": "Projects",
+    "blog": "Blog",
+    "contact": "Contact",
+    "hire": "Hire me"
+  },
+  "hero": {
+    "tag": "Full-Stack · Data Engineer · DevOps",
+    "title_1": "Building",
+    "title_em": "the future",
+    "title_3": "line by line",
+    "subtitle": "Engineer and PhD, working on the design and development of digital systems, from data modeling through to production deployment. Across my projects, I have worked at different stages of the stack: structuring data-related problems, developing backend services to process them, designing interfaces that make them accessible, and helping maintain the infrastructure that supports them.",
+    "cta_projects": "See my projects",
+    "cta_contact": "Contact me",
+    "intl_label": "International experience",
+    "stat_years": "Years of exp.",
+    "stat_countries": "Countries",
+    "stat_projects": "Projects shipped",
+    "stat_curiosity": "Curiosity",
+    "country_france": "🇫🇷 France",
+    "country_uk": "🇬🇧 United Kingdom",
+    "country_algeria": "🇩🇿 Algeria"
+  },
+  "about": {
+    "section": "01 — About",
+    "title_1": "Versatile",
+    "title_em": "developer",
+    "title_3": "& world explorer",
+    "p1": "Having worked across several countries, I've developed a way of approaching projects that goes beyond the technical: listening before proposing, adapting to different contexts, and collaborating with teams from diverse cultural backgrounds.",
+    "p2": "I believe the best software is the kind that quietly simplifies people's work — and gives them back time for what truly matters.",
+    "p3": "This conviction shapes both my technical decisions and the way I engage with business teams."
+  },
+  "experience": {
+    "section": "02 — Experience",
+    "title_1": "Where I've",
+    "title_em": "built things"
+  },
+  "projects": {
+    "section": "03 — Projects",
+    "title_1": "What I've",
+    "title_em": "shipped",
+    "featured": "Featured",
+    "view_all": "View all projects",
+    "meta_desc": "Projects and achievements in full-stack development, data engineering and DevOps."
+  },
+  "blog": {
+    "section": "04 — Blog",
+    "title_1": "Thoughts &",
+    "title_em": "articles",
+    "read_more": "Read article",
+    "view_all": "View all articles",
+    "min_read": "min read",
+    "no_posts": "No articles available yet.",
+    "meta_desc": "Articles on development, data engineering and web technologies."
+  },
+  "travel": {
+    "section": "05 — International",
+    "title_1": "A career",
+    "title_em": "without borders",
+    "desc": "Working across different cultures has taught me to communicate with precision, adapt quickly, and design universal solutions in very different contexts."
+  },
+  "contact": {
+    "section": "06 — Contact",
+    "title_1": "Let's work",
+    "title_em": "together.",
+    "desc": "Open to freelance opportunities and technical collaborations. Please feel free to contact me to discuss further.",
+    "form_name": "Name",
+    "form_email": "Email",
+    "form_message": "Message",
+    "form_send": "Send message",
+    "form_success": "Message sent successfully!",
+    "socials": "Find me on"
+  },
+  "footer": {
+    "available": "Available for new projects",
+    "rights": "All rights reserved"
+  },
+  "theme": {
+    "toggle_dark": "Dark mode",
+    "toggle_light": "Light mode"
+  },
+  "skills": {
+    "backend": "Backend",
+    "frontend": "Frontend",
+    "devops": "DevSecOps",
+    "data": "Data"
+  }
+}
