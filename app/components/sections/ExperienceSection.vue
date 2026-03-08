@@ -78,13 +78,6 @@ const { data: experiences } = await useAsyncData(
 <style scoped lang="scss">
 .exp-item {
   border-top: 1px solid rgba(var(--v-theme-primary), 0.12);
-  transition:
-    padding-left 0.3s ease,
-    background 0.3s ease;
-  &:hover {
-    padding-left: 14px;
-    background: rgba(var(--v-theme-primary), 0.02);
-  }
 }
 .exp-item-grid {
   display: grid;
