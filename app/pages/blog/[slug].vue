@@ -1,7 +1,7 @@
 <!-- app/pages/blog/[slug].vue -->
 <template>
   <v-container class="px-6 px-md-10" fluid style="max-width: 800px">
-    <div class="py-16">
+    <div class="section-v-pad">
       <UiRevealBlock>
         <v-btn
           :to="localePath('/blog')"

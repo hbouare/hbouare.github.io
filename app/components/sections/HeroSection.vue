@@ -5,7 +5,7 @@
       {{ isDark ? "Build" : "Create" }}
     </div>
 
-    <v-container class="hero-inner" fluid>
+    <v-container class="hero-inner px-6 px-md-10" fluid>
       <v-row align="center" class="min-h-screen py-24">
         <!-- LEFT -->
         <v-col cols="12" md="7" class="hero-left">
@@ -185,23 +185,32 @@ onMounted(() => {
 .hero-inner {
   position: relative;
   z-index: 1;
-  padding: 0 40px;
 }
 .min-h-screen {
   min-height: 100vh;
 }
 .py-24 {
-  padding-top: 5.5rem;
-  padding-bottom: 4.5rem;
+  padding-top: 6.5rem;
+  padding-bottom: 6.5rem;
+
+  @media (max-width: 959px) {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+  @media (max-width: 599px) {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
 }
 
 .hero-tag {
+  font-size: 0.82rem;
   margin-bottom: 1.5rem;
 }
 .hero-title {
-  font-size: clamp(48px, 6vw, 90px);
+  font-size: 90px;
   font-weight: 900;
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: -0.025em;
   em {
     font-style: italic;
@@ -215,6 +224,7 @@ onMounted(() => {
   max-width: 440px;
 }
 .hero-cta {
+  font-size: 0.82rem;
   letter-spacing: 0.12em;
 }
 
@@ -239,7 +249,7 @@ onMounted(() => {
   margin-left: 1px;
 }
 .stat-label {
-  font-size: 0.6rem;
+  font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -249,7 +259,7 @@ onMounted(() => {
   position: absolute;
   bottom: 36px;
   right: 50px;
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   display: flex;
@@ -263,6 +273,43 @@ onMounted(() => {
   height: 44px;
   background: rgb(var(--v-theme-primary));
   animation: scrollPulse 2s ease-in-out infinite;
+}
+
+// Responsive text sizes — decrease per breakpoint
+// Tablet (< 960px)
+@media (max-width: 959px) {
+  .hero-title {
+    font-size: 60px;
+  }
+  .hero-tag,
+  .hero-subtitle,
+  .hero-cta {
+    font-size: 0.78rem;
+  }
+  .stat-number {
+    font-size: 2.2rem;
+  }
+  .stat-label {
+    font-size: 0.62rem;
+  }
+  .scroll-hint {
+    font-size: 0.62rem;
+  }
+}
+
+// Mobile (< 600px)
+@media (max-width: 599px) {
+  .hero-title {
+    font-size: 42px;
+  }
+  .hero-tag,
+  .hero-subtitle,
+  .hero-cta {
+    font-size: 0.72rem;
+  }
+  .scroll-hint {
+    font-size: 0.58rem;
+  }
 }
 
 // Entrance animations

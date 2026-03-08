@@ -1,6 +1,6 @@
 <!-- app/pages/projects/index.vue -->
 <template>
-  <v-container class="px-6 px-md-10 py-20" fluid>
+  <v-container class="px-6 px-md-10 section-v-pad" fluid>
     <UiRevealBlock>
       <UiSectionHeader
         :label="$t('projects.section')"
@@ -192,7 +192,7 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
   padding: 2rem 2.5rem;
   display: flex;
   flex-direction: column;
-  @media (max-width: 600px) {
+  @media (max-width: 599px) {
     padding: 1.5rem;
   }
 }
@@ -201,7 +201,7 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
 .proj-card--featured {
   .proj-card-inner {
     padding: 2.5rem 3rem;
-    @media (max-width: 600px) {
+    @media (max-width: 599px) {
       padding: 1.5rem;
     }
   }

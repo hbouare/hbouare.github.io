@@ -71,6 +71,32 @@ body {
   scroll-snap-align: start;
 }
 
+// Reusable vertical padding matching section-pad (without border/snap)
+.section-v-pad {
+  padding-top: 6.5rem;
+  padding-bottom: 6.5rem;
+}
+
+// Responsive reduction for all section spacing
+@media (max-width: 959px) {
+  .section-pad {
+    padding: 4.5rem 0;
+  }
+  .section-v-pad {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+}
+@media (max-width: 599px) {
+  .section-pad {
+    padding: 3rem 0;
+  }
+  .section-v-pad {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
 .section-label {
   font-size: 0.65rem;
   letter-spacing: 0.2em;

@@ -2,7 +2,7 @@
 <template>
   <div class="blog-page">
     <UiPlumBlossom />
-    <v-container class="px-6 px-md-10 py-20 position-relative" fluid>
+    <v-container class="px-6 px-md-10 section-v-pad position-relative" fluid>
       <UiRevealBlock>
         <UiSectionHeader
           :label="$t('blog.section')"

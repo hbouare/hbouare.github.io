@@ -197,6 +197,13 @@ const submitForm = async () => {
 .section-contact {
   padding: 6.5rem 0;
   background: rgb(var(--v-theme-background));
+
+  @media (max-width: 959px) {
+    padding: 4.5rem 0;
+  }
+  @media (max-width: 599px) {
+    padding: 3rem 0;
+  }
 }
 .contact-title {
   font-size: clamp(44px, 5vw, 80px);
@@ -224,7 +231,7 @@ const submitForm = async () => {
   &:hover {
     border-color: rgba(var(--v-theme-primary), 0.45);
   }
-  @media (max-width: 600px) {
+  @media (max-width: 599px) {
     padding: 1.5rem;
   }
 }
