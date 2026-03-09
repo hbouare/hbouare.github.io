@@ -81,10 +81,12 @@
       </button>
 
       <!-- Mobile menu -->
-      <v-app-bar-nav-icon
-        class="d-flex d-md-none ml-1"
+      <button
+        class="nav-icon-btn theme-toggle d-flex d-md-none ml-1"
         @click="mobileMenu = !mobileMenu"
-      />
+      >
+        <v-icon icon="mdi-menu" size="18" />
+      </button>
     </v-container>
   </v-app-bar>
 
