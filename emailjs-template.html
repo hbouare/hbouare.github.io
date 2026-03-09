@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body style="margin:0;padding:0;background-color:#f4f2ee;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f2ee;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#0a0a08;padding:32px 40px;text-align:center;">
+              <h1 style="margin:0;font-size:24px;font-weight:700;color:#c9a96e;letter-spacing:2px;font-family:Georgia,'Times New Roman',serif;">
+                HB
+              </h1>
+              <p style="margin:8px 0 0;font-size:11px;color:#888;letter-spacing:3px;text-transform:uppercase;">
+                Nouveau message depuis le portfolio
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="background-color:#ffffff;padding:40px;">
+
+              <!-- Greeting -->
+              <p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.6;">
+                Vous avez recu un nouveau message via votre formulaire de contact.
+              </p>
+
+              <!-- Info card -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf8f4;border-left:3px solid #c9a96e;margin-bottom:28px;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding-bottom:12px;">
+                          <span style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:2px;">Nom</span><br />
+                          <span style="font-size:15px;color:#0a0a08;font-weight:600;">{{from_name}}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <span style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:2px;">Email</span><br />
+                          <a href="mailto:{{from_email}}" style="font-size:15px;color:#c9a96e;text-decoration:none;font-weight:600;">{{from_email}}</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Message -->
+              <p style="margin:0 0 8px;font-size:10px;color:#999;text-transform:uppercase;letter-spacing:2px;">
+                Message
+              </p>
+              <div style="background-color:#0a0a08;padding:24px 28px;margin-bottom:28px;">
+                <p style="margin:0;font-size:14px;color:#e8e8e8;line-height:1.8;white-space:pre-wrap;">{{message}}</p>
+              </div>
+
+              <!-- CTA -->
+              <table role="presentation" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color:#c9a96e;padding:12px 28px;">
+                    <a href="mailto:{{from_email}}" style="font-size:12px;color:#0a0a08;text-decoration:none;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">
+                      Repondre a {{from_name}}
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#0a0a08;padding:24px 40px;text-align:center;">
+              <p style="margin:0 0 4px;font-size:11px;color:#666;letter-spacing:1px;">
+                Hamed Bouare &mdash; Portfolio
+              </p>
+              <p style="margin:0;font-size:10px;color:#444;">
+                Ce message a ete envoye automatiquement via le formulaire de contact.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

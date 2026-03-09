@@ -72,6 +72,11 @@
     "form_message": "Message",
     "form_send": "Send message",
     "form_success": "Message sent successfully!",
+    "form_error": "Something went wrong. Please try again.",
+    "confirm_title": "Confirm sending",
+    "confirm_text": "Do you want to send this message?",
+    "confirm_cancel": "Cancel",
+    "confirm_send": "Send",
     "socials": "Find me on"
   },
   "footer": {

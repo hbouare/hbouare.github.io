@@ -7,6 +7,14 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  runtimeConfig: {
+    public: {
+      emailjsServiceId: '',
+      emailjsTemplateId: '',
+      emailjsPublicKey: '',
+    },
+  },
+
   // GitHub Pages: set baseURL to your repo name
   // e.g. if repo is github.com/hamed/portfolio → baseURL: '/portfolio/'
   app: {

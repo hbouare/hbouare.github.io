@@ -72,6 +72,11 @@
     "form_message": "Message",
     "form_send": "Envoyer le message",
     "form_success": "Message envoyé avec succès !",
+    "form_error": "Une erreur est survenue. Veuillez réessayer.",
+    "confirm_title": "Confirmer l'envoi",
+    "confirm_text": "Voulez-vous envoyer ce message ?",
+    "confirm_cancel": "Annuler",
+    "confirm_send": "Envoyer",
     "socials": "Me retrouver"
   },
   "footer": {

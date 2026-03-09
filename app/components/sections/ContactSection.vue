@@ -98,7 +98,7 @@
                     size="large"
                     class="font-mono text-uppercase"
                     :loading="sending"
-                    :disabled="!formValid"
+                    :disabled="!canSubmit"
                     append-icon="mdi-arrow-right"
                   >
                     {{ $t("contact.form_send") }}
@@ -134,14 +134,55 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <!-- Confirmation dialog -->
+    <v-dialog v-model="showConfirm" max-width="440" persistent>
+      <v-card color="surface" rounded="0" class="confirm-dialog">
+        <v-card-title class="font-playfair text-primary pa-6 pb-2">
+          {{ $t("contact.confirm_title") }}
+        </v-card-title>
+        <v-card-text class="font-mono text-muted pa-6 pt-2">
+          {{ $t("contact.confirm_text") }}
+        </v-card-text>
+        <v-card-actions class="pa-6 pt-0">
+          <v-spacer />
+          <v-btn
+            variant="outlined"
+            color="muted"
+            rounded="0"
+            class="font-mono text-uppercase"
+            @click="showConfirm = false"
+          >
+            {{ $t("contact.confirm_cancel") }}
+          </v-btn>
+          <v-btn
+            variant="flat"
+            color="primary"
+            rounded="0"
+            class="font-mono text-uppercase"
+            :loading="sending"
+            @click="sendEmail"
+          >
+            {{ $t("contact.confirm_send") }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </section>
 </template>
 
 <script setup lang="ts">
+import emailjs from '@emailjs/browser'
+
+const { t } = useI18n()
+const config = useRuntimeConfig()
+
 const formRef = ref()
 const formValid = ref(false)
 const sending = ref(false)
 const sent = ref(false)
+const showConfirm = ref(false)
+const errorMsg = ref("")
 
 const form = reactive({
   name: "",
@@ -154,26 +195,42 @@ const rules = {
   email: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || " ",
 }
 
+const canSubmit = computed(() => {
+  return !!form.name.trim()
+    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+    && !!form.message.trim()
+})
+
 const socials = [
   { icon: "mdi-github", href: "https://github.com/hamed" },
   { icon: "mdi-linkedin", href: "https://linkedin.com/in/hamed" },
 ]
 
-const errorMsg = ref("")
-
+// Step 1: validate form, then show confirmation dialog
 const submitForm = async () => {
   const { valid } = await formRef.value.validate()
   if (!valid) return
+  showConfirm.value = true
+}
 
+// Step 2: send email via EmailJS after user confirms
+const sendEmail = async () => {
   sending.value = true
   errorMsg.value = ""
 
   try {
-    await $fetch("/api/contact", {
-      method: "POST",
-      body: { name: form.name, email: form.email, message: form.message },
-    })
+    await emailjs.send(
+      config.public.emailjsServiceId as string,
+      config.public.emailjsTemplateId as string,
+      {
+        from_name: form.name,
+        from_email: form.email,
+        message: form.message,
+      },
+      config.public.emailjsPublicKey as string,
+    )
 
+    showConfirm.value = false
     sent.value = true
     form.name = ""
     form.email = ""
@@ -183,7 +240,8 @@ const submitForm = async () => {
       sent.value = false
     }, 4000)
   } catch {
-    errorMsg.value = "Une erreur est survenue. Veuillez réessayer."
+    showConfirm.value = false
+    errorMsg.value = t("contact.form_error")
     setTimeout(() => {
       errorMsg.value = ""
     }, 5000)
@@ -235,5 +293,8 @@ const submitForm = async () => {
   @media (max-width: 599px) {
     padding: 1.5rem;
   }
+}
+.confirm-dialog {
+  border: 1px solid rgba(var(--v-theme-primary), 0.12);
 }
 </style>
