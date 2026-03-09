@@ -247,6 +247,10 @@ onMounted(() => {
   width: 320px;
 }
 .stat-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   transition: border-color 0.3s;
   &:hover {
     border-color: rgba(var(--v-theme-primary), 0.45);
