@@ -56,7 +56,7 @@
                   base-color="muted"
                   bg-color="surface"
                   class="font-mono mb-1"
-                  :rules="[rules.required]"
+                  :rules="[rules.name]"
                   density="comfortable"
                   rounded="0"
                 />
@@ -69,7 +69,7 @@
                   bg-color="surface"
                   type="email"
                   class="font-mono mb-1"
-                  :rules="[rules.required, rules.email]"
+                  :rules="[rules.email, rules.emailFormat]"
                   density="comfortable"
                   rounded="0"
                 />
@@ -81,7 +81,7 @@
                   base-color="muted"
                   bg-color="surface"
                   class="font-mono mb-2"
-                  :rules="[rules.required]"
+                  :rules="[rules.message]"
                   rows="5"
                   auto-grow
                   density="comfortable"
@@ -191,8 +191,10 @@ const form = reactive({
 })
 
 const rules = {
-  required: (v: string) => !!v?.trim() || " ",
-  email: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || " ",
+  name: (v: string) => !!v?.trim() || t('contact.form_name_required'),
+  email: (v: string) => !!v?.trim() || t('contact.form_email_required'),
+  emailFormat: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || t('contact.form_email_invalid'),
+  message: (v: string) => !!v?.trim() || t('contact.form_message_required'),
 }
 
 const canSubmit = computed(() => {
