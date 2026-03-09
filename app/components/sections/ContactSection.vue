@@ -172,7 +172,7 @@
 </template>
 
 <script setup lang="ts">
-import emailjs from '@emailjs/browser'
+import emailjs from "@emailjs/browser"
 
 const { t } = useI18n()
 const config = useRuntimeConfig()
@@ -191,21 +191,27 @@ const form = reactive({
 })
 
 const rules = {
-  name: (v: string) => !!v?.trim() || t('contact.form_name_required'),
-  email: (v: string) => !!v?.trim() || t('contact.form_email_required'),
-  emailFormat: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || t('contact.form_email_invalid'),
-  message: (v: string) => !!v?.trim() || t('contact.form_message_required'),
+  name: (v: string) => !!v?.trim() || t("contact.form_name_required"),
+  email: (v: string) => !!v?.trim() || t("contact.form_email_required"),
+  emailFormat: (v: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || t("contact.form_email_invalid"),
+  message: (v: string) => !!v?.trim() || t("contact.form_message_required"),
 }
 
 const canSubmit = computed(() => {
-  return !!form.name.trim()
-    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
-    && !!form.message.trim()
+  return (
+    !!form.name.trim() &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
+    !!form.message.trim()
+  )
 })
 
 const socials = [
-  { icon: "mdi-github", href: "https://github.com/hamed" },
-  { icon: "mdi-linkedin", href: "https://linkedin.com/in/hamed" },
+  { icon: "mdi-github", href: "https://github.com/hamedbouare9" },
+  {
+    icon: "mdi-linkedin",
+    href: "https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/",
+  },
 ]
 
 // Step 1: validate form, then show confirmation dialog
@@ -215,19 +221,34 @@ const submitForm = async () => {
   showConfirm.value = true
 }
 
+// console.log("EmailJS config:", {
+//   serviceId: config.public.emailjsServiceId,
+//   templateId: config.public.emailjsTemplateId,
+//   publicKey: config.public.emailjsPublicKey,
+// })
 // Step 2: send email via EmailJS after user confirms
 const sendEmail = async () => {
   sending.value = true
   errorMsg.value = ""
 
   try {
+    console.log("EmailJS params:", {
+      serviceId: config.public.emailjsServiceId,
+      templateId: config.public.emailjsTemplateId,
+      publicKey: config.public.emailjsPublicKey,
+      name: form.name,
+      email: form.email,
+      message: form.message,
+    })
     await emailjs.send(
       config.public.emailjsServiceId as string,
       config.public.emailjsTemplateId as string,
       {
-        from_name: form.name,
-        from_email: form.email,
+        title: `Message de ${form.name}`,
+        name: form.name,
+        email: form.email,
         message: form.message,
+        time: new Date().toLocaleString(),
       },
       config.public.emailjsPublicKey as string,
     )
@@ -257,7 +278,6 @@ const sendEmail = async () => {
 .section-contact {
   padding: 6.5rem 0;
   background: rgb(var(--v-theme-background));
-
 
   @media (max-width: 959px) {
     padding: 4.5rem 0;
