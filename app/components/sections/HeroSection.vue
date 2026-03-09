@@ -77,7 +77,21 @@
                     <span v-if="stat.suffix" class="stat-suffix">{{ stat.suffix }}</span>
                   </template>
                   <template v-else>
-                    {{ stat.value }}
+                    <svg
+                      class="infinity-svg"
+                      :class="{ 'infinity-animate': statsStarted }"
+                      viewBox="0 0 60 30"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        class="infinity-path"
+                        d="M30 15C30 15 38 3 47 3C52.5 3 57 7.5 57 15C57 22.5 52.5 27 47 27C38 27 30 15 30 15C30 15 22 3 13 3C7.5 3 3 7.5 3 15C3 22.5 7.5 27 13 27C22 27 30 15 30 15Z"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
                   </template>
                 </div>
                 <div class="stat-label font-mono text-muted mt-1">
@@ -247,6 +261,26 @@ onMounted(() => {
   font-size: 0.65em;
   vertical-align: super;
   margin-left: 1px;
+}
+
+// Infinity SVG draw animation
+.infinity-svg {
+  height: 1em;
+  width: 2em;
+  vertical-align: middle;
+  display: inline-block;
+}
+.infinity-path {
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+}
+.infinity-animate .infinity-path {
+  animation: drawInfinity 2.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes drawInfinity {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 .stat-label {
   font-size: 0.72rem;
