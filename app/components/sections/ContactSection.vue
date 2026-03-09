@@ -45,7 +45,6 @@
             <div class="contact-form-wrap">
               <v-form
                 ref="formRef"
-                v-model="formValid"
                 @submit.prevent="submitForm"
               >
                 <v-text-field
@@ -57,6 +56,7 @@
                   bg-color="surface"
                   class="font-mono mb-1"
                   :rules="[rules.name]"
+                  validate-on="blur"
                   density="comfortable"
                   rounded="0"
                 />
@@ -70,6 +70,7 @@
                   type="email"
                   class="font-mono mb-1"
                   :rules="[rules.email, rules.emailFormat]"
+                  validate-on="blur"
                   density="comfortable"
                   rounded="0"
                 />
@@ -82,52 +83,52 @@
                   bg-color="surface"
                   class="font-mono mb-2"
                   :rules="[rules.message]"
+                  validate-on="blur"
                   rows="5"
                   auto-grow
                   density="comfortable"
                   rounded="0"
                 />
-                <div
-                  class="d-flex align-center justify-space-between flex-wrap ga-4"
-                >
-                  <v-btn
-                    type="submit"
-                    color="primary"
-                    variant="flat"
+
+                <!-- Feedback message -->
+                <v-fade-transition>
+                  <v-alert
+                    v-if="sent"
+                    type="success"
+                    variant="tonal"
                     rounded="0"
-                    size="large"
-                    class="font-mono text-uppercase"
-                    :loading="sending"
-                    :disabled="!canSubmit"
-                    append-icon="mdi-arrow-right"
+                    class="font-mono mb-4"
+                    density="compact"
+                    icon="mdi-check-circle"
                   >
-                    {{ $t("contact.form_send") }}
-                  </v-btn>
-                  <v-fade-transition>
-                    <span
-                      v-if="sent"
-                      class="font-mono text-primary text-caption"
-                    >
-                      <v-icon
-                        size="small"
-                        icon="mdi-check-circle"
-                        class="mr-1"
-                      />
-                      {{ $t("contact.form_success") }}
-                    </span>
-                    <span
-                      v-else-if="errorMsg"
-                      class="font-mono text-error text-caption"
-                    >
-                      <v-icon
-                        size="small"
-                        icon="mdi-alert-circle"
-                        class="mr-1"
-                      />
-                      {{ errorMsg }}
-                    </span>
-                  </v-fade-transition>
-                </div>
+                    {{ $t("contact.form_success") }}
+                  </v-alert>
+                  <v-alert
+                    v-else-if="errorMsg"
+                    type="error"
+                    variant="tonal"
+                    rounded="0"
+                    class="font-mono mb-4"
+                    density="compact"
+                    icon="mdi-alert-circle"
+                  >
+                    {{ errorMsg }}
+                  </v-alert>
+                </v-fade-transition>
+
+                <v-btn
+                  type="submit"
+                  color="primary"
+                  variant="flat"
+                  rounded="0"
+                  size="large"
+                  class="font-mono text-uppercase"
+                  :loading="sending"
+                  :disabled="!canSubmit"
+                  append-icon="mdi-arrow-right"
+                >
+                  {{ $t("contact.form_send") }}
+                </v-btn>
               </v-form>
             </div>
           </UiRevealBlock>
@@ -178,7 +179,6 @@ const { t } = useI18n()
 const config = useRuntimeConfig()
 
 const formRef = ref()
-const formValid = ref(false)
 const sending = ref(false)
 const sent = ref(false)
 const showConfirm = ref(false)
@@ -221,25 +221,12 @@ const submitForm = async () => {
   showConfirm.value = true
 }
 
-// console.log("EmailJS config:", {
-//   serviceId: config.public.emailjsServiceId,
-//   templateId: config.public.emailjsTemplateId,
-//   publicKey: config.public.emailjsPublicKey,
-// })
 // Step 2: send email via EmailJS after user confirms
 const sendEmail = async () => {
   sending.value = true
   errorMsg.value = ""
 
   try {
-    console.log("EmailJS params:", {
-      serviceId: config.public.emailjsServiceId,
-      templateId: config.public.emailjsTemplateId,
-      publicKey: config.public.emailjsPublicKey,
-      name: form.name,
-      email: form.email,
-      message: form.message,
-    })
     await emailjs.send(
       config.public.emailjsServiceId as string,
       config.public.emailjsTemplateId as string,
