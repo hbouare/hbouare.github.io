@@ -6,6 +6,18 @@
 .v-application .font-mono     { font-family: 'DM Mono', monospace; }
 .v-application .font-syne     { font-family: 'Syne', sans-serif; }
 
+// ── Anti-flash: immediate theme colors before Vue hydration ──
+// The inline <script> in <head> sets data-theme before first paint.
+// These rules cover the gap until Vuetify applies its CSS variables.
+html[data-theme="dark"] {
+  background-color: #0a0a08;
+  color: #f5f0e8;
+}
+html[data-theme="light"] {
+  background-color: #faf8f4;
+  color: #1a1a14;
+}
+
 // ── Fluid typography ───────────────────────────────────────────
 // Base font-size scales with viewport:
 //   320px → ~13px  |  768px → ~15px  |  1440px → ~18px

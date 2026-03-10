@@ -74,14 +74,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
   nuxtApp.vueApp.use(vuetify)
 
-  // Restore saved theme on client — runs once before any component mounts
+  // Restore saved theme on client — reads data-theme already set by the inline head script
   if (import.meta.client) {
-    const saved = localStorage.getItem('portfolio-theme')
-    if (saved) {
-      vuetify.theme.global.name.value = saved
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      vuetify.theme.global.name.value = prefersDark ? 'dark' : 'light'
-    }
+    const resolved = document.documentElement.getAttribute('data-theme') || 'dark'
+    vuetify.theme.global.name.value = resolved
   }
 })

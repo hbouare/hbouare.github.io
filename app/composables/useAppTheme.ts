@@ -10,6 +10,8 @@ export const useAppTheme = () => {
       const newTheme = isDark.value ? 'light' : 'dark'
       theme.global.name.value = newTheme
       localStorage.setItem('portfolio-theme', newTheme)
+      document.documentElement.setAttribute('data-theme', newTheme)
+      document.documentElement.style.colorScheme = newTheme
     }
 
     // Use View Transition API with clip-path circle animation

@@ -7,9 +7,9 @@
 <script setup lang="ts">
 const { isDark } = useAppTheme()
 
-useHead({
+useHead(() => ({
   link: [
-    { rel: 'icon', type: 'image/svg+xml', href: computed(() => isDark.value ? '/favicon.svg' : '/favicon-light.svg') },
+    { rel: 'icon', type: 'image/svg+xml', href: isDark.value ? '/favicon.svg' : '/favicon-light.svg' },
   ],
-})
+}))
 </script>
