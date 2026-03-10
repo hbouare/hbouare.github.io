@@ -43,10 +43,7 @@
         <v-col cols="12" md="7">
           <UiRevealBlock :delay="200">
             <div class="contact-form-wrap">
-              <v-form
-                ref="formRef"
-                @submit.prevent="submitForm"
-              >
+              <v-form ref="formRef" @submit.prevent="submitForm">
                 <v-text-field
                   v-model="form.name"
                   :label="$t('contact.form_name')"
@@ -225,7 +222,7 @@ const submitForm = async () => {
 const sendEmail = async () => {
   sending.value = true
   errorMsg.value = ""
-
+  console.log("Sending email with data:", config)
   try {
     await emailjs.send(
       config.public.emailjsServiceId as string,
