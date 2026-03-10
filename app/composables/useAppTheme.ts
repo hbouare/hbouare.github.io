@@ -3,13 +3,14 @@ import { useTheme } from 'vuetify'
 
 export const useAppTheme = () => {
   const theme = useTheme()
-  const isDark = computed(() => theme.global.name.value === 'dark')
+  const isDark = computed(() => theme.current.value.dark)
 
   const toggleTheme = (event?: MouseEvent) => {
     const applyTheme = () => {
-      theme.global.name.value = isDark.value ? 'light' : 'dark'
+      const newTheme = isDark.value ? 'light' : 'dark'
+      theme.change(newTheme)
       if (import.meta.client) {
-        localStorage.setItem('portfolio-theme', theme.global.name.value)
+        localStorage.setItem('portfolio-theme', newTheme)
       }
     }
 
@@ -50,17 +51,16 @@ export const useAppTheme = () => {
     }
   }
 
-  const initTheme = () => {
-    if (import.meta.client) {
-      const saved = localStorage.getItem('portfolio-theme')
-      if (saved) {
-        theme.global.name.value = saved
-      } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        theme.global.name.value = prefersDark ? 'dark' : 'light'
-      }
+  // Auto-init on client
+  if (import.meta.client) {
+    const saved = localStorage.getItem('portfolio-theme')
+    if (saved) {
+      theme.change(saved)
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      theme.change(prefersDark ? 'dark' : 'light')
     }
   }
 
-  return { isDark, toggleTheme, initTheme }
+  return { isDark, toggleTheme }
 }

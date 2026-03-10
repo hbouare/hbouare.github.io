@@ -15,10 +15,7 @@ export default defineNuxtConfig({
     },
   },
 
-  // GitHub Pages: set baseURL to your repo name
-  // e.g. if repo is github.com/hamed/portfolio → baseURL: '/portfolio/'
   app: {
-    baseURL: "/website/",
     pageTransition: { name: "page", mode: "out-in" },
     head: {
       title: "Hamed Bouare",
@@ -40,7 +37,7 @@ export default defineNuxtConfig({
             "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack avec une expérience internationale.",
         },
         { property: "og:type", content: "website" },
-        { property: "og:image", content: "/website/og-image.svg" },
+        { property: "og:image", content: "/og-image.svg" },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
@@ -53,10 +50,9 @@ export default defineNuxtConfig({
           content:
             "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack.",
         },
-        { name: "twitter:image", content: "/website/og-image.svg" },
+        { name: "twitter:image", content: "/og-image.svg" },
       ],
       link: [
-        { rel: "icon", type: "image/svg+xml", href: "/website/favicon.svg" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",
