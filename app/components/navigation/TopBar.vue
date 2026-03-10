@@ -136,10 +136,16 @@ const switchLocale = async (code: string) => {
   await navigateTo(path, { external: false })
 }
 
+const onScroll = () => {
+  scrolled.value = window.scrollY > 40
+}
+
 onMounted(() => {
-  window.addEventListener("scroll", () => {
-    scrolled.value = window.scrollY > 40
-  })
+  window.addEventListener("scroll", onScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", onScroll)
 })
 </script>
 

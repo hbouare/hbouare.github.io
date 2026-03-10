@@ -46,7 +46,7 @@ const lightTheme = {
   },
 }
 
-export default defineNuxtPlugin((app) => {
+export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     components,
     directives,
@@ -72,5 +72,16 @@ export default defineNuxtPlugin((app) => {
       },
     },
   })
-  app.vueApp.use(vuetify)
+  nuxtApp.vueApp.use(vuetify)
+
+  // Restore saved theme on client — runs once before any component mounts
+  if (import.meta.client) {
+    const saved = localStorage.getItem('portfolio-theme')
+    if (saved) {
+      vuetify.theme.global.name.value = saved
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      vuetify.theme.global.name.value = prefersDark ? 'dark' : 'light'
+    }
+  }
 })

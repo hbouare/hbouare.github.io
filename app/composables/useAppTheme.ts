@@ -8,15 +8,12 @@ export const useAppTheme = () => {
   const toggleTheme = (event?: MouseEvent) => {
     const applyTheme = () => {
       const newTheme = isDark.value ? 'light' : 'dark'
-      theme.change(newTheme)
-      if (import.meta.client) {
-        localStorage.setItem('portfolio-theme', newTheme)
-      }
+      theme.global.name.value = newTheme
+      localStorage.setItem('portfolio-theme', newTheme)
     }
 
     // Use View Transition API with clip-path circle animation
     if (
-      import.meta.client &&
       event &&
       'startViewTransition' in document
     ) {
@@ -48,17 +45,6 @@ export const useAppTheme = () => {
       })
     } else {
       applyTheme()
-    }
-  }
-
-  // Auto-init on client
-  if (import.meta.client) {
-    const saved = localStorage.getItem('portfolio-theme')
-    if (saved) {
-      theme.change(saved)
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      theme.change(prefersDark ? 'dark' : 'light')
     }
   }
 
