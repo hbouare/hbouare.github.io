@@ -5,7 +5,6 @@
     icon="mdi-arrow-up"
     color="primary"
     size="small"
-    aria-label="Scroll to top"
     @click="scrollToTop"
   />
 </template>
@@ -21,7 +20,7 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" })
 }
 
-onMounted(() => window.addEventListener("scroll", onScroll, { passive: true }))
+onMounted(() => window.addEventListener("scroll", onScroll))
 onUnmounted(() => window.removeEventListener("scroll", onScroll))
 </script>
 

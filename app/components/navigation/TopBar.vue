@@ -9,7 +9,7 @@
   >
     <v-container class="d-flex align-center px-6 px-md-10 h-100" fluid>
       <!-- Logo with handwriting animation -->
-      <NuxtLink :to="localePath('/')" class="nav-logo text-decoration-none" :aria-label="$t('nav.home')">
+      <NuxtLink :to="localePath('/')" class="nav-logo text-decoration-none">
         <svg
           class="logo-svg"
           viewBox="0 0 44 32"
@@ -61,7 +61,6 @@
       <!-- Compact lang toggle -->
       <button
         class="nav-icon-btn lang-toggle font-mono"
-        :aria-label="locale === 'fr' ? 'Switch to English' : 'Passer en français'"
         @click="switchLocale(locale === 'fr' ? 'en' : 'fr')"
       >
         {{ locale === "fr" ? "EN" : "FR" }}
