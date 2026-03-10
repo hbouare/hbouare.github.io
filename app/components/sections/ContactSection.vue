@@ -222,7 +222,6 @@ const submitForm = async () => {
 const sendEmail = async () => {
   sending.value = true
   errorMsg.value = ""
-  console.log("Sending email with data:", config)
   try {
     await emailjs.send(
       config.public.emailjsServiceId as string,
