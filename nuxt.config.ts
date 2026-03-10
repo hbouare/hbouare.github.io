@@ -22,7 +22,7 @@ export default defineNuxtConfig({
       titleTemplate: "%s - Hamed Bouare",
       script: [
         {
-          innerHTML: `(function(){var t=localStorage.getItem('portfolio-theme');if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t})()`,
+          innerHTML: `(function(){var t=localStorage.getItem('portfolio-theme');if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;if(t!=='dark'){document.documentElement.classList.add('theme-pending')}})()`,
           tagPosition: 'head',
         },
       ],
