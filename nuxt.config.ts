@@ -22,7 +22,7 @@ export default defineNuxtConfig({
       titleTemplate: "%s - Hamed Bouare",
       script: [
         {
-          innerHTML: `(function(){var t=localStorage.getItem('portfolio-theme');if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;var l=document.createElement('link');l.rel='icon';l.type='image/svg+xml';l.href=t==='dark'?'/favicon.svg':'/favicon-light.svg';document.head.appendChild(l)})()`,
+          innerHTML: `(function(){var t=localStorage.getItem('portfolio-theme');if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t})()`,
           tagPosition: 'head',
         },
       ],
@@ -59,6 +59,7 @@ export default defineNuxtConfig({
         { name: "twitter:image", content: "/og-image.svg" },
       ],
       link: [
+        { rel: "icon", type: "image/svg+xml", href: "/favicon-dark.svg", key: "favicon" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",
