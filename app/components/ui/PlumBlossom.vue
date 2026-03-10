@@ -1,12 +1,13 @@
 <!-- app/components/ui/PlumBlossom.vue -->
 <template>
-  <canvas ref="canvas" class="plum-canvas" />
+  <canvas ref="canvas" class="plum-canvas" aria-hidden="true" />
 </template>
 
 <script setup lang="ts">
-const { isDark } = useAppTheme()
-
 const canvas = ref<HTMLCanvasElement>()
+let stopped = false
+let animId = 0
+let onResize: (() => void) | null = null
 
 onMounted(() => {
   const el = canvas.value
@@ -14,8 +15,6 @@ onMounted(() => {
 
   const ctx = el.getContext('2d')!
   const dpr = window.devicePixelRatio || 1
-  let stopped = false
-  let animId = 0
 
   const resize = () => {
     const parent = el.parentElement!
@@ -34,15 +33,16 @@ onMounted(() => {
   const H = () => el.height / dpr
   const rand = (a: number, b: number) => Math.random() * (b - a) + a
 
-  const getColor = () => {
-    const raw = getComputedStyle(document.documentElement)
+  // Cache color — read once, not per branch
+  let cachedColor = ''
+  const refreshColor = () => {
+    cachedColor = getComputedStyle(document.documentElement)
       .getPropertyValue('--v-theme-primary')
-      .trim()
-    return raw || '200,169,110'
+      .trim() || '200,169,110'
   }
+  refreshColor()
 
   type Step = () => void
-  // One queue per corner so they all grow in parallel
   const queues: Step[][] = [[], [], [], []]
 
   const polar = (x: number, y: number, r: number, theta: number): [number, number] => {
@@ -59,7 +59,6 @@ onMounted(() => {
     if (x < -20 || x > W() + 20 || y < -20 || y > H() + 20) return
     if (depth > 160) return
 
-    const color = getColor()
     const len = rand(3, 6)
     const [nx, ny] = polar(x, y, len, angle)
 
@@ -68,7 +67,7 @@ onMounted(() => {
     ctx.beginPath()
     ctx.moveTo(x, y)
     ctx.lineTo(nx, ny)
-    ctx.strokeStyle = `rgba(${color}, ${alpha})`
+    ctx.strokeStyle = `rgba(${cachedColor}, ${alpha})`
     ctx.lineWidth = Math.max(0.3, 0.8 - depth * 0.004)
     ctx.lineCap = 'round'
     ctx.stroke()
@@ -76,7 +75,7 @@ onMounted(() => {
     if (depth > 20 && Math.random() < 0.04) {
       ctx.beginPath()
       ctx.arc(nx, ny, rand(0.8, 1.8), 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(${color}, ${alpha * 0.8})`
+      ctx.fillStyle = `rgba(${cachedColor}, ${alpha * 0.8})`
       ctx.fill()
     }
 
@@ -107,7 +106,6 @@ onMounted(() => {
     ]
 
     corners.forEach((corner, qi) => {
-      // Offset only inward (toward center) so branches never start out of bounds
       const ox = corner.x === 0 ? rand(0, 20) : rand(-20, 0)
       const oy = corner.y === 0 ? rand(0, 20) : rand(-20, 0)
       const count = Math.floor(rand(2, 4))
@@ -130,7 +128,6 @@ onMounted(() => {
 
     if (timestamp - lastTime >= frameInterval) {
       lastTime = timestamp
-      // Process 1 step from each corner every frame — perfectly synchronized
       for (const queue of queues) {
         if (queue.length > 0) {
           const fn = queue.shift()!
@@ -144,20 +141,23 @@ onMounted(() => {
 
   requestAnimationFrame(frame)
 
-  const onResize = () => {
+  onResize = () => {
+    refreshColor()
     resize()
     ctx.clearRect(0, 0, W(), H())
     for (const q of queues) q.length = 0
     seed()
   }
 
-  window.addEventListener('resize', onResize)
+  window.addEventListener('resize', onResize, { passive: true })
+})
 
-  onUnmounted(() => {
-    stopped = true
-    cancelAnimationFrame(animId)
+onUnmounted(() => {
+  stopped = true
+  cancelAnimationFrame(animId)
+  if (onResize) {
     window.removeEventListener('resize', onResize)
-  })
+  }
 })
 </script>
 

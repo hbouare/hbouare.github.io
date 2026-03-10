@@ -35,7 +35,6 @@
 
 <script setup lang="ts">
 const { locale, t } = useI18n()
-const localePath = useLocalePath()
 
 useSeoMeta({
   title: "Blog",

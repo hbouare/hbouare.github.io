@@ -6,7 +6,7 @@
     </div>
 
     <v-container class="hero-inner px-6 px-md-10" fluid>
-      <v-row align="center" class="min-h-screen py-24">
+      <v-row align="center" class="min-h-screen section-v-pad">
         <!-- LEFT -->
         <v-col cols="12" md="7" class="hero-left">
           <p class="hero-tag font-mono text-primary section-label animate-1">
@@ -202,19 +202,6 @@ onMounted(() => {
 }
 .min-h-screen {
   min-height: 100vh;
-}
-.py-24 {
-  padding-top: 6.5rem;
-  padding-bottom: 6.5rem;
-
-  @media (max-width: 959px) {
-    padding-top: 4.5rem;
-    padding-bottom: 4.5rem;
-  }
-  @media (max-width: 599px) {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
 }
 
 .hero-tag {

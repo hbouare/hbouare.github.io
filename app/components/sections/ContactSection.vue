@@ -190,19 +190,22 @@ const form = reactive({
   message: "",
 })
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 const rules = {
   name: (v: string) => !!v?.trim() || t("contact.form_name_required"),
   email: (v: string) => !!v?.trim() || t("contact.form_email_required"),
   emailFormat: (v: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || t("contact.form_email_invalid"),
+    EMAIL_RE.test(v) || t("contact.form_email_invalid"),
   message: (v: string) => !!v?.trim() || t("contact.form_message_required"),
 }
 
 const canSubmit = computed(() => {
   return (
     !!form.name.trim() &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
-    !!form.message.trim()
+    EMAIL_RE.test(form.email) &&
+    !!form.message.trim() &&
+    !sent.value
   )
 })
 
