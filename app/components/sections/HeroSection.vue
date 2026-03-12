@@ -1,9 +1,9 @@
 <template>
   <section class="hero-section">
     <!-- Background ghost text -->
-    <div class="hero-bg-text font-playfair" aria-hidden="true">
+    <!-- <div class="hero-bg-text font-playfair" aria-hidden="true">
       {{ isDark ? "Build" : "Create" }}
-    </div>
+    </div> -->
 
     <v-container class="hero-inner px-6 px-md-10" fluid>
       <v-row align="center" class="min-h-screen py-24">
@@ -74,7 +74,9 @@
                 <div class="stat-number font-playfair text-primary">
                   <template v-if="stat.numeric !== undefined">
                     <span>{{ statsStarted ? animatedValues[index] : 0 }}</span>
-                    <span v-if="stat.suffix" class="stat-suffix">{{ stat.suffix }}</span>
+                    <span v-if="stat.suffix" class="stat-suffix">{{
+                      stat.suffix
+                    }}</span>
                   </template>
                   <template v-else>
                     <svg
@@ -179,7 +181,6 @@ onMounted(() => {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-
 }
 .hero-bg-text {
   position: absolute;
