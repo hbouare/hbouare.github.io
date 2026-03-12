@@ -30,7 +30,7 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t;var h=t==='dark'?'/favicon-dark.svg':'/favicon-light.svg';var l=document.querySelector('link[rel="icon"]');if(l){l.href=h}else{l=document.createElement('link');l.rel='icon';l.type='image/svg+xml';l.href=h;document.head.appendChild(l)}})()`,
+          innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t})()`,
           tagPosition: 'head',
         },
       ],
@@ -67,7 +67,7 @@ export default defineNuxtConfig({
         { name: "twitter:image", content: "/og-image.svg" },
       ],
       link: [
-        { rel: "icon", type: "image/svg+xml", href: "/favicon-dark.svg", key: "favicon" },
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",

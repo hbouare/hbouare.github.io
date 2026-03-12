@@ -12,9 +12,6 @@ export const useAppTheme = () => {
       localStorage.setItem('portfolio-theme', newTheme)
       document.documentElement.setAttribute('data-theme', newTheme)
       document.documentElement.style.colorScheme = newTheme
-      // Update favicon to match the new theme
-      const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
-      if (favicon) favicon.href = newTheme === 'dark' ? '/favicon-dark.svg' : '/favicon-light.svg'
     }
 
     // Use View Transition API with clip-path circle animation
