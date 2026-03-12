@@ -6,16 +6,7 @@
 .v-application .font-mono     { font-family: 'DM Mono', monospace; }
 .v-application .font-syne     { font-family: 'Syne', sans-serif; }
 
-// ── Anti-flash: hide body when prerendered theme (dark) ≠ user preference ──
-// The inline <script> adds .theme-pending when the user wants light theme.
-// Body stays hidden until Vue hydrates and Vuetify applies the correct theme.
-html.theme-pending {
-  background-color: #faf8f4;
-
-  body {
-    visibility: hidden;
-  }
-}
+// Anti-flash CSS is now inlined in <head> (nuxt.config.ts), not here.
 
 // ── Fluid typography ───────────────────────────────────────────
 // Base font-size scales with viewport:
@@ -32,8 +23,9 @@ html {
 
 body {
   font-family: 'Syne', sans-serif;
-  background: rgb(var(--v-theme-background));
+  background: #0a0a08;
 }
+html[data-theme="light"] body { background: #faf8f4; }
 
 // ── Scrollbar ──────────────────────────────────────────────────
 ::-webkit-scrollbar { width: 3px; }

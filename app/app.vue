@@ -13,7 +13,12 @@ useHead(() => ({
   ],
 }))
 
+// Fix #4: attendre que Vuetify ait peint les bonnes CSS variables avant de révéler.
 onMounted(() => {
-  document.documentElement.classList.remove('theme-pending')
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      document.documentElement.classList.add('hydrated')
+    })
+  })
 })
 </script>

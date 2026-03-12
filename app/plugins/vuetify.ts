@@ -74,9 +74,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
   nuxtApp.vueApp.use(vuetify)
 
-  // Restore saved theme on client — reads data-theme already set by the inline head script
+  // Restore saved theme on client
   if (import.meta.client) {
-    const resolved = document.documentElement.getAttribute('data-theme') || 'dark'
+    const resolved =
+      document.documentElement.getAttribute('data-theme')
+      || localStorage.getItem('portfolio-theme')
+      || 'dark'
     vuetify.theme.global.name.value = resolved
+    document.documentElement.setAttribute('data-theme', resolved)
+    document.documentElement.style.colorScheme = resolved
   }
 })

@@ -20,9 +20,17 @@ export default defineNuxtConfig({
     head: {
       title: "Hamed Bouare",
       titleTemplate: "%s - Hamed Bouare",
+      style: [
+        {
+          // Fix #3: CSS anti-flash INLINE dans le <head>, pas dans un fichier externe.
+          // Fix #1: opacity:0 au lieu de visibility:hidden (rien ne passe à travers).
+          innerHTML: 'html,body{margin:0;background:#0a0a08}html[data-theme="light"],html[data-theme="light"] body{background:#faf8f4}html:not(.hydrated) body{opacity:0}html.hydrated body{transition:opacity .1s}',
+          tagPosition: 'head',
+        },
+      ],
       script: [
         {
-          innerHTML: `(function(){var t=localStorage.getItem('portfolio-theme');if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;if(t!=='dark'){document.documentElement.classList.add('theme-pending')}})()`,
+          innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t;var h=t==='dark'?'/favicon-dark.svg':'/favicon-light.svg';var l=document.querySelector('link[rel="icon"]');if(l){l.href=h}else{l=document.createElement('link');l.rel='icon';l.type='image/svg+xml';l.href=h;document.head.appendChild(l)}})()`,
           tagPosition: 'head',
         },
       ],

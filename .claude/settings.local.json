@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(find \"C:\\\\Users\\\\hbouare\\\\Downloads\\\\portfolio-nuxt4\\\\portfolio\\\\app\\\\composables\" -type f -name \"*.ts\" 2>/dev/null | head -20)",
+      "Bash(npx nuxi:*)"
     ]
   }
 }
