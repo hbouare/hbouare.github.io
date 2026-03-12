@@ -27,13 +27,19 @@
           :delay="i * 100"
         >
           <div class="exp-item">
-            <div class="exp-item-grid">
-              <div class="exp-year font-mono text-muted">{{ exp.period }}</div>
-              <div class="exp-content">
+            <v-row no-gutters class="exp-row">
+              <v-col cols="12" md="2" class="exp-year font-mono text-muted">
+                {{ exp.period }}
+              </v-col>
+              <v-col cols="12" md="8">
                 <h3 class="exp-role font-playfair">{{ exp.role }}</h3>
                 <p class="exp-company font-mono text-primary mt-1">
                   {{ exp.company }}
                 </p>
+                <!-- Mobile location -->
+                <div class="d-md-none font-mono text-muted mt-1" style="font-size: 0.65rem;">
+                  <span class="exp-flag">{{ exp.flag }}</span> {{ exp.location }}
+                </div>
                 <div class="exp-body font-mono text-muted mt-3">
                   <ContentRenderer :value="exp" />
                 </div>
@@ -50,14 +56,12 @@
                     {{ tag }}
                   </v-chip>
                 </div>
-              </div>
-              <div
-                class="exp-location font-mono text-muted text-right d-none d-md-flex"
-              >
+              </v-col>
+              <v-col md="2" class="d-none d-md-flex exp-location font-mono text-muted">
                 <span class="exp-flag">{{ exp.flag }}</span>
                 <span class="mt-1">{{ exp.location }}</span>
-              </div>
-            </div>
+              </v-col>
+            </v-row>
           </div>
         </UiRevealBlock>
       </div>
@@ -79,20 +83,13 @@ const { data: experiences } = await useAsyncData(
 .exp-item {
   border-top: 1px solid rgba(var(--v-theme-primary), 0.12);
 }
-.exp-item-grid {
-  display: grid;
-  grid-template-columns: 110px 1fr 140px;
-  gap: 2rem;
-  align-items: start;
-  padding: 2rem 0;
-  @media (max-width: 768px) {
-    grid-template-columns: 90px 1fr;
-  }
+.exp-row {
+  padding: 1.25rem 0;
+  align-items: baseline;
 }
 .exp-year {
   font-size: 0.68rem;
   letter-spacing: 0.08em;
-  padding-top: 4px;
   line-height: 1.4;
 }
 .exp-role {
@@ -120,7 +117,6 @@ const { data: experiences } = await useAsyncData(
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
-  padding-top: 4px;
 }
 .exp-flag {
   font-size: 1.2rem;
