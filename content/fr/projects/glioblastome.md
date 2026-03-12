@@ -1,12 +1,21 @@
 ---
-id: international
-order: 2
-role: "Développeur Full-Stack Senior"
-company: "Projets Internationaux · Énergie & Tech"
-period: "2020 — 2022"
-location: "Multi-pays"
-flag: "🌍"
-tags: ["Python", "React", "PostgreSQL", "Docker", "REST APIs", "CI/CD"]
+id: glioblastome
+order: 1
+title: "Applications médicales basées sur l’IA"
+featured: true
+tags:
+  [
+    "TypeScript",
+    "Python",
+    "Playwright",
+    "Imaging Framework",
+    "Kubernetes",
+    "Docker",
+    "Sonarqube",
+    "Aws",
+  ]
+github: ""
+demo: ""
 ---
 
 Au sein de l’équipe AI DReAM, j’ai contribué au développement d’applications web intégrant des technologies d’intelligence artificielle afin d’améliorer le diagnostic précoce de certaines pathologies complexes, notamment le glioblastome.

@@ -10,93 +10,43 @@
     </UiRevealBlock>
 
     <!-- Skeleton loaders -->
-    <v-row v-if="!projects" class="mt-14" no-gutters>
-      <v-col v-for="n in 4" :key="n" cols="12" :md="n === 1 ? 12 : 6">
-        <div class="proj-skeleton">
-          <v-skeleton-loader type="article" color="surface" rounded="0" />
-        </div>
-      </v-col>
-    </v-row>
+    <div v-if="!projects" class="proj-grid mt-14">
+      <div v-for="n in 4" :key="n" class="proj-skeleton">
+        <v-skeleton-loader type="article" color="surface" rounded="0" />
+      </div>
+    </div>
 
+    <!-- All projects — uniform 2-column grid -->
     <div v-else class="proj-grid mt-14">
-      <!-- Featured project — full width -->
-      <UiRevealBlock v-if="featured" class="proj-featured-wrap">
-        <v-card class="proj-card proj-card--featured" color="surface" variant="flat" rounded="0">
+      <UiRevealBlock
+        v-for="(proj, i) in projects"
+        :key="proj.id"
+        :delay="i * 100"
+      >
+        <v-card class="proj-card" color="surface" variant="flat" rounded="0">
           <div class="proj-accent-bar" />
           <div class="proj-card-inner">
-            <div class="d-flex align-center ga-3 mb-4">
-              <span class="proj-num font-mono text-primary">001</span>
-              <v-chip color="primary" variant="flat" rounded="0" size="x-small" class="font-mono">
-                {{ $t("projects.featured") }}
-              </v-chip>
-            </div>
-            <h2 class="proj-title font-playfair">{{ featured.title }}</h2>
-            <div class="proj-body font-mono text-muted mt-4">
-              <ContentRenderer :value="featured" />
-            </div>
-            <div class="d-flex flex-wrap ga-1 mt-5">
+            <div class="d-flex align-center ga-3 mb-3">
+              <span class="proj-num font-mono text-primary">
+                {{ String(i + 1).padStart(3, "0") }}
+              </span>
               <v-chip
-                v-for="tag in featured.tags"
-                :key="tag"
-                variant="outlined"
+                v-if="proj.featured"
                 color="primary"
+                variant="flat"
                 rounded="0"
                 size="x-small"
                 class="font-mono"
-              >{{ tag }}</v-chip>
-            </div>
-            <div class="proj-actions mt-6">
-              <v-btn
-                v-if="featured.github"
-                :href="featured.github"
-                target="_blank"
-                rel="noopener"
-                variant="outlined"
-                color="primary"
-                size="small"
-                class="font-mono"
-                rounded="0"
               >
-                GitHub
-                <v-icon end size="x-small" icon="mdi-arrow-top-right" />
-              </v-btn>
-              <v-btn
-                v-if="featured.demo"
-                :href="featured.demo"
-                target="_blank"
-                rel="noopener"
-                variant="flat"
-                color="primary"
-                size="small"
-                class="font-mono"
-                rounded="0"
-              >
-                Demo
-                <v-icon end size="x-small" icon="mdi-arrow-top-right" />
-              </v-btn>
+                {{ $t("projects.featured") }}
+              </v-chip>
             </div>
-          </div>
-        </v-card>
-      </UiRevealBlock>
-
-      <!-- Other projects — 2 column grid -->
-      <div class="proj-others">
-        <UiRevealBlock
-          v-for="(proj, i) in others"
-          :key="proj.id"
-          :delay="(i + 1) * 100"
-        >
-          <v-card class="proj-card" color="surface" variant="flat" rounded="0">
-            <div class="proj-accent-bar" />
-            <div class="proj-card-inner">
-              <span class="proj-num font-mono text-primary mb-3">
-                {{ String(i + 2).padStart(3, "0") }}
-              </span>
-              <h3 class="proj-title font-playfair">{{ proj.title }}</h3>
-              <div class="proj-body font-mono text-muted mt-3">
-                <ContentRenderer :value="proj" />
-              </div>
-              <div class="d-flex flex-wrap ga-1 mt-4">
+            <h3 class="proj-title font-playfair">{{ proj.title }}</h3>
+            <div class="proj-body font-mono text-muted mt-3">
+              <ContentRenderer :value="proj" />
+            </div>
+            <div class="proj-card-footer">
+              <div class="d-flex flex-wrap ga-1">
                 <v-chip
                   v-for="tag in proj.tags"
                   :key="tag"
@@ -108,29 +58,39 @@
                 >{{ tag }}</v-chip>
               </div>
               <div class="proj-actions mt-5">
-                <a
+                <v-btn
                   v-if="proj.github"
                   :href="proj.github"
                   target="_blank"
                   rel="noopener"
-                  class="proj-link font-mono text-muted"
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  class="font-mono"
+                  rounded="0"
                 >
-                  GitHub <v-icon size="x-small" icon="mdi-arrow-top-right" />
-                </a>
-                <a
+                  GitHub
+                  <v-icon end size="x-small" icon="mdi-arrow-top-right" />
+                </v-btn>
+                <v-btn
                   v-if="proj.demo"
                   :href="proj.demo"
                   target="_blank"
                   rel="noopener"
-                  class="proj-link font-mono text-primary"
+                  variant="flat"
+                  color="primary"
+                  size="small"
+                  class="font-mono"
+                  rounded="0"
                 >
-                  Demo <v-icon size="x-small" icon="mdi-arrow-top-right" />
-                </a>
+                  Demo
+                  <v-icon end size="x-small" icon="mdi-arrow-top-right" />
+                </v-btn>
               </div>
             </div>
-          </v-card>
-        </UiRevealBlock>
-      </div>
+          </div>
+        </v-card>
+      </UiRevealBlock>
     </div>
   </v-container>
 </template>
@@ -149,21 +109,28 @@ const { data: projects } = await useAsyncData(
   () => queryCollection(`${locale.value}_projects`).order("order", "ASC").all(),
 )
 
-const featured = computed(() => projects.value?.find((p) => p.featured))
-const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
 </script>
 
 <style scoped lang="scss">
+// 2-column uniform grid
 .proj-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 2px;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+  // Stretch reveal wrappers so cards fill equal height
+  :deep(.reveal-block) {
+    height: 100%;
+  }
 }
 
-// Cards — shared style using flat variant + manual border
+// Cards — equal height via stretch
 .proj-card {
   position: relative;
   overflow: hidden;
+  height: 100%;
   border: 1px solid rgba(var(--v-theme-primary), 0.08);
   transition: border-color 0.3s, box-shadow 0.3s;
   &:hover {
@@ -192,35 +159,16 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
   padding: 2rem 2.5rem;
   display: flex;
   flex-direction: column;
+  height: 100%;
   @media (max-width: 599px) {
     padding: 1.5rem;
   }
 }
 
-// Featured — full width, larger
-.proj-card--featured {
-  .proj-card-inner {
-    padding: 2.5rem 3rem;
-    @media (max-width: 599px) {
-      padding: 1.5rem;
-    }
-  }
-  .proj-title {
-    font-size: 1.8rem;
-  }
-  .proj-body {
-    max-width: 640px;
-  }
-}
-
-// Others — 2 columns
-.proj-others {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
+// Push tags + actions to bottom so cards align
+.proj-card-footer {
+  margin-top: auto;
+  padding-top: 1.25rem;
 }
 
 .proj-num {
@@ -245,15 +193,6 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
-}
-.proj-link {
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  transition: color 0.2s;
-  &:hover {
-    color: rgb(var(--v-theme-primary));
-  }
 }
 .proj-skeleton {
   padding: 1rem;
