@@ -6,16 +6,13 @@
       <v-container class="px-6 px-md-10" fluid style="max-width: 800px">
         <div class="section-v-pad">
           <UiRevealBlock>
-            <v-btn
+            <NuxtLink
               :to="localePath('/blog')"
-              variant="text"
-              color="muted"
-              class="font-mono text-caption pa-0 mb-8"
-              rounded="0"
-              prepend-icon="mdi-arrow-left"
+              class="back-link font-mono text-muted"
             >
+              <v-icon size="14" class="mr-1">mdi-arrow-left</v-icon>
               {{ $t("blog.view_all") }}
-            </v-btn>
+            </NuxtLink>
 
             <!-- Skeleton while loading -->
             <div v-if="!post && !postError" class="py-8">
@@ -167,8 +164,22 @@ function setupCopyButtons() {
 .blog-sidebar {
   width: 220px;
   flex-shrink: 0;
-  padding-top: 18rem;
+  padding-top: 12rem;
   padding-right: 1rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  margin-bottom: 2rem;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: rgb(var(--v-theme-primary)) !important;
+  }
 }
 
 .blog-meta {
