@@ -1,6 +1,6 @@
 ---
-slug: websockets-fastapi-production
-title: "WebSockets avec FastAPI : état partagé, authentification et déconnexions propres"
+slug: websockets-fastapi
+title: "WebSockets : état partagé, authentification et déconnexions"
 date: "2025-03-13"
 readTime: 10
 tags: ["FastAPI", "WebSockets", "Python", "Temps réel"]
@@ -134,12 +134,12 @@ Côté client Vue.js :
 ```typescript
 // composables/useWebSocket.ts
 export function useWebSocket() {
-  const token = useCookie('access_token')
+  const token = useCookie("access_token")
   const ws = ref<WebSocket | null>(null)
 
   const connect = () => {
     ws.value = new WebSocket(
-      `wss://api.monapp.fr/ws/notifications?token=${token.value}`
+      `wss://api.monapp.fr/ws/notifications?token=${token.value}`,
     )
     ws.value.onmessage = (event) => {
       const message = JSON.parse(event.data)

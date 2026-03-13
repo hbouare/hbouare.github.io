@@ -1,6 +1,6 @@
 ---
-slug: nuxt4-introduction-en
-title: "Nuxt 4: What Actually Changes"
+slug: nuxt4-introduction
+title: "Nuxt 4: What’s New and What Actually Changes"
 date: "2025-03-13"
 readTime: 7
 tags: ["Nuxt", "Vue.js", "Frontend", "SSR"]

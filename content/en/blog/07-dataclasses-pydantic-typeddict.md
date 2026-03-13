@@ -1,5 +1,5 @@
 ---
-slug: dataclasses-pydantic-typeddict-choosing-en
+slug: dataclasses-pydantic-typeddict
 title: "Dataclasses, Pydantic, TypedDict: Which to Choose and Why"
 date: "2025-03-13"
 readTime: 7
@@ -131,11 +131,11 @@ settings = Settings()  # Raises a clear error if DATABASE_URL is missing
 
 Pydantic v2 (rewritten in Rust) is substantially faster than v1, but still slower than dataclasses for object construction:
 
-| Tool | Construction (relative) | Validation | JSON Serialisation |
-|---|---|---|---|
-| TypedDict | 1x | None | Manual |
-| Dataclass | 1.2x | `__post_init__` | `dataclasses.asdict()` |
-| Pydantic v2 | 3–5x | Complete | `.model_dump_json()` |
+| Tool        | Construction (relative) | Validation      | JSON Serialisation     |
+| ----------- | ----------------------- | --------------- | ---------------------- |
+| TypedDict   | 1x                      | None            | Manual                 |
+| Dataclass   | 1.2x                    | `__post_init__` | `dataclasses.asdict()` |
+| Pydantic v2 | 3–5x                    | Complete        | `.model_dump_json()`   |
 
 On a FastAPI endpoint handling 1,000 requests per second with simple models, the difference between Pydantic and dataclasses is negligible. It becomes visible in data processing pipelines that instantiate millions of objects — ETL jobs, large file processing.
 

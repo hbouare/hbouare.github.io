@@ -1,6 +1,6 @@
 ---
-slug: fastapi-architecture-projet-production
-title: "Structurer un projet FastAPI qui dure : architecture, couches et dépendances"
+slug: fastapi-architecture
+title: "Structurer un projet FastAPI qui dure"
 date: "2025-03-13"
 readTime: 10
 tags: ["FastAPI", "Python", "Architecture", "Clean Code"]

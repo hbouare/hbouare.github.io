@@ -1,6 +1,6 @@
 ---
-slug: asyncio-production-pitfalls-en
-title: "asyncio in Production: The Pitfalls Tutorials Never Cover"
+slug: asyncio-production
+title: "Asyncio in Production: The Pitfalls Tutorials Never Cover"
 date: "2025-03-13"
 readTime: 9
 tags: ["Python", "asyncio", "FastAPI", "Concurrency"]

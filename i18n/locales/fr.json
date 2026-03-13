@@ -54,7 +54,10 @@
     "view_all": "Voir tous les articles",
     "min_read": "min de lecture",
     "no_posts": "Aucun article disponible pour le moment.",
-    "meta_desc": "Articles sur le développement, la data engineering et les technologies web."
+    "meta_desc": "Articles sur le développement, la data engineering et les technologies web.",
+    "toc": "Sommaire",
+    "copied": "Copié !",
+    "copy_code": "Copier"
   },
   "travel": {
     "section": "05 — International",

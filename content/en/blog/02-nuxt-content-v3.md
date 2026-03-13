@@ -1,5 +1,5 @@
 ---
-slug: nuxt-content-v3-technical-blog-en
+slug: nuxt-content-v3
 title: "Nuxt Content v3: Building a Technical Blog From Scratch"
 date: "2025-03-13"
 readTime: 10
@@ -21,20 +21,28 @@ Configuration in `nuxt.config.ts`:
 
 ```typescript
 export default defineNuxtConfig({
-  modules: ['@nuxt/content'],
+  modules: ["@nuxt/content"],
   content: {
     build: {
       markdown: {
         highlight: {
           theme: {
-            default: 'github-light',
-            dark: 'github-dark'
+            default: "github-light",
+            dark: "github-dark",
           },
-          langs: ['python', 'typescript', 'bash', 'yaml', 'dockerfile', 'sql', 'json']
-        }
-      }
-    }
-  }
+          langs: [
+            "python",
+            "typescript",
+            "bash",
+            "yaml",
+            "dockerfile",
+            "sql",
+            "json",
+          ],
+        },
+      },
+    },
+  },
 })
 ```
 
@@ -55,12 +63,12 @@ The schema is optional but strongly recommended — it validates frontmatter at 
 
 ```typescript
 // content/_schemas/blog.ts
-import { defineCollection, z } from '@nuxt/content'
+import { defineCollection, z } from "@nuxt/content"
 
 export const collections = {
   blog: defineCollection({
-    type: 'page',
-    source: 'blog/**/*.md',
+    type: "page",
+    source: "blog/**/*.md",
     schema: z.object({
       slug: z.string(),
       title: z.string(),
@@ -68,8 +76,8 @@ export const collections = {
       readTime: z.number(),
       tags: z.array(z.string()),
       excerpt: z.string(),
-    })
-  })
+    }),
+  }),
 }
 ```
 
@@ -152,6 +160,7 @@ MDC (Markdown Components) allows Vue components to be embedded directly in Markd
 
 ```markdown
 <!-- In an article .md file -->
+
 ::callout{type="warning"}
 This approach does not work in a multi-pod environment without Redis.
 ::
@@ -163,13 +172,13 @@ The corresponding component:
 <!-- components/content/Callout.vue -->
 <script setup lang="ts">
 const props = defineProps<{
-  type: 'info' | 'warning' | 'danger'
+  type: "info" | "warning" | "danger"
 }>()
 
 const icons = {
-  info: '💡',
-  warning: '⚠️',
-  danger: '🚫'
+  info: "💡",
+  warning: "⚠️",
+  danger: "🚫",
 }
 </script>
 
@@ -196,24 +205,24 @@ Configuration:
 ```typescript
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ['@nuxt/content', '@nuxtjs/color-mode'],
+  modules: ["@nuxt/content", "@nuxtjs/color-mode"],
   colorMode: {
-    classSuffix: '',        // CSS class: 'dark' rather than 'dark-mode'
-    preference: 'system',  // Respects system preferences by default
-    fallback: 'light'
+    classSuffix: "", // CSS class: 'dark' rather than 'dark-mode'
+    preference: "system", // Respects system preferences by default
+    fallback: "light",
   },
   content: {
     build: {
       markdown: {
         highlight: {
           theme: {
-            default: 'github-light',
-            dark: 'github-dark'  // Shiki switches automatically with the CSS class
-          }
-        }
-      }
-    }
-  }
+            default: "github-light",
+            dark: "github-dark", // Shiki switches automatically with the CSS class
+          },
+        },
+      },
+    },
+  },
 })
 ```
 
@@ -222,15 +231,18 @@ The toggle in the layout:
 ```vue
 <script setup lang="ts">
 const colorMode = useColorMode()
-const isDark = computed(() => colorMode.value === 'dark')
+const isDark = computed(() => colorMode.value === "dark")
 
 const toggle = () => {
-  colorMode.preference = isDark.value ? 'light' : 'dark'
+  colorMode.preference = isDark.value ? "light" : "dark"
 }
 </script>
 
 <template>
-  <button @click="toggle" :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+  <button
+    @click="toggle"
+    :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+  >
     <span v-if="isDark">☀️</span>
     <span v-else>🌙</span>
   </button>
@@ -246,11 +258,11 @@ Shiki switches syntax highlighting themes automatically based on the `dark` clas
 export default defineNuxtConfig({
   ssr: true,
   nitro: {
-    preset: 'github-pages'
+    preset: "github-pages",
   },
   app: {
-    baseURL: '/my-repo/'  // If the repository is not at the root of the domain
-  }
+    baseURL: "/my-repo/", // If the repository is not at the root of the domain
+  },
 })
 ```
 
@@ -270,7 +282,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: npm ci
       - run: npm run generate
       - uses: actions/deploy-pages@v4

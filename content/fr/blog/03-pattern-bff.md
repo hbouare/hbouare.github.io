@@ -1,5 +1,5 @@
 ---
-slug: bff-pattern-fastapi-vuejs-azure-b2c
+slug: pattern-bff
 title: "BFF Pattern avec FastAPI : mettre un backend devant ton frontend"
 date: "2025-03-13"
 readTime: 9
@@ -189,12 +189,12 @@ async def refresh(self, session: dict) -> dict:
 
 ## Ce que le BFF apporte
 
-| Aspect | Sans BFF | Avec BFF |
-|---|---|---|
-| Tokens dans le navigateur | Oui (localStorage / cookie) | Non — jamais exposés |
-| `client_secret` | Absent (PKCE requis) | Côté serveur uniquement |
-| Refresh token | Géré par le frontend | Géré par le BFF avec verrou |
-| Surface d'attaque XSS | Tokens accessibles | Cookie opaque uniquement |
-| Complexité | Frontend complexe | Backend supplémentaire |
+| Aspect                    | Sans BFF                    | Avec BFF                    |
+| ------------------------- | --------------------------- | --------------------------- |
+| Tokens dans le navigateur | Oui (localStorage / cookie) | Non — jamais exposés        |
+| `client_secret`           | Absent (PKCE requis)        | Côté serveur uniquement     |
+| Refresh token             | Géré par le frontend        | Géré par le BFF avec verrou |
+| Surface d'attaque XSS     | Tokens accessibles          | Cookie opaque uniquement    |
+| Complexité                | Frontend complexe           | Backend supplémentaire      |
 
 Le BFF n'est pas la solution universelle. Sur une application publique sans données sensibles, PKCE côté client est suffisant et plus simple à opérer. Mais dès que l'on gère des tokens avec des droits élevés, des scopes sensibles, ou des intégrations multi-APIs, le BFF est l'architecture la plus défendable.

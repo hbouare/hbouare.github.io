@@ -1,6 +1,6 @@
 ---
-slug: bff-pattern-fastapi-vuejs-azure-b2c-en
-title: "The BFF Pattern with FastAPI: Putting a Backend in Front of Your Frontend"
+slug: bff-pattern-bff
+title: "The BFF Pattern with FastAPI: Backend-for-Frontend"
 date: "2025-03-13"
 readTime: 9
 tags: ["FastAPI", "Vue.js", "Azure B2C", "Architecture", "OAuth2"]
@@ -192,12 +192,12 @@ async def refresh(self, session: dict) -> dict:
 
 ## Trade-off Summary
 
-| Aspect | Without BFF | With BFF |
-|---|---|---|
-| Tokens in the browser | Yes (localStorage / cookie) | Never exposed |
-| `client_secret` exposure | Absent — PKCE required | Server-side only |
-| Token refresh | Frontend-managed | BFF-managed, with distributed lock |
-| XSS attack surface | Tokens accessible | Opaque session cookie only |
-| Operational complexity | Simpler | Additional service to operate |
+| Aspect                   | Without BFF                 | With BFF                           |
+| ------------------------ | --------------------------- | ---------------------------------- |
+| Tokens in the browser    | Yes (localStorage / cookie) | Never exposed                      |
+| `client_secret` exposure | Absent — PKCE required      | Server-side only                   |
+| Token refresh            | Frontend-managed            | BFF-managed, with distributed lock |
+| XSS attack surface       | Tokens accessible           | Opaque session cookie only         |
+| Operational complexity   | Simpler                     | Additional service to operate      |
 
 The BFF pattern is not a universal prescription. For public-facing applications with low-sensitivity data, client-side PKCE is simpler and perfectly adequate. However, for applications managing tokens with elevated privileges, sensitive scopes, or multi-API integrations — the BFF is the most architecturally sound approach available.

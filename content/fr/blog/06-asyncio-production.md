@@ -1,5 +1,5 @@
 ---
-slug: asyncio-production-pieges
+slug: asyncio-production
 title: "asyncio en production : les pièges que les tutos ne montrent pas"
 date: "2025-03-13"
 readTime: 9

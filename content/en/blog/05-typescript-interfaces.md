@@ -1,5 +1,5 @@
 ---
-slug: typescript-strict-interfaces-vuejs-en
+slug: typescript-interfaces
 title: "TypeScript in Practice: Hierarchical Interfaces on a Real API"
 date: "2025-03-13"
 readTime: 8
@@ -51,13 +51,13 @@ Start with the leaf-level types — literal unions rather than bare strings:
 ```typescript
 // types/api.ts
 
-export type AccountType = 'PRODUCER' | 'TRADER' | 'CONSUMER'
-export type CertificateStatus = 'ACTIVE' | 'CANCELLED' | 'TRANSFERRED'
-export type EnergyTechnology = 'WIND' | 'SOLAR' | 'HYDRO' | 'BIOMASS'
-export type CountryCode = 'FR' | 'DE' | 'ES' | 'IT' | 'BE'
+export type AccountType = "PRODUCER" | "TRADER" | "CONSUMER"
+export type CertificateStatus = "ACTIVE" | "CANCELLED" | "TRANSFERRED"
+export type EnergyTechnology = "WIND" | "SOLAR" | "HYDRO" | "BIOMASS"
+export type CountryCode = "FR" | "DE" | "ES" | "IT" | "BE"
 
 export interface DateRange {
-  from: string  // ISO 8601
+  from: string // ISO 8601
   to: string
 }
 ```
@@ -82,7 +82,7 @@ export interface CertificateMetadata {
 export interface Certificate {
   id: string
   volume: number
-  unit: 'MWh' | 'kWh'
+  unit: "MWh" | "kWh"
   period: DateRange
   status: CertificateStatus
   metadata: CertificateMetadata
@@ -107,20 +107,25 @@ The API always returns the complete structure, but the application rarely needs 
 
 ```typescript
 // For list display — metadata is not needed
-export type CertificateSummary = Pick<Certificate, 'id' | 'volume' | 'unit' | 'status' | 'period'>
+export type CertificateSummary = Pick<
+  Certificate,
+  "id" | "volume" | "unit" | "status" | "period"
+>
 
 // For updates — only status is mutable
-export type CertificateUpdate = Pick<Certificate, 'id'> & { status: CertificateStatus }
+export type CertificateUpdate = Pick<Certificate, "id"> & {
+  status: CertificateStatus
+}
 
 // For search filters — all fields are optional
-export type CertificateFilters = Partial<Pick<Certificate, 'status'>> & {
+export type CertificateFilters = Partial<Pick<Certificate, "status">> & {
   period?: Partial<DateRange>
   technology?: EnergyTechnology
   country?: CountryCode
 }
 
 // For forms — exclude API-generated fields
-export type CertificateForm = Omit<Certificate, 'id' | 'status'>
+export type CertificateForm = Omit<Certificate, "id" | "status">
 ```
 
 ## Generic Composables in Vue
@@ -129,7 +134,7 @@ A generic API composable eliminates the need to rewrite the same loading/error l
 
 ```typescript
 // composables/useApiQuery.ts
-import { ref, Ref } from 'vue'
+import { ref, Ref } from "vue"
 
 interface ApiQueryState<T> {
   data: Ref<T | null>
@@ -140,7 +145,7 @@ interface ApiQueryState<T> {
 
 export function useApiQuery<T>(
   fetcher: () => Promise<T>,
-  options?: { immediate?: boolean }
+  options?: { immediate?: boolean },
 ): ApiQueryState<T> {
   const data = ref<T | null>(null) as Ref<T | null>
   const loading = ref(false)
@@ -152,7 +157,7 @@ export function useApiQuery<T>(
     try {
       data.value = await fetcher()
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Unknown error'
+      error.value = e instanceof Error ? e.message : "Unknown error"
     } finally {
       loading.value = false
     }
@@ -167,9 +172,14 @@ export function useApiQuery<T>(
 Usage in a Vue component:
 
 ```typescript
-const { data: certificates, loading, error, execute } = useApiQuery<CertificatesResponse>(
-  () => $fetch('/api/certificates', { params: filters.value }),
-  { immediate: true }
+const {
+  data: certificates,
+  loading,
+  error,
+  execute,
+} = useApiQuery<CertificatesResponse>(
+  () => $fetch("/api/certificates", { params: filters.value }),
+  { immediate: true },
 )
 ```
 
@@ -205,19 +215,21 @@ Real-world APIs do not always honour their contracts. A type guard enables runti
 ```typescript
 function isCertificate(value: unknown): value is Certificate {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    'id' in value &&
-    'volume' in value &&
-    'status' in value &&
-    ['ACTIVE', 'CANCELLED', 'TRANSFERRED'].includes((value as Certificate).status)
+    "id" in value &&
+    "volume" in value &&
+    "status" in value &&
+    ["ACTIVE", "CANCELLED", "TRANSFERRED"].includes(
+      (value as Certificate).status,
+    )
   )
 }
 
 // Usage
-const raw = await $fetch('/api/certificates/GO-2024-001')
+const raw = await $fetch("/api/certificates/GO-2024-001")
 if (!isCertificate(raw)) {
-  throw new Error('Invalid API response')
+  throw new Error("Invalid API response")
 }
 // TypeScript now knows raw is of type Certificate
 console.log(raw.volume)

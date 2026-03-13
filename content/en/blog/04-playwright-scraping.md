@@ -1,5 +1,5 @@
 ---
-slug: playwright-business-scraping-en
+slug: playwright-scraping
 title: "Playwright as a Business Scraping Tool: Beyond E2E Testing"
 date: "2025-03-13"
 readTime: 9
@@ -193,19 +193,19 @@ spec:
       template:
         spec:
           containers:
-          - name: scraper
-            image: registry.internal/business-scraper:latest
-            env:
-            - name: SCRAPER_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: scraper-credentials
-                  key: username
-            - name: SCRAPER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: scraper-credentials
-                  key: password
+            - name: scraper
+              image: registry.internal/business-scraper:latest
+              env:
+                - name: SCRAPER_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: scraper-credentials
+                      key: username
+                - name: SCRAPER_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: scraper-credentials
+                      key: password
           restartPolicy: OnFailure
 ```
 
@@ -213,13 +213,13 @@ spec:
 
 ## Playwright vs the Alternatives
 
-| Criterion | requests + BS4 | Selenium | Playwright |
-|---|---|---|---|
-| SPAs / JavaScript | No | Yes | Yes |
-| Network interception | No | Partial | Native |
-| Native async | No | No | Yes |
-| CI/CD stability | Good | Fragile | Good |
-| Docker support | Simple | Complex | Reasonable |
-| Modern API | No | No | Yes |
+| Criterion            | requests + BS4 | Selenium | Playwright |
+| -------------------- | -------------- | -------- | ---------- |
+| SPAs / JavaScript    | No             | Yes      | Yes        |
+| Network interception | No             | Partial  | Native     |
+| Native async         | No             | No       | Yes        |
+| CI/CD stability      | Good           | Fragile  | Good       |
+| Docker support       | Simple         | Complex  | Reasonable |
+| Modern API           | No             | No       | Yes        |
 
 For simple static sites, `requests` and `BeautifulSoup` remain faster to set up and lighter to operate. However, as soon as complex authentication, dynamic JavaScript, or user interactions are involved — Playwright is the most robust open-source option available today.

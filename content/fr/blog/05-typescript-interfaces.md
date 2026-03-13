@@ -1,6 +1,6 @@
 ---
-slug: typescript-strict-interfaces-vuejs
-title: "TypeScript strict en pratique : interfaces hiérarchiques sur une vraie API"
+slug: typescript-interfaces
+title: "TypeScript : interfaces hiérarchiques sur une vraie API"
 date: "2025-03-13"
 readTime: 8
 tags: ["TypeScript", "Vue.js", "API", "Frontend"]
@@ -51,13 +51,13 @@ On commence par les types atomiques — unions littérales et enums :
 ```typescript
 // types/api.ts
 
-export type AccountType = 'PRODUCER' | 'TRADER' | 'CONSUMER'
-export type CertificateStatus = 'ACTIVE' | 'CANCELLED' | 'TRANSFERRED'
-export type EnergyTechnology = 'WIND' | 'SOLAR' | 'HYDRO' | 'BIOMASS'
-export type CountryCode = 'FR' | 'DE' | 'ES' | 'IT' | 'BE'
+export type AccountType = "PRODUCER" | "TRADER" | "CONSUMER"
+export type CertificateStatus = "ACTIVE" | "CANCELLED" | "TRANSFERRED"
+export type EnergyTechnology = "WIND" | "SOLAR" | "HYDRO" | "BIOMASS"
+export type CountryCode = "FR" | "DE" | "ES" | "IT" | "BE"
 
 export interface DateRange {
-  from: string  // ISO 8601
+  from: string // ISO 8601
   to: string
 }
 ```
@@ -82,7 +82,7 @@ export interface CertificateMetadata {
 export interface Certificate {
   id: string
   volume: number
-  unit: 'MWh' | 'kWh'
+  unit: "MWh" | "kWh"
   period: DateRange
   status: CertificateStatus
   metadata: CertificateMetadata
@@ -107,20 +107,25 @@ L'API renvoie toujours la structure complète, mais l'application n'en a pas tou
 
 ```typescript
 // Pour l'affichage dans une liste — on n'a pas besoin des métadonnées
-export type CertificateSummary = Pick<Certificate, 'id' | 'volume' | 'unit' | 'status' | 'period'>
+export type CertificateSummary = Pick<
+  Certificate,
+  "id" | "volume" | "unit" | "status" | "period"
+>
 
 // Pour la mise à jour — seul le statut est modifiable
-export type CertificateUpdate = Pick<Certificate, 'id'> & { status: CertificateStatus }
+export type CertificateUpdate = Pick<Certificate, "id"> & {
+  status: CertificateStatus
+}
 
 // Pour les filtres de recherche — tous les champs sont optionnels
-export type CertificateFilters = Partial<Pick<Certificate, 'status'>> & {
+export type CertificateFilters = Partial<Pick<Certificate, "status">> & {
   period?: Partial<DateRange>
   technology?: EnergyTechnology
   country?: CountryCode
 }
 
 // Pour les formulaires — on exclut les champs générés par l'API
-export type CertificateForm = Omit<Certificate, 'id' | 'status'>
+export type CertificateForm = Omit<Certificate, "id" | "status">
 ```
 
 ## Génériques sur les composables Vue
@@ -129,7 +134,7 @@ Un composable générique pour les appels API évite de réécrire la même logi
 
 ```typescript
 // composables/useApiQuery.ts
-import { ref, Ref } from 'vue'
+import { ref, Ref } from "vue"
 
 interface ApiQueryState<T> {
   data: Ref<T | null>
@@ -140,7 +145,7 @@ interface ApiQueryState<T> {
 
 export function useApiQuery<T>(
   fetcher: () => Promise<T>,
-  options?: { immediate?: boolean }
+  options?: { immediate?: boolean },
 ): ApiQueryState<T> {
   const data = ref<T | null>(null) as Ref<T | null>
   const loading = ref(false)
@@ -152,7 +157,7 @@ export function useApiQuery<T>(
     try {
       data.value = await fetcher()
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Erreur inconnue'
+      error.value = e instanceof Error ? e.message : "Erreur inconnue"
     } finally {
       loading.value = false
     }
@@ -168,9 +173,14 @@ Usage dans un composant Vue :
 
 ```typescript
 // Dans un composant
-const { data: certificates, loading, error, execute } = useApiQuery<CertificatesResponse>(
-  () => $fetch('/api/certificates', { params: filters.value }),
-  { immediate: true }
+const {
+  data: certificates,
+  loading,
+  error,
+  execute,
+} = useApiQuery<CertificatesResponse>(
+  () => $fetch("/api/certificates", { params: filters.value }),
+  { immediate: true },
 )
 ```
 
@@ -206,19 +216,21 @@ Les APIs réelles ne sont pas toujours conformes à leur contrat. Un guard de ty
 ```typescript
 function isCertificate(value: unknown): value is Certificate {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    'id' in value &&
-    'volume' in value &&
-    'status' in value &&
-    ['ACTIVE', 'CANCELLED', 'TRANSFERRED'].includes((value as Certificate).status)
+    "id" in value &&
+    "volume" in value &&
+    "status" in value &&
+    ["ACTIVE", "CANCELLED", "TRANSFERRED"].includes(
+      (value as Certificate).status,
+    )
   )
 }
 
 // Usage
-const raw = await $fetch('/api/certificates/GO-2024-001')
+const raw = await $fetch("/api/certificates/GO-2024-001")
 if (!isCertificate(raw)) {
-  throw new Error('Réponse API invalide')
+  throw new Error("Réponse API invalide")
 }
 // Ici, TypeScript sait que raw est de type Certificate
 console.log(raw.volume)
