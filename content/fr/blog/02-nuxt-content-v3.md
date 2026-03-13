@@ -1,5 +1,5 @@
 ---
-slug: nuxt-content-v3
+slug: nuxt-content-v3-desc
 title: "Nuxt Content v3 : construire un blog technique from scratch"
 date: "2025-03-13"
 readTime: 10
