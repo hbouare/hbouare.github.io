@@ -287,6 +287,9 @@ const sendEmail = async () => {
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
+:deep(.d-flex.ga-3 > .v-btn--variant-outlined .v-btn__overlay) {
+  opacity: 0 !important;
+}
 .contact-form-wrap {
   background: rgb(var(--v-theme-surface));
   border: 1px solid rgba(var(--v-theme-primary), 0.12);
