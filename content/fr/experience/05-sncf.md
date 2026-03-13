@@ -18,4 +18,4 @@ tags:
   ]
 ---
 
-Au sein de la section DGII-VA-I de la SNCF, contribution au développement d’une application web dédiée à l’analyse des interactions entre les trains et la voie ferrée. L’outil s’appuie sur des simulations numériques afin d’aider les équipes de maintenance à identifier les zones du réseau ferroviaire susceptibles de présenter un risque pour la circulation des trains et à anticiper les opérations de maintenance
+Contribution aux développements d’une application web dédiée à l’analyse des interactions entre les trains et la voie ferrée pour la section DGII-VA-I de la SNCF. L’outil s’appuie sur des simulations numériques afin d’aider les équipes de maintenance à identifier les zones du réseau ferroviaire susceptibles de présenter des risques pour la circulation et à anticiper les opérations de maintenance.

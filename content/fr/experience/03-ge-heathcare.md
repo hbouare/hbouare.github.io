@@ -19,4 +19,4 @@ tags:
   ]
 ---
 
-Au sein de l’équipe AI DReAM, participation au développement de plusieurs applications web intégrant des technologies d’intelligence artificielle pour l’analyse et le suivi de pathologies complexes, notamment le glioblastome, un cancer du cerveau particulièrement agressif. Ces applications permettent d’exploiter et d’analyser des données médicales afin de faciliter l’étude, le suivi et l’analyse de cette pathologie
+Au sein de l’équipe AI DReAM, contribution au développement de plusieurs applications web intégrant des technologies d’intelligence artificielle dédiées à l’analyse et au suivi de pathologies complexes, notamment le glioblastome, un cancer du cerveau particulièrement agressif. Ces applications permettent d’exploiter et d’analyser des données médicales afin de faciliter l’étude, le suivi et l’analyse de cette pathologie

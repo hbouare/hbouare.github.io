@@ -12,7 +12,7 @@
     "title_1": "Construire",
     "title_em": "l'avenir",
     "title_3": "ligne par ligne",
-    "subtitle": "Ingénieur et docteur, je travaille sur la conception et le développement de systèmes numériques, de la modélisation des données jusqu’au déploiement en production. Au fil de mes projets, j’ai été amené à intervenir sur différentes étapes de la chaîne : structurer des problématiques liées aux données, développer les services backend qui les traitent, concevoir les interfaces permettant d’y accéder et participer au maintien de l’infrastructure qui les supporte.",
+    "subtitle": "Ingénieur et docteur spécialisé dans la conception et le développement de systèmes numériques orientés données. Expérience couvrant l’ensemble du cycle de vie des applications, de la modélisation des données et du développement des services backend jusqu’à la conception des interfaces et au déploiement en production. Les projets menés visent à transformer des problématiques complexes liées aux données en solutions techniques robustes, exploitables par les équipes métier",
     "cta_projects": "Voir mes projets",
     "cta_contact": "Me contacter",
     "intl_label": "Expérience internationale",
@@ -29,9 +29,9 @@
     "title_1": "Développeur",
     "title_em": "polyvalent",
     "title_3": "& curieux du monde",
-    "p1": " J'ai eu l'occasion de travailler dans plusieurs pays, une expérience qui a façonné ma manière d'aborder les projets : écouter avant de proposer, m'adapter aux contextes, et collaborer avec des équipes aux cultures différentes.",
-    "p2": "Je crois que le meilleur logiciel est celui qui simplifie le travail des gens et leur libère du temps pour ce qui compte vraiment.",
-    "p3": "Cette conviction guide mes choix techniques autant que ma façon de travailler avec les équipes métier."
+    "p1": "L’expérience acquise à travers des projets menés dans plusieurs pays a profondément façonné ma manière d’aborder les projets : prendre le temps d’écouter avant de proposer, s’adapter aux contextes locaux et collaborer avec des équipes aux cultures et aux pratiques différentes.",
+    "p2": "Je suis convaincu que le meilleur logiciel est celui qui simplifie réellement le travail des utilisateurs et leur permet de consacrer davantage de temps à ce qui compte vraiment.",
+    "p3": "Cette conviction guide à la fois mes choix techniques et ma manière de collaborer avec les équipes métier."
   },
   "experience": {
     "section": "02 — Parcours",

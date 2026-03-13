@@ -18,6 +18,4 @@ tags:
   ]
 ---
 
-BHP Group est une entreprise internationale du secteur minier spécialisée dans l’extraction de ressources telles que le fer, les diamants, l’uranium, le charbon, le pétrole et la bauxite, avec des sites d’exploitation répartis dans de nombreux pays.
-
-Contribution à l’amélioration d’une application web permettant d’analyser les activités des différents sites miniers, en facilitant la centralisation et l’exploitation des données opérationnelles
+BHP Group est une entreprise internationale du secteur minier spécialisée dans l’extraction de ressources telles que le fer, les diamants, l’uranium, le charbon, le pétrole et la bauxite, avec des sites d’exploitation répartis dans de nombreux pays. Contribution à l’amélioration d’une application web dédiée à l’analyse des activités des différents sites miniers, en facilitant la centralisation et l’exploitation des données opérationnelles

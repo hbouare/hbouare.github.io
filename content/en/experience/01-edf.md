@@ -1,11 +1,23 @@
 ---
 id: edf
 order: 1
-role: "Data Engineer / Full-Stack Developer"
-company: "EDF — Direction Numérique · Devco"
-period: "2022 — Present"
+role: "Data Engineer & Full-Stack Developer"
+company: "EDF "
+period: "June 2024 — Present"
 location: "Saint-Denis, France"
 flag: "🇫🇷"
-tags: ["FastAPI", "Vue.js", "OpenShift", "Azure B2C", "OpenBao", "Redis"]
+tags:
+  [
+    "Python",
+    "Vue.js",
+    "Typescript",
+    "OpenShift",
+    "Airflow",
+    "Redis",
+    "Gitlab CD/CD",
+    "PostgreSQL",
+    "Playwright",
+  ]
 ---
-Building critical applications for the energy transition within EDF Digital Division. Full-stack systems on OpenShift, complex data flows, and cloud infrastructure automation.
+
+Contributed to the development of applications and tools dedicated to the processing and enhancement of energy data within the DevCo team. Worked closely with business stakeholders to understand their needs and design technical solutions that facilitate the analysis, transformation, and validation of data used in their operations.
