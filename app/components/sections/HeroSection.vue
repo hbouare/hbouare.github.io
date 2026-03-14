@@ -43,6 +43,17 @@
             >
               {{ $t("hero.cta_contact") }}
             </v-btn>
+            <v-btn
+              :href="`/cv/cv-hamed-bouare-${locale}.pdf`"
+              download
+              color="primary"
+              variant="flat"
+              rounded="0"
+              size="large"
+              class="font-mono text-uppercase hero-cta"
+            >
+              {{ $t("hero.cta_cv") }}
+            </v-btn>
           </div>
 
           <!-- International pills -->
@@ -118,7 +129,7 @@
 const { isDark } = useAppTheme()
 const localePath = useLocalePath()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const countries = computed(() => [
   t("hero.country_france"),
