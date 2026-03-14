@@ -1,6 +1,6 @@
 ---
 slug: fastapi-architecture
-title: "Structurer un projet FastAPI qui dure"
+title: "Mettre en place une architecture FastAPI scalable et durable"
 date: "2025-03-01"
 readTime: 10
 tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
