@@ -3,7 +3,17 @@
     "allow": [
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(find \"C:\\\\Users\\\\hbouare\\\\Downloads\\\\portfolio-nuxt4\\\\portfolio\\\\app\\\\composables\" -type f -name \"*.ts\" 2>/dev/null | head -20)",
-      "Bash(npx nuxi:*)"
+      "Bash(npx nuxi:*)",
+      "Bash(curl -s http://localhost:3333/blog/vueuse-essentiels 2>&1 | grep -c \"post-title\" && curl -s http://localhost:3333/blog/nuxt4-introduction 2>&1 | grep -c \"post-title\")",
+      "Bash(curl -s http://localhost:3333/blog/vueuse-essentiels 2>&1 | grep -c \"ContentRenderer\" && curl -s http://localhost:3333/blog/vueuse-essentiels 2>&1 | grep \"article introuvable\" && echo \"ARTICLE NOT FOUND SHOWN\" || echo \"article content OK\")",
+      "Bash(find . -path ./node_modules -prune -o -type f -name \"*.ts\" -o -name \"*.vue\" | xargs grep -l \"queryCollection\" 2>/dev/null | head -10)",
+      "Bash(mv content/fr/projects/glioblastome.md content/fr/projects/01-glioblastome.md && mv content/fr/projects/bhp.md content/fr/projects/02-bhp.md)",
+      "Bash(find app:*)",
+      "Bash(grep:*)",
+      "Bash(cd:*)",
+      "Bash(wc:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(curl:*)"
     ]
   }
 }

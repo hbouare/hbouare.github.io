@@ -1,36 +1,36 @@
 ---
-slug: fastapi-architecture
-title: "Structurer un projet FastAPI qui dure"
-date: "2025-03-13"
+slug: fastapi-project-architecture
+title: "Structuring a FastAPI Project That Lasts"
+date: "2025-03-01"
 readTime: 10
 tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
-excerpt: "Pas le hello world FastAPI — mais comment organiser un projet réel avec des routers, une couche service, des repositories, de l'injection de dépendances, et des tests qui restent maintenables à six mois."
+excerpt: "Not the FastAPI hello world — but how to organise a real project with routers, a service layer, repositories, dependency injection, and tests that remain maintainable six months down the line."
 ---
 
-# Structurer un projet FastAPI qui dure : architecture, couches et dépendances
+# Structuring a FastAPI Project That Lasts: Architecture, Layers, and Dependencies
 
-La plupart des tutoriels FastAPI mettent tout dans `main.py`. Ça marche pour un exemple, pas pour une application maintenue par une équipe sur plusieurs années. Voici l'architecture que j'applique sur les projets qui durent, avec les raisons derrière chaque décision.
+Most FastAPI tutorials put everything in `main.py`. That works for a demonstration, not for an application maintained by a team over several years. Here is the architecture applied in practice on projects built to last, along with the reasoning behind each decision.
 
-## La structure de projet
+## Project Structure
 
 ```
 app/
 ├── api/
-│   ├── dependencies.py       # Dépendances injectées (auth, db, etc.)
+│   ├── dependencies.py       # Injected dependencies (auth, db, etc.)
 │   ├── routers/
 │   │   ├── certificates.py
 │   │   └── accounts.py
 │   └── schemas/
-│       ├── certificate.py    # Pydantic models — entrée/sortie API
+│       ├── certificate.py    # Pydantic models — API input/output
 │       └── account.py
 ├── core/
 │   ├── config.py             # Settings (pydantic-settings)
 │   └── security.py           # JWT, hashing, etc.
 ├── domain/
-│   ├── models.py             # Dataclasses — objets métier internes
-│   └── exceptions.py         # Exceptions métier
+│   ├── models.py             # Dataclasses — internal business objects
+│   └── exceptions.py         # Business exceptions
 ├── infrastructure/
-│   ├── database.py           # Session SQLAlchemy
+│   ├── database.py           # SQLAlchemy session
 │   └── repositories/
 │       ├── certificate_repo.py
 │       └── account_repo.py
@@ -40,9 +40,9 @@ app/
 └── main.py
 ```
 
-Cette structure sépare quatre couches : API (HTTP), domaine (logique métier), infrastructure (base de données, services externes), et services (orchestration entre les deux).
+This structure separates four layers: API (HTTP), domain (business logic), infrastructure (database, external services), and services (orchestration between the two).
 
-## La couche API : routers et schémas
+## The API Layer: Routers and Schemas
 
 ```python
 # app/api/routers/certificates.py
@@ -79,14 +79,14 @@ async def get_certificate(
         raise HTTPException(status_code=404, detail="Certificate not found")
 ```
 
-Le router ne contient aucune logique métier — seulement du mapping HTTP : désérialisation de la requête, appel au service, sérialisation de la réponse, et conversion des exceptions métier en codes HTTP.
+The router contains no business logic — only HTTP mapping: request deserialisation, service call, response serialisation, and translation of business exceptions into HTTP status codes.
 
-## La couche service : logique métier
+## The Service Layer: Business Logic
 
 ```python
 # app/services/certificate_service.py
 from app.domain.models import Certificate
-from app.domain.exceptions import CertificateNotFound, InsufficientVolume
+from app.domain.exceptions import CertificateNotFound, InsufficientVolume, DuplicateCertificate
 from app.infrastructure.repositories.certificate_repo import CertificateRepository
 from app.api.schemas.certificate import CertificateCreate
 
@@ -95,9 +95,8 @@ class CertificateService:
         self.repo = repo
 
     async def create(self, payload: CertificateCreate, owner: str) -> Certificate:
-        # Logique métier : vérifications avant création
         if payload.volume <= 0:
-            raise InsufficientVolume(f"Volume invalide : {payload.volume}")
+            raise InsufficientVolume(f"Invalid volume: {payload.volume}")
 
         existing = await self.repo.find_by_period(
             owner=owner,
@@ -105,7 +104,7 @@ class CertificateService:
             period_to=payload.period_to
         )
         if existing:
-            raise DuplicateCertificate(f"Certificat existant pour cette période")
+            raise DuplicateCertificate("A certificate already exists for this period")
 
         return await self.repo.create(payload, owner=owner)
 
@@ -116,9 +115,9 @@ class CertificateService:
         return certificate
 ```
 
-La couche service est testable sans base de données ni HTTP — il suffit de mocker le repository. C'est là que réside la valeur de cette séparation.
+The service layer is testable without a database or HTTP — mocking the repository is sufficient. This is where the value of the separation is most tangible.
 
-## La couche repository : accès aux données
+## The Repository Layer: Data Access
 
 ```python
 # app/infrastructure/repositories/certificate_repo.py
@@ -154,7 +153,7 @@ class CertificateRepository:
         return self._to_domain(orm_obj)
 
     def _to_domain(self, orm_obj: CertificateORM) -> Certificate:
-        """Convertit un objet ORM en objet domaine."""
+        """Maps an ORM object to a domain object."""
         return Certificate(
             id=str(orm_obj.id),
             volume=orm_obj.volume,
@@ -166,13 +165,13 @@ class CertificateRepository:
         )
 ```
 
-Le repository est la seule couche qui connaît SQLAlchemy. Le reste du code travaille avec des objets domaine (`Certificate` dataclass) — pas avec des modèles ORM. Ce découplage permet de changer l'ORM ou la base de données sans toucher à la logique métier.
+The repository is the only layer that knows about SQLAlchemy. The rest of the codebase works with domain objects (`Certificate` dataclass) — not ORM models. This decoupling means switching the ORM or the database does not touch the business logic.
 
-## L'injection de dépendances
+## Dependency Injection
 
 ```python
 # app/api/dependencies.py
-from fastapi import Depends, Request
+from fastapi import Depends, Request, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.database import get_db_session
 from app.infrastructure.repositories.certificate_repo import CertificateRepository
@@ -191,20 +190,20 @@ async def get_current_user(request: Request) -> str:
     return session_data["user_id"]
 ```
 
-FastAPI résout les dépendances automatiquement et gère leur cycle de vie. `get_db_session` crée une session par requête et la ferme proprement après — même en cas d'exception.
+FastAPI resolves dependencies automatically and manages their lifecycle. `get_db_session` creates one session per request and closes it cleanly afterwards — even in the event of an exception.
 
-## Les exceptions métier
+## Business Exceptions
 
 ```python
 # app/domain/exceptions.py
 
 class DomainException(Exception):
-    """Base class pour toutes les exceptions métier."""
+    """Base class for all business exceptions."""
     pass
 
 class CertificateNotFound(DomainException):
     def __init__(self, certificate_id: str):
-        super().__init__(f"Certificat '{certificate_id}' introuvable")
+        super().__init__(f"Certificate '{certificate_id}' not found")
         self.certificate_id = certificate_id
 
 class InsufficientVolume(DomainException):
@@ -214,9 +213,9 @@ class DuplicateCertificate(DomainException):
     pass
 ```
 
-Les exceptions métier ne dépendent pas de FastAPI — elles expriment ce qui peut mal tourner dans le domaine. La conversion en codes HTTP appartient au router.
+Business exceptions do not depend on FastAPI — they express what can go wrong in the domain. Translating them into HTTP status codes is the router's responsibility.
 
-## Tester les services sans infrastructure
+## Testing Services Without Infrastructure
 
 ```python
 # tests/services/test_certificate_service.py
@@ -229,7 +228,7 @@ from app.api.schemas.certificate import CertificateCreate
 @pytest.fixture
 def mock_repo():
     repo = AsyncMock()
-    repo.find_by_period.return_value = None  # Pas de doublon par défaut
+    repo.find_by_period.return_value = None  # No duplicate by default
     return repo
 
 @pytest.fixture
@@ -257,15 +256,15 @@ async def test_create_certificate_success(service, mock_repo):
     mock_repo.create.assert_called_once()
 ```
 
-Les tests de service sont rapides, déterministes, et ne nécessitent pas de base de données. L'`AsyncMock` remplace le repository — on teste la logique, pas l'infrastructure.
+Service tests are fast, deterministic, and require no database. `AsyncMock` replaces the repository — we are testing the logic, not the infrastructure.
 
-## Ce que cette architecture apporte
+## What This Architecture Delivers
 
-La séparation en couches n'est pas de la complexité gratuite. Elle répond à des problèmes concrets sur un projet qui dure :
+Layered separation is not gratuitous complexity. It addresses concrete problems on a project that must remain maintainable over time:
 
-- **Testabilité** — les services se testent sans base de données, les routers avec un client HTTP
-- **Lisibilité** — un nouveau développeur sait où chercher : logique métier dans `services/`, accès aux données dans `repositories/`, HTTP dans `routers/`
-- **Évolutivité** — remplacer PostgreSQL par une autre base de données ne touche que `repositories/`
-- **Séparation des responsabilités** — un bug HTTP reste dans le router, un bug métier reste dans le service
+- **Testability** — services test without a database, routers with an HTTP test client
+- **Readability** — a new developer knows exactly where to look: business logic in `services/`, data access in `repositories/`, HTTP concerns in `routers/`
+- **Flexibility** — replacing PostgreSQL with another database only touches `repositories/`
+- **Separation of concerns** — an HTTP bug stays in the router, a business bug stays in the service
 
-Le coût : plus de fichiers, plus de couches à traverser pour une feature simple. Sur un projet d'une semaine jetée, c'est surdimensionné. Sur un projet maintenu par une équipe pendant des mois, c'est la différence entre un code qu'on comprend encore à six mois et un spaghetti qu'on a peur de toucher.
+The trade-off: more files, more layers to traverse for a simple feature. On a one-week throwaway project, it is over-engineered. On a project maintained by a team for months, it is the difference between code that is still comprehensible at the six-month mark and a codebase nobody wants to touch.

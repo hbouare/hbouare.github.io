@@ -1,7 +1,7 @@
 ---
 slug: playwright-scraping
 title: "Playwright as a Business Scraping Tool: Beyond E2E Testing"
-date: "2025-03-13"
+date: "2024-01-03"
 readTime: 9
 tags: ["Playwright", "Python", "Scraping", "Automation"]
 excerpt: "Playwright is not just for tests. When a business portal has no usable API, it is the most robust tool available for automating authentication, navigation, and data extraction — here is how to use it seriously in production."

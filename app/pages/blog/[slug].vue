@@ -13,16 +13,18 @@
               <v-icon size="14" class="mr-1">mdi-arrow-left</v-icon>
               {{ $t("blog.view_all") }}
             </NuxtLink>
+          </UiRevealBlock>
 
-            <!-- Skeleton while loading -->
-            <div v-if="!post && !postError" class="py-8">
-              <v-skeleton-loader type="heading" color="surface" rounded="0" class="mb-6" />
-              <v-skeleton-loader type="paragraph" color="surface" rounded="0" class="mb-4" />
-              <v-skeleton-loader type="paragraph" color="surface" rounded="0" class="mb-4" />
-              <v-skeleton-loader type="paragraph" color="surface" rounded="0" />
-            </div>
+          <!-- Skeleton while loading -->
+          <div v-if="!post && !postError" class="py-8">
+            <v-skeleton-loader type="heading" color="surface" rounded="0" class="mb-6" />
+            <v-skeleton-loader type="paragraph" color="surface" rounded="0" class="mb-4" />
+            <v-skeleton-loader type="paragraph" color="surface" rounded="0" class="mb-4" />
+            <v-skeleton-loader type="paragraph" color="surface" rounded="0" />
+          </div>
 
-            <div v-if="post">
+          <div v-if="post">
+            <UiRevealBlock>
               <div class="d-flex align-center ga-3 mb-6 flex-wrap">
                 <span class="font-mono text-muted blog-meta">{{
                   formatDate(post.date)
@@ -46,18 +48,18 @@
                   class="font-mono"
                 >{{ tag }}</v-chip>
               </div>
+            </UiRevealBlock>
 
-              <v-divider class="my-10" :color="'primary'" opacity="0.15" />
+            <v-divider class="my-10" :color="'primary'" opacity="0.15" />
 
-              <div ref="contentRef" class="post-content font-mono">
-                <ContentRenderer :value="post" />
-              </div>
+            <div ref="contentRef" class="post-content font-mono">
+              <ContentRenderer :value="post" />
             </div>
+          </div>
 
-            <div v-else class="text-center py-20">
-              <p class="font-mono text-muted">Article introuvable.</p>
-            </div>
-          </UiRevealBlock>
+          <div v-else-if="postError" class="text-center py-20">
+            <p class="font-mono text-muted">Article introuvable.</p>
+          </div>
         </div>
       </v-container>
     </div>
@@ -80,7 +82,7 @@ const { data: post, error: postError } = await useAsyncData(
   `post-${locale.value}-${route.params.slug}`,
   () =>
     queryCollection(`${locale.value}_blog`)
-      .where("slug", "==", route.params.slug)
+      .where("slug", "=", route.params.slug as string)
       .first(),
 )
 

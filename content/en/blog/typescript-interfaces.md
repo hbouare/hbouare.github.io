@@ -1,7 +1,7 @@
 ---
 slug: typescript-interfaces
 title: "TypeScript in Practice: Hierarchical Interfaces on a Real API"
-date: "2025-03-13"
+date: "2025-06-09"
 readTime: 8
 tags: ["TypeScript", "Vue.js", "API", "Frontend"]
 excerpt: "Not a TypeScript tutorial — but how to structure interfaces that accurately model a real external API, using utility types, generics on Vue composables, and the concrete decisions that actually matter in production code."

@@ -1,7 +1,7 @@
 ---
 slug: nuxt4-introduction
 title: "Nuxt 4 : ce que ça change concrètement"
-date: "2025-03-13"
+date: "2024-12-10"
 readTime: 7
 tags: ["Nuxt", "Vue.js", "Frontend", "SSR"]
 excerpt: "Nuxt 4 n'est pas juste un bump de version. Nouvelle structure de projet, app/ directory, compatibilité Nitro affinée — voici ce que ça donne sur le terrain."

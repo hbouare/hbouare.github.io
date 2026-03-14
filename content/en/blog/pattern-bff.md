@@ -1,5 +1,5 @@
 ---
-slug: bff-pattern-bff
+slug: pattern-bff
 title: "The BFF Pattern with FastAPI: Backend-for-Frontend"
 date: "2025-03-13"
 readTime: 9

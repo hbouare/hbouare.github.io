@@ -1,7 +1,7 @@
 ---
 slug: asyncio-production
 title: "Asyncio in Production: The Pitfalls Tutorials Never Cover"
-date: "2025-03-13"
+date: "2024-08-19"
 readTime: 9
 tags: ["Python", "asyncio", "FastAPI", "Concurrency"]
 excerpt: "gather, TaskGroup, exception handling in concurrent tasks, clean shutdown — what asyncio tutorials never address, and what it looks like in a real FastAPI application running in production."

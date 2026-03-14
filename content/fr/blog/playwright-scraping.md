@@ -1,7 +1,7 @@
 ---
 slug: playwright-scraping
 title: "Playwright comme outil de scraping métier : au-delà des tests E2E"
-date: "2025-03-13"
+date: "2024-01-03"
 readTime: 9
 tags: ["Playwright", "Python", "Scraping", "Automatisation"]
 excerpt: "Playwright n'est pas réservé aux tests. Sur des portails métier sans API, c'est l'outil le plus robuste pour automatiser l'authentification, la navigation et l'extraction de données — voici comment l'utiliser en production."

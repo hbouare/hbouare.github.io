@@ -1,7 +1,7 @@
 ---
 slug: vueuse-essentiels
 title: "VueUse: The Composables That Actually Make a Difference"
-date: "2025-03-13"
+date: "2025-01-10"
 readTime: 10
 tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
 excerpt: "Not the exhaustive list from the docs — but the VueUse composables you will actually reach for on professional Vue.js and Nuxt projects, with concrete use cases and the pitfalls worth knowing about."

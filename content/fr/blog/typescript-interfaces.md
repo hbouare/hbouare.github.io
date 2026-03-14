@@ -1,7 +1,7 @@
 ---
 slug: typescript-interfaces
 title: "TypeScript : interfaces hiérarchiques sur une vraie API"
-date: "2025-03-13"
+date: "2025-06-09"
 readTime: 8
 tags: ["TypeScript", "Vue.js", "API", "Frontend"]
 excerpt: "Pas un cours sur TypeScript — mais comment structurer des interfaces qui collent à une API externe réelle, avec des types utilitaires, des génériques sur les composables Vue, et les décisions concrètes qu'on prend sur du code de production."

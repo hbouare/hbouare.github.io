@@ -1,7 +1,7 @@
 ---
 slug: vueuse-essentiels
 title: "VueUse : les composables qui changent le quotidien"
-date: "2025-03-13"
+date: "2025-01-13"
 readTime: 10
 tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
 excerpt: "Pas la liste exhaustive de la doc — mais les composables VueUse que tu vas utiliser réellement sur des projets Vue.js et Nuxt professionnels, avec des cas d'usage concrets et les pièges à éviter."

@@ -1,7 +1,7 @@
 ---
 slug: pattern-bff
 title: "BFF Pattern avec FastAPI : mettre un backend devant ton frontend"
-date: "2025-03-13"
+date: "2025-02-13"
 readTime: 9
 tags: ["FastAPI", "Vue.js", "Azure B2C", "Architecture", "OAuth2"]
 excerpt: "Le pattern Backend-for-Frontend consiste à intercaler un serveur entre le navigateur et les APIs métier. Appliqué à Vue.js + Azure B2C, il résout élégamment la gestion des tokens OAuth2 tout en renforçant la sécurité — au prix d'une complexité assumée."

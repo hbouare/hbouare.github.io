@@ -1,7 +1,7 @@
 ---
 slug: dataclasses-pydantic-typeddict
 title: "Dataclasses, Pydantic, TypedDict: Which to Choose and Why"
-date: "2025-03-13"
+date: "2025-01-06"
 readTime: 7
 tags: ["Python", "Pydantic", "Typing", "FastAPI"]
 excerpt: "Not a theoretical comparison — but the concrete decision rules that apply in practice: API input validation, internal models, configuration, serialisation. With the real trade-offs on performance and maintainability."
