@@ -204,7 +204,7 @@ const canSubmit = computed(() => {
 })
 
 const socials = [
-  { icon: "mdi-github", href: "https://github.com/hamedbouare9" },
+  { icon: "mdi-github", href: "https://github.com/hbouare" },
   {
     icon: "mdi-linkedin",
     href: "https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/",
