@@ -1,6 +1,6 @@
 ---
 slug: fastapi-project-architecture
-title: "Structuring a FastAPI Project That Lasts"
+title: "Building a FastAPI Project Structure That Scales and Lasts"
 date: "2025-03-01"
 readTime: 10
 tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
