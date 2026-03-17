@@ -1,2 +1,16 @@
 il faut creer un repo avec un nom comme hbouare.github.io, ensuite suivre la video
 https://youtu.be/e5AwNU3Y2es
+
+
+
+
+partie reference
+
+Aller sur
+https://search.google.com/search-console
+
+Ajouter votre site
+
+Vérifier la propriété
+
+Soumettre votre sitemap
