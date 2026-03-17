@@ -50,5 +50,13 @@ export const useAppTheme = () => {
     }
   }
 
-  return { isDark, toggleTheme }
+  /** Re-sync Vuetify theme from localStorage (bfcache / tab restore). */
+  const syncTheme = () => {
+    const saved = localStorage.getItem('portfolio-theme') || 'dark'
+    theme.global.name.value = saved
+    document.documentElement.setAttribute('data-theme', saved)
+    document.documentElement.style.colorScheme = saved
+  }
+
+  return { isDark, toggleTheme, syncTheme }
 }

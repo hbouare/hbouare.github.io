@@ -17,9 +17,24 @@
 
           <!-- Skeleton while loading -->
           <div v-if="!post && !postError" class="py-8">
-            <v-skeleton-loader type="heading" color="surface" rounded="0" class="mb-6" />
-            <v-skeleton-loader type="paragraph" color="surface" rounded="0" class="mb-4" />
-            <v-skeleton-loader type="paragraph" color="surface" rounded="0" class="mb-4" />
+            <v-skeleton-loader
+              type="heading"
+              color="surface"
+              rounded="0"
+              class="mb-6"
+            />
+            <v-skeleton-loader
+              type="paragraph"
+              color="surface"
+              rounded="0"
+              class="mb-4"
+            />
+            <v-skeleton-loader
+              type="paragraph"
+              color="surface"
+              rounded="0"
+              class="mb-4"
+            />
             <v-skeleton-loader type="paragraph" color="surface" rounded="0" />
           </div>
 
@@ -46,7 +61,8 @@
                   rounded="0"
                   size="x-small"
                   class="font-mono"
-                >{{ tag }}</v-chip>
+                  >{{ tag }}</v-chip
+                >
               </div>
             </UiRevealBlock>
 
@@ -93,6 +109,19 @@ if (post.value) {
     ogTitle: `${post.value.title} - Hamed Bouare`,
     ogDescription: post.value.excerpt,
   })
+
+  useJsonLd({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.value.title,
+    description: post.value.excerpt,
+    datePublished: post.value.date,
+    author: {
+      "@type": "Person",
+      name: "Hamed Bouare",
+      url: "https://hamedbouare.me",
+    },
+  })
 }
 
 const formatDate = (d: string) =>
@@ -115,28 +144,29 @@ onMounted(() => {
 function setupCopyButtons() {
   if (!contentRef.value) return
 
-  const codeBlocks = contentRef.value.querySelectorAll('pre')
+  const codeBlocks = contentRef.value.querySelectorAll("pre")
   codeBlocks.forEach((pre) => {
     // Wrap in a relative container
-    const wrapper = document.createElement('div')
-    wrapper.className = 'code-block-wrapper'
+    const wrapper = document.createElement("div")
+    wrapper.className = "code-block-wrapper"
     pre.parentNode?.insertBefore(wrapper, pre)
     wrapper.appendChild(pre)
 
-    const btn = document.createElement('button')
-    btn.className = 'copy-btn font-mono'
-    btn.textContent = t('blog.copy_code')
-    btn.setAttribute('aria-label', t('blog.copy_code'))
+    const btn = document.createElement("button")
+    btn.className = "copy-btn font-mono"
+    btn.textContent = t("blog.copy_code")
+    btn.setAttribute("aria-label", t("blog.copy_code"))
 
-    btn.addEventListener('click', async () => {
-      const code = pre.querySelector('code')?.textContent ?? pre.textContent ?? ''
+    btn.addEventListener("click", async () => {
+      const code =
+        pre.querySelector("code")?.textContent ?? pre.textContent ?? ""
       try {
         await navigator.clipboard.writeText(code)
-        btn.textContent = t('blog.copied')
-        btn.classList.add('copy-btn--success')
+        btn.textContent = t("blog.copied")
+        btn.classList.add("copy-btn--success")
         setTimeout(() => {
-          btn.textContent = t('blog.copy_code')
-          btn.classList.remove('copy-btn--success')
+          btn.textContent = t("blog.copy_code")
+          btn.classList.remove("copy-btn--success")
         }, 2000)
       } catch {
         // Fallback silently

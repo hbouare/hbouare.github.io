@@ -1,7 +1,7 @@
 <!-- app/components/navigation/TopBar.vue -->
 <template>
   <v-app-bar
-    :elevation="scrolled ? 2 : 0"
+    :elevation="0"
     :class="['app-nav', { 'nav-scrolled': scrolled }]"
     height="72"
     color="transparent"
@@ -150,17 +150,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-// v-app-bar background is overridden globally in main.scss
-// .nav-scrolled needs to beat that global rule
-.app-nav {
-  transition:
-    background 0.3s ease,
-    box-shadow 0.3s ease;
-}
-.app-nav.nav-scrolled {
-  background: rgba(var(--v-theme-background), 0.92);
-  backdrop-filter: blur(12px);
-}
 .nav-logo {
   display: flex;
   align-items: center;
@@ -277,8 +266,28 @@ onUnmounted(() => {
 }
 </style>
 
-<!-- Unscoped: v-navigation-drawer is teleported to body, scoped styles won't reach it -->
+<!-- Unscoped: overrides need to beat Vuetify's .v-app-bar.v-toolbar (0,2,0) specificity -->
 <style lang="scss">
+// ── TopBar background ────────────────────────────────────────
+// Vuetify CSS: .v-app-bar.v-toolbar { background: rgb(var(--v-theme-surface)) }
+// We need specificity > 0,2,0 and !important to also beat Vuetify's
+// inline backgroundColor from color="transparent".
+.v-application .v-app-bar.app-nav {
+  background: transparent !important;
+  transition: box-shadow 0.3s ease;
+}
+.v-application .v-app-bar.app-nav.nav-scrolled {
+  background: rgb(var(--v-theme-background)) !important;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  // Glassmorphism only when backdrop-filter is reliable
+  @supports (backdrop-filter: blur(1px)) {
+    background: rgba(var(--v-theme-background), 0.92) !important;
+    backdrop-filter: blur(12px);
+  }
+}
+
+// ── Mobile drawer (teleported to body, scoped styles won't reach it) ──
 .v-navigation-drawer {
   .v-list-item {
     color: rgb(var(--v-theme-muted)) !important;

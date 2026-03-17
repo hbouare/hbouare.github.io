@@ -38,10 +38,7 @@ html[data-theme="light"] body { background: #faf8f4; }
   font-family: 'Syne', sans-serif;
 }
 
-// App bar: transparent by default, handled by TopBar scoped styles
-.v-application .v-app-bar {
-  background: transparent;
-}
+// App bar background is fully controlled by TopBar.vue scoped styles with !important
 
 // Card outlined: use our primary border color instead of Vuetify's currentColor
 .v-application .v-card.v-card--variant-outlined {

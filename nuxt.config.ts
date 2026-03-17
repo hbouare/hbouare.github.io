@@ -9,9 +9,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      emailjsServiceId: '',
-      emailjsTemplateId: '',
-      emailjsPublicKey: '',
+      emailjsServiceId: "",
+      emailjsTemplateId: "",
+      emailjsPublicKey: "",
     },
   },
 
@@ -24,14 +24,15 @@ export default defineNuxtConfig({
         {
           // Fix #3: CSS anti-flash INLINE dans le <head>, pas dans un fichier externe.
           // Fix #1: opacity:0 au lieu de visibility:hidden (rien ne passe à travers).
-          innerHTML: 'html,body{margin:0;background:#0a0a08}html[data-theme="light"],html[data-theme="light"] body{background:#faf8f4}html:not(.hydrated) body{opacity:0}html.hydrated body{transition:opacity .1s}',
-          tagPosition: 'head',
+          innerHTML:
+            'html,body{margin:0;background:#0a0a08}html[data-theme="light"],html[data-theme="light"] body{background:#faf8f4}html:not(.hydrated) body{opacity:0}html.hydrated body{transition:opacity .1s}',
+          tagPosition: "head",
         },
       ],
       script: [
         {
           innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t})()`,
-          tagPosition: 'head',
+          tagPosition: "head",
         },
       ],
       meta: [
@@ -82,9 +83,14 @@ export default defineNuxtConfig({
     },
   },
 
+  site: {
+    url: "https://hamedbouare.me",
+  },
+
   modules: [
     "@nuxt/content",
     "@nuxtjs/i18n",
+    "@nuxtjs/sitemap",
     (_options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
         config.plugins?.push(vuetify({ autoImport: true }))
@@ -109,6 +115,7 @@ export default defineNuxtConfig({
   // i18n config
   i18n: {
     bundle: { optimizeTranslationDirective: false },
+    baseUrl: "https://hamedbouare.me",
     strategy: "prefix_except_default",
     defaultLocale: "fr",
     locales: [
