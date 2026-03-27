@@ -1,17 +1,29 @@
 // app/composables/useAppTheme.ts
 import { useTheme } from 'vuetify'
 
+const STORAGE_KEY = 'portfolio-theme'
+
 export const useAppTheme = () => {
   const theme = useTheme()
   const isDark = computed(() => theme.current.value.dark)
 
+  // ── Single reactive watcher: Vuetify theme name → DOM + localStorage ──
+  // Every theme change flows through here, no matter the source.
+  if (import.meta.client) {
+    watch(
+      () => theme.global.name.value,
+      (name) => {
+        localStorage.setItem(STORAGE_KEY, name)
+        document.documentElement.setAttribute('data-theme', name)
+        document.documentElement.style.colorScheme = name
+      },
+      { immediate: true },
+    )
+  }
+
   const toggleTheme = (event?: MouseEvent) => {
     const applyTheme = () => {
-      const newTheme = isDark.value ? 'light' : 'dark'
-      theme.global.name.value = newTheme
-      localStorage.setItem('portfolio-theme', newTheme)
-      document.documentElement.setAttribute('data-theme', newTheme)
-      document.documentElement.style.colorScheme = newTheme
+      theme.global.name.value = isDark.value ? 'light' : 'dark'
     }
 
     // Use View Transition API with clip-path circle animation
@@ -50,12 +62,11 @@ export const useAppTheme = () => {
     }
   }
 
-  /** Re-sync Vuetify theme from localStorage (bfcache / tab restore). */
+  /** Re-sync Vuetify theme from localStorage (bfcache / tab restore / other tab). */
   const syncTheme = () => {
-    const saved = localStorage.getItem('portfolio-theme') || 'dark'
+    const saved = localStorage.getItem(STORAGE_KEY) || 'dark'
+    // Only assignment needed — the watcher handles DOM + localStorage.
     theme.global.name.value = saved
-    document.documentElement.setAttribute('data-theme', saved)
-    document.documentElement.style.colorScheme = saved
   }
 
   return { isDark, toggleTheme, syncTheme }

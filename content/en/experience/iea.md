@@ -3,7 +3,7 @@ id: iea
 order: 2
 role: "Full-Stack Developer"
 company: "Paris Institute for Advanced Study"
-period: "April 2024 — Present"
+period: "April 2024 — February 2026"
 location: "Paris, France"
 flag: "🇫🇷"
 tags: ["Nuxt.js", "Typescript", "Aws", "Mongodb", "Github Actions", "Terraform"]

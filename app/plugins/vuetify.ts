@@ -74,14 +74,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
   nuxtApp.vueApp.use(vuetify)
 
-  // Restore saved theme on client
+  // Restore saved theme on client.
+  // Only set the Vuetify theme name — the reactive watcher in useAppTheme
+  // handles DOM attributes, colorScheme, and localStorage automatically.
   if (import.meta.client) {
     const resolved =
       document.documentElement.getAttribute('data-theme')
       || localStorage.getItem('portfolio-theme')
       || 'dark'
     vuetify.theme.global.name.value = resolved
-    document.documentElement.setAttribute('data-theme', resolved)
-    document.documentElement.style.colorScheme = resolved
   }
 })

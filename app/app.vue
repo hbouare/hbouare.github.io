@@ -37,5 +37,12 @@ onMounted(() => {
       syncTheme()
     }
   })
+
+  // Sync multi-onglets : si le thème change dans un autre onglet, on met à jour ici.
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'portfolio-theme' && event.newValue) {
+      syncTheme()
+    }
+  })
 })
 </script>
