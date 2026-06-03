@@ -10,7 +10,7 @@
               :to="localePath('/blog')"
               class="back-link font-mono text-muted"
             >
-              <v-icon size="14" class="mr-1">mdi-arrow-left</v-icon>
+              <v-icon size="14" class="mr-1" icon="$arrowLeft" />
               {{ $t("blog.view_all") }}
             </NuxtLink>
           </UiRevealBlock>

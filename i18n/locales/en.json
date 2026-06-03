@@ -5,7 +5,9 @@
     "projects": "Projects",
     "blog": "Blog",
     "contact": "Contact",
-    "hire": "Hire me"
+    "hire": "Hire me",
+    "lang_switch": "Switch language",
+    "menu": "Open menu"
   },
   "hero": {
     "tag": "Full-Stack · Data Engineer · DevOps",
@@ -81,6 +83,7 @@
     "form_email_invalid": "Email address is not valid",
     "form_message_required": "Message cannot be empty",
     "form_error": "Something went wrong. Please try again.",
+    "form_throttle": "You just sent a message. Please wait a moment before sending another.",
     "confirm_title": "Confirm sending",
     "confirm_text": "Do you want to send this message?",
     "confirm_cancel": "Cancel",

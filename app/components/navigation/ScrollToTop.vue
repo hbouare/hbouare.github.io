@@ -2,7 +2,7 @@
   <v-btn
     v-show="visible"
     class="scroll-to-top"
-    icon="mdi-arrow-up"
+    icon="$arrowUp"
     color="primary"
     size="small"
     @click="scrollToTop"

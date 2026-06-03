@@ -61,6 +61,7 @@
       <!-- Compact lang toggle -->
       <button
         class="nav-icon-btn lang-toggle font-mono"
+        :aria-label="$t('nav.lang_switch')"
         @click="switchLocale(locale === 'fr' ? 'en' : 'fr')"
       >
         {{ locale === "fr" ? "EN" : "FR" }}
@@ -75,7 +76,7 @@
         @click="toggleTheme($event)"
       >
         <v-icon
-          :icon="isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+          :icon="isDark ? '$weatherSunny' : '$weatherNight'"
           size="18"
         />
       </button>
@@ -83,9 +84,10 @@
       <!-- Mobile menu -->
       <button
         class="nav-icon-btn theme-toggle d-flex d-md-none ml-1"
+        :aria-label="$t('nav.menu')"
         @click="mobileMenu = !mobileMenu"
       >
-        <v-icon icon="mdi-menu" size="18" />
+        <v-icon icon="$menu" size="18" />
       </button>
     </v-container>
   </v-app-bar>

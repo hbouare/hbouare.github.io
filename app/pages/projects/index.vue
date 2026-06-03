@@ -71,7 +71,7 @@
                   rounded="0"
                 >
                   GitHub
-                  <v-icon end size="x-small" icon="mdi-arrow-top-right" />
+                  <v-icon end size="x-small" icon="$arrowTopRight" />
                 </v-btn>
                 <v-btn
                   v-if="proj.demo"
@@ -85,7 +85,7 @@
                   rounded="0"
                 >
                   Demo
-                  <v-icon end size="x-small" icon="mdi-arrow-top-right" />
+                  <v-icon end size="x-small" icon="$arrowTopRight" />
                 </v-btn>
               </div>
             </div>

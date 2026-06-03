@@ -40,7 +40,7 @@
         </div>
         <div class="blog-cta font-mono text-primary mt-5">
           {{ $t("blog.read_more") }}
-          <v-icon size="small" icon="mdi-arrow-right" class="blog-arrow" />
+          <v-icon size="small" icon="$arrowRight" class="blog-arrow" />
         </div>
       </v-card-text>
     </v-card>

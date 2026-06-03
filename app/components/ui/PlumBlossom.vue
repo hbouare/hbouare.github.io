@@ -1,6 +1,6 @@
 <!-- app/components/ui/PlumBlossom.vue -->
 <template>
-  <canvas ref="canvas" class="plum-canvas" />
+  <canvas ref="canvas" class="plum-canvas" aria-hidden="true" />
 </template>
 
 <script setup lang="ts">

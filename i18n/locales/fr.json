@@ -5,7 +5,9 @@
     "projects": "Projets",
     "blog": "Blog",
     "contact": "Contact",
-    "hire": "Me recruter"
+    "hire": "Me recruter",
+    "lang_switch": "Changer de langue",
+    "menu": "Ouvrir le menu"
   },
   "hero": {
     "tag": "Full-Stack · Data Engineer · DevOps",
@@ -81,6 +83,7 @@
     "form_email_invalid": "L'adresse email n'est pas valide",
     "form_message_required": "Le message ne peut pas être vide",
     "form_error": "Une erreur est survenue. Veuillez réessayer.",
+    "form_throttle": "Vous venez d'envoyer un message. Merci de patienter quelques instants.",
     "confirm_title": "Confirmer l'envoi",
     "confirm_text": "Voulez-vous envoyer ce message ?",
     "confirm_cancel": "Annuler",

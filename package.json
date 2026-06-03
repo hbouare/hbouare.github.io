@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
-    "@mdi/font": "^7.4.47",
+    "@mdi/js": "^7.4.47",
     "@nuxt/content": "^3.5.1",
     "@nuxtjs/i18n": "^9.5.4",
     "@nuxtjs/sitemap": "^7.6.0",

@@ -1,8 +1,22 @@
 // app/plugins/vuetify.ts
-import '@mdi/font/css/materialdesignicons.min.css'
 import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
+import { aliases as mdiAliases, mdi } from 'vuetify/iconsets/mdi-svg'
+import {
+  mdiArrowLeft,
+  mdiArrowRight,
+  mdiArrowTopRight,
+  mdiArrowUp,
+  mdiAlertCircle,
+  mdiCheckCircle,
+  mdiGithub,
+  mdiLinkedin,
+  mdiWeatherNight,
+  mdiWeatherSunny,
+} from '@mdi/js'
+
+// Components and directives are auto-imported on demand by vite-plugin-vuetify
+// (autoImport: true in nuxt.config.ts), so we do NOT register them globally here
+// — that keeps the bundle tree-shaken to only what each template actually uses.
 
 const darkTheme = {
   dark: true,
@@ -48,9 +62,26 @@ const lightTheme = {
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
-    components,
-    directives,
     ssr: true,
+    icons: {
+      defaultSet: 'mdi',
+      sets: { mdi },
+      // Keep Vuetify's built-in aliases ($next, $prev, $menu, $success…) and add
+      // the project's icons as SVG-path aliases referenced as `$arrowRight` etc.
+      aliases: {
+        ...mdiAliases,
+        arrowLeft:     mdiArrowLeft,
+        arrowRight:    mdiArrowRight,
+        arrowTopRight: mdiArrowTopRight,
+        arrowUp:       mdiArrowUp,
+        alertCircle:   mdiAlertCircle,
+        checkCircle:   mdiCheckCircle,
+        github:        mdiGithub,
+        linkedin:      mdiLinkedin,
+        weatherNight:  mdiWeatherNight,
+        weatherSunny:  mdiWeatherSunny,
+      },
+    },
     theme: {
       defaultTheme: 'dark',
       themes: {

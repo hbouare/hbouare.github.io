@@ -87,6 +87,16 @@
                   rounded="0"
                 />
 
+                <!-- Honeypot: invisible to humans; bots tend to fill it. -->
+                <input
+                  v-model="form.honeypot"
+                  class="hp-field"
+                  type="text"
+                  tabindex="-1"
+                  autocomplete="off"
+                  aria-hidden="true"
+                />
+
                 <!-- Feedback message -->
                 <v-fade-transition>
                   <v-alert
@@ -96,7 +106,7 @@
                     rounded="0"
                     class="font-mono mb-4"
                     density="compact"
-                    icon="mdi-check-circle"
+                    icon="$checkCircle"
                   >
                     {{ $t("contact.form_success") }}
                   </v-alert>
@@ -107,7 +117,7 @@
                     rounded="0"
                     class="font-mono mb-4"
                     density="compact"
-                    icon="mdi-alert-circle"
+                    icon="$alertCircle"
                   >
                     {{ errorMsg }}
                   </v-alert>
@@ -122,7 +132,7 @@
                   class="font-mono text-uppercase"
                   :loading="sending"
                   :disabled="!canSubmit"
-                  append-icon="mdi-arrow-right"
+                  append-icon="$arrowRight"
                 >
                   {{ $t("contact.form_send") }}
                 </v-btn>
@@ -185,7 +195,12 @@ const form = reactive({
   name: "",
   email: "",
   message: "",
+  honeypot: "",
 })
+
+// Throttle: block repeat sends within this window (anti-spam).
+const MIN_SEND_INTERVAL_MS = 30_000
+let lastSentAt = 0
 
 const rules = {
   name: (v: string) => !!v?.trim() || t("contact.form_name_required"),
@@ -204,15 +219,17 @@ const canSubmit = computed(() => {
 })
 
 const socials = [
-  { icon: "mdi-github", href: "https://github.com/hamedbouare9" },
+  { icon: "$github", href: "https://github.com/hamedbouare9" },
   {
-    icon: "mdi-linkedin",
+    icon: "$linkedin",
     href: "https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/",
   },
 ]
 
 // Step 1: validate form, then show confirmation dialog
 const submitForm = async () => {
+  // Honeypot filled → automated submission, drop it silently.
+  if (form.honeypot) return
   const { valid } = await formRef.value.validate()
   if (!valid) return
   showConfirm.value = true
@@ -220,6 +237,16 @@ const submitForm = async () => {
 
 // Step 2: send email via EmailJS after user confirms
 const sendEmail = async () => {
+  // Throttle repeated sends.
+  if (Date.now() - lastSentAt < MIN_SEND_INTERVAL_MS) {
+    showConfirm.value = false
+    errorMsg.value = t("contact.form_throttle")
+    setTimeout(() => {
+      errorMsg.value = ""
+    }, 5000)
+    return
+  }
+
   sending.value = true
   errorMsg.value = ""
   try {
@@ -236,11 +263,13 @@ const sendEmail = async () => {
       config.public.emailjsPublicKey as string,
     )
 
+    lastSentAt = Date.now()
     showConfirm.value = false
     sent.value = true
     form.name = ""
     form.email = ""
     form.message = ""
+    form.honeypot = ""
     formRef.value.resetValidation()
     setTimeout(() => {
       sent.value = false
@@ -304,5 +333,14 @@ const sendEmail = async () => {
 }
 .confirm-dialog {
   border: 1px solid rgba(var(--v-theme-primary), 0.12);
+}
+// Honeypot — kept in the DOM for bots but removed from view & a11y tree.
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 </style>

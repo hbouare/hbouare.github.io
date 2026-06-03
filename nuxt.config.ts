@@ -52,7 +52,7 @@ export default defineNuxtConfig({
             "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack avec une expérience internationale.",
         },
         { property: "og:type", content: "website" },
-        { property: "og:image", content: "/og-image.png" },
+        { property: "og:image", content: "https://hamedbouare.me/og-image.png" },
         { property: "og:image:type", content: "image/png" },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
@@ -66,7 +66,7 @@ export default defineNuxtConfig({
           content:
             "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack.",
         },
-        { name: "twitter:image", content: "/og-image.png" },
+        { name: "twitter:image", content: "https://hamedbouare.me/og-image.png" },
       ],
       link: [
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
