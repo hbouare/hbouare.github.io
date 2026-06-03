@@ -7,8 +7,6 @@ tags: ["TypeScript", "Vue.js", "API", "Frontend"]
 excerpt: "Pas un cours sur TypeScript — mais comment structurer des interfaces qui collent à une API externe réelle, avec des types utilitaires, des génériques sur les composables Vue, et les décisions concrètes qu'on prend sur du code de production."
 ---
 
-# TypeScript strict en pratique : interfaces hiérarchiques sur une vraie API
-
 La plupart des tutoriels TypeScript montrent des exemples triviaux : `interface User { name: string; age: number }`. En production, la réalité est plus complexe. Les APIs externes renvoient des structures imbriquées, des champs optionnels selon le contexte, des unions de types selon l'état. Voici comment structurer tout ça proprement, à partir d'un cas réel.
 
 ## Le point de départ : une API avec une structure hiérarchique

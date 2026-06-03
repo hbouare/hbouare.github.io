@@ -7,8 +7,6 @@ tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
 excerpt: "Pas la liste exhaustive de la doc — mais les composables VueUse que tu vas utiliser réellement sur des projets Vue.js et Nuxt professionnels, avec des cas d'usage concrets et les pièges à éviter."
 ---
 
-# VueUse en production : les composables qui changent vraiment le quotidien
-
 VueUse compte plus de 200 composables. La documentation les liste tous, ce qui ne t'aide pas à savoir lesquels valent vraiment le coup d'apprendre. Voici ceux qui reviennent systématiquement sur des projets professionnels, avec les situations concrètes où ils font gagner du temps.
 
 ## Installation

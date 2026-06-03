@@ -7,8 +7,6 @@ tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
 excerpt: "Not the exhaustive list from the docs — but the VueUse composables you will actually reach for on professional Vue.js and Nuxt projects, with concrete use cases and the pitfalls worth knowing about."
 ---
 
-# VueUse in Production: The Composables That Actually Make a Difference
-
 VueUse ships over 200 composables. The documentation lists all of them, which does not help you determine which ones are genuinely worth learning. Here are the ones that appear consistently on professional projects, along with the concrete situations where they save meaningful time.
 
 ## Installation

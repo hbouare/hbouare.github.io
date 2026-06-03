@@ -8,10 +8,10 @@
             <p class="font-mono text-primary section-label mb-4">
               {{ $t("contact.section") }}
             </p>
-            <h2 class="contact-title font-playfair">
+            <h1 class="contact-title font-playfair">
               {{ $t("contact.title_1") }}<br />
               <em class="text-primary">{{ $t("contact.title_em") }}</em>
-            </h2>
+            </h1>
             <p class="font-mono text-muted contact-desc mt-6">
               {{ $t("contact.desc") }}
             </p>

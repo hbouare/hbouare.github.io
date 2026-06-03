@@ -7,8 +7,6 @@ tags: ["Python", "asyncio", "FastAPI", "Concurrence"]
 excerpt: "gather, TaskGroup, gestion des exceptions dans les tâches concurrentes, shutdown propre — ce que les tutoriels asyncio ne couvrent jamais, et ce que ça donne sur une vraie application FastAPI en production."
 ---
 
-# asyncio en production : les pièges que les tutos ne montrent pas
-
 Les tutoriels asyncio s'arrêtent presque toujours au même endroit : `await asyncio.gather(task1(), task2())`, quelques exemples de coroutines, et c'est tout. En production, la réalité est plus nuancée. Les exceptions silencieuses, les tâches qui ne se terminent jamais, les shutdowns qui bloquent — voici les problèmes réels et comment les résoudre.
 
 ## Le problème avec `asyncio.gather` et les exceptions

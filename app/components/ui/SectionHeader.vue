@@ -2,21 +2,26 @@
 <template>
   <div>
     <p class="font-mono text-primary section-label mb-4">{{ label }}</p>
-    <h2 class="section-title font-playfair">
+    <component :is="tag" class="section-title font-playfair">
       {{ line1 }}<br>
       <em class="text-primary">{{ lineEm }}</em>
       <template v-if="line3"><br>{{ line3 }}</template>
-    </h2>
+    </component>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  label: string
-  line1: string
-  lineEm: string
-  line3?: string
-}>()
+withDefaults(
+  defineProps<{
+    label: string
+    line1: string
+    lineEm: string
+    line3?: string
+    /** Heading level — defaults to h2; use h1 for the main heading of a page. */
+    tag?: string
+  }>(),
+  { tag: "h2" },
+)
 </script>
 
 <style scoped lang="scss">

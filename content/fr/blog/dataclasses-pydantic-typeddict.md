@@ -7,8 +7,6 @@ tags: ["Python", "Pydantic", "Typage", "FastAPI"]
 excerpt: "Pas une comparaison théorique — mais les règles de décision concrètes selon le contexte : validation d'entrée API, modèles internes, configuration, sérialisation. Avec les trade-offs réels sur les performances et la maintenabilité."
 ---
 
-# Dataclasses, Pydantic, TypedDict : lequel choisir et pourquoi
-
 C'est une question que chaque équipe Python se pose tôt ou tard. Les réponses qu'on trouve en ligne sont souvent du type "Pydantic pour les APIs, dataclasses pour le reste" — ce qui est un début, mais ne couvre pas les cas limites où ce choix a un impact réel. Voici les règles de décision que j'applique en pratique.
 
 ## Comprendre ce que chacun fait réellement

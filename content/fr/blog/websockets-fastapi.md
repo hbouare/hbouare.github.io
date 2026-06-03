@@ -7,8 +7,6 @@ tags: ["FastAPI", "WebSockets", "Python", "Temps réel"]
 excerpt: "Les tutos WebSocket FastAPI s'arrêtent tous au chat basique. Les vrais problèmes commencent après : authentifier une connexion, gérer un ConnectionManager multi-clients, broadcaster des événements, et nettoyer les connexions mortes en environnement multi-pods."
 ---
 
-# WebSockets avec FastAPI : état partagé, authentification et déconnexions propres
-
 Le tutoriel officiel FastAPI sur les WebSockets tient en vingt lignes. C'est suffisant pour comprendre l'API, pas pour construire quelque chose de fiable. Voici ce que les exemples ne montrent pas : authentification, gestion d'état distribuée, broadcasting, et nettoyage des connexions mortes.
 
 ## Le problème avec l'exemple basique

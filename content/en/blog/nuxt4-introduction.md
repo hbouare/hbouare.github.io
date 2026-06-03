@@ -7,8 +7,6 @@ tags: ["Nuxt", "Vue.js", "Frontend", "SSR"]
 excerpt: "Nuxt 4 is more than a version bump. A restructured project layout, a dedicated app/ directory, and a more mature Nitro runtime — here is what it looks like in practice."
 ---
 
-# Nuxt 4: What Actually Changes
-
 If you work with Vue.js and have not yet looked at Nuxt 4, now is a good time to do so. The release is not a ground-up rewrite, but its structural changes are substantial enough to warrant a thorough overview before embarking on a new project.
 
 ## What Nuxt Is, in Brief

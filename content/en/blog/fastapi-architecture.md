@@ -7,8 +7,6 @@ tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
 excerpt: "Not the FastAPI hello world — but how to organise a real project with routers, a service layer, repositories, dependency injection, and tests that remain maintainable six months down the line."
 ---
 
-# Structuring a FastAPI Project That Lasts: Architecture, Layers, and Dependencies
-
 Most FastAPI tutorials put everything in `main.py`. That works for a demonstration, not for an application maintained by a team over several years. Here is the architecture applied in practice on projects built to last, along with the reasoning behind each decision.
 
 ## Project Structure

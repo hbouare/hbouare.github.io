@@ -3,6 +3,7 @@
   <v-container class="px-6 px-md-10 section-v-pad" fluid>
     <UiRevealBlock>
       <UiSectionHeader
+        tag="h1"
         :label="$t('projects.section')"
         :line1="$t('projects.title_1')"
         :line-em="$t('projects.title_em')"

@@ -5,6 +5,7 @@
     <v-container class="px-6 px-md-10 section-v-pad position-relative" fluid>
       <UiRevealBlock>
         <UiSectionHeader
+          tag="h1"
           :label="$t('blog.section')"
           :line1="$t('blog.title_1')"
           :line-em="$t('blog.title_em')"

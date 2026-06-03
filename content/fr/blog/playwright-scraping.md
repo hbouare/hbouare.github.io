@@ -7,8 +7,6 @@ tags: ["Playwright", "Python", "Scraping", "Automatisation"]
 excerpt: "Playwright n'est pas réservé aux tests. Sur des portails métier sans API, c'est l'outil le plus robuste pour automatiser l'authentification, la navigation et l'extraction de données — voici comment l'utiliser en production."
 ---
 
-# Playwright comme outil de scraping métier : au-delà des tests E2E
-
 La plupart des articles sur Playwright parlent de tests E2E. C'est son usage le plus visible, mais pas le seul. Quand un portail métier n'expose pas d'API — ou que celle-ci est incomplète, mal documentée, ou réservée à des partenaires — Playwright devient un outil d'automatisation de premier ordre. Voici comment l'utiliser sérieusement, hors contexte de test.
 
 ## Le cas concret : un portail sans API exploitable
