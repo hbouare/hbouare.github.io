@@ -21,8 +21,11 @@ useHead({
   meta: () => [...(head.value.meta || [])],
 })
 
-// Fix #4: attendre que Vuetify ait peint les bonnes CSS variables avant de révéler.
+// Apply the saved theme as a reactive change AFTER hydration (see vuetify.ts):
+// this repaints every `v-theme--*` class without an SSR/client mismatch.
+// Reveal the body (opacity 0 → 1) only once that repaint has flushed.
 onMounted(() => {
+  syncTheme()
   nextTick(() => {
     requestAnimationFrame(() => {
       document.documentElement.classList.add('hydrated')

@@ -7,19 +7,9 @@ export const useAppTheme = () => {
   const theme = useTheme()
   const isDark = computed(() => theme.current.value.dark)
 
-  // ── Single reactive watcher: Vuetify theme name → DOM + localStorage ──
-  // Every theme change flows through here, no matter the source.
-  if (import.meta.client) {
-    watch(
-      () => theme.global.name.value,
-      (name) => {
-        localStorage.setItem(STORAGE_KEY, name)
-        document.documentElement.setAttribute('data-theme', name)
-        document.documentElement.style.colorScheme = name
-      },
-      { immediate: true },
-    )
-  }
+  // Persistence (localStorage + <html data-theme> + colorScheme) is handled by
+  // the single watcher installed in plugins/vuetify.ts — the only writer.
+  // Here we only read/toggle the Vuetify theme name.
 
   const toggleTheme = (event?: MouseEvent) => {
     const applyTheme = () => {

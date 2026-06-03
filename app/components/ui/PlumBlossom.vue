@@ -35,7 +35,12 @@ onMounted(() => {
   const rand = (a: number, b: number) => Math.random() * (b - a) + a
 
   const getColor = () => {
-    const raw = getComputedStyle(document.documentElement)
+    // Read from the canvas itself: --v-theme-* lives on the `.v-theme--*`
+    // ancestor (the v-application root), NOT on <html>, and CSS custom
+    // properties inherit downward — so reading from `el` resolves the value
+    // for the *current* theme. (Reading from documentElement returned empty,
+    // which silently fell back to the hardcoded dark gold below.)
+    const raw = getComputedStyle(el)
       .getPropertyValue('--v-theme-primary')
       .trim()
     return raw || '200,169,110'
@@ -152,6 +157,14 @@ onMounted(() => {
   }
 
   window.addEventListener('resize', onResize)
+
+  // Redraw from scratch when the theme changes: canvas pixels are not reactive,
+  // so without this the branches keep the previous theme's color.
+  watch(isDark, () => {
+    ctx.clearRect(0, 0, W(), H())
+    for (const q of queues) q.length = 0
+    seed()
+  })
 
   onUnmounted(() => {
     stopped = true

@@ -105,14 +105,26 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
   nuxtApp.vueApp.use(vuetify)
 
-  // Restore saved theme on client.
-  // Only set the Vuetify theme name — the reactive watcher in useAppTheme
-  // handles DOM attributes, colorScheme, and localStorage automatically.
+  // IMPORTANT: we deliberately do NOT set the theme name here (before mount).
+  // The site is statically generated with `defaultTheme: 'dark'`, so the
+  // prerendered HTML carries `v-theme--dark` on every node. Switching the theme
+  // *before* hydration would make the client's first render diverge from the
+  // server's, and Vue does not repaint mismatched `class` during hydration —
+  // leaving parts of the UI stuck on the baked dark theme. Instead, the saved
+  // theme is applied in app.vue's onMounted (a reactive change, post-hydration),
+  // which repaints every `v-theme--*` class cleanly.
   if (import.meta.client) {
-    const resolved =
-      document.documentElement.getAttribute('data-theme')
-      || localStorage.getItem('portfolio-theme')
-      || 'dark'
-    vuetify.theme.global.name.value = resolved
+    // Single source of truth for persistence: every theme-name change (toggle,
+    // bfcache restore, cross-tab sync) is mirrored to localStorage, the
+    // <html data-theme> attribute (used by the pre-paint script + Shiki) and
+    // colorScheme. This is the ONLY place that writes them.
+    watch(
+      () => vuetify.theme.global.name.value,
+      (name) => {
+        localStorage.setItem('portfolio-theme', name)
+        document.documentElement.setAttribute('data-theme', name)
+        document.documentElement.style.colorScheme = name
+      },
+    )
   }
 })
