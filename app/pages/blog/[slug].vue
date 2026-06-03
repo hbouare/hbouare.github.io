@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 
@@ -124,58 +124,11 @@ if (post.value) {
   })
 }
 
-const formatDate = (d: string) =>
-  new Date(d).toLocaleDateString(locale.value === "fr" ? "fr-FR" : "en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
+const { formatDate } = useFormatDate()
 
 // Table of contents
 const { headings, activeId } = useTableOfContents(contentRef)
-
-// Copy-to-clipboard for code blocks
-onMounted(() => {
-  nextTick(() => {
-    setupCopyButtons()
-  })
-})
-
-function setupCopyButtons() {
-  if (!contentRef.value) return
-
-  const codeBlocks = contentRef.value.querySelectorAll("pre")
-  codeBlocks.forEach((pre) => {
-    // Wrap in a relative container
-    const wrapper = document.createElement("div")
-    wrapper.className = "code-block-wrapper"
-    pre.parentNode?.insertBefore(wrapper, pre)
-    wrapper.appendChild(pre)
-
-    const btn = document.createElement("button")
-    btn.className = "copy-btn font-mono"
-    btn.textContent = t("blog.copy_code")
-    btn.setAttribute("aria-label", t("blog.copy_code"))
-
-    btn.addEventListener("click", async () => {
-      const code =
-        pre.querySelector("code")?.textContent ?? pre.textContent ?? ""
-      try {
-        await navigator.clipboard.writeText(code)
-        btn.textContent = t("blog.copied")
-        btn.classList.add("copy-btn--success")
-        setTimeout(() => {
-          btn.textContent = t("blog.copy_code")
-          btn.classList.remove("copy-btn--success")
-        }, 2000)
-      } catch {
-        // Fallback silently
-      }
-    })
-
-    wrapper.appendChild(btn)
-  })
-}
+// Code-block copy buttons are handled by app/components/content/ProsePre.vue.
 </script>
 
 <style scoped lang="scss">

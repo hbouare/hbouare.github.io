@@ -1,11 +1,9 @@
 {
   "nav": {
     "about": "À propos",
-    "experience": "Parcours",
     "projects": "Projets",
     "blog": "Blog",
     "contact": "Contact",
-    "hire": "Me recruter",
     "lang_switch": "Changer de langue",
     "menu": "Ouvrir le menu"
   },
@@ -47,7 +45,8 @@
     "title_em": "bâti",
     "featured": "Projet phare",
     "view_all": "Voir tous les projets",
-    "meta_desc": "Projets et réalisations en développement full-stack, data engineering et DevOps."
+    "meta_desc": "Projets et réalisations en développement full-stack, data engineering et DevOps.",
+    "load_error": "Impossible de charger les projets. Veuillez réessayer plus tard."
   },
   "blog": {
     "section": "04 — Blog",
@@ -57,16 +56,11 @@
     "view_all": "Voir tous les articles",
     "min_read": "min de lecture",
     "no_posts": "Aucun article disponible pour le moment.",
+    "load_error": "Impossible de charger les articles. Veuillez réessayer plus tard.",
     "meta_desc": "Articles sur le développement, la data engineering et les technologies web.",
     "toc": "Sommaire",
     "copied": "Copié !",
     "copy_code": "Copier"
-  },
-  "travel": {
-    "section": "05 — International",
-    "title_1": "Une carrière",
-    "title_em": "sans frontières",
-    "desc": "Travailler dans des cultures différentes m'a appris à communiquer avec précision, à m'adapter rapidement, et à concevoir des solutions universelles dans des contextes variés."
   },
   "contact": {
     "section": "06 — Contact",
@@ -97,11 +91,5 @@
   "theme": {
     "toggle_dark": "Mode sombre",
     "toggle_light": "Mode clair"
-  },
-  "skills": {
-    "backend": "Backend",
-    "frontend": "Frontend",
-    "devops": "DevOps",
-    "data": "Data"
   }
 }

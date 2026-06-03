@@ -11,11 +11,16 @@
     </UiRevealBlock>
 
     <!-- Skeleton loaders -->
-    <div v-if="!projects" class="proj-grid mt-14">
+    <div v-if="!projects && !error" class="proj-grid mt-14">
       <div v-for="n in 4" :key="n" class="proj-skeleton">
         <v-skeleton-loader type="article" color="surface" rounded="0" />
       </div>
     </div>
+
+    <!-- Error state -->
+    <p v-else-if="error" class="font-mono text-muted text-center py-16">
+      {{ $t("projects.load_error") }}
+    </p>
 
     <!-- All projects — uniform 2-column grid -->
     <div v-else class="proj-grid mt-14">
@@ -105,7 +110,7 @@ useSeoMeta({
   ogDescription: t("projects.meta_desc"),
 })
 
-const { data: projects } = await useAsyncData(
+const { data: projects, error } = await useAsyncData(
   `projects-all-${locale.value}`,
   () => queryCollection(`${locale.value}_projects`).order("order", "ASC").all(),
 )

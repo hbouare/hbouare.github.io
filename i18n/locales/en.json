@@ -1,11 +1,9 @@
 {
   "nav": {
     "about": "About",
-    "experience": "Experience",
     "projects": "Projects",
     "blog": "Blog",
     "contact": "Contact",
-    "hire": "Hire me",
     "lang_switch": "Switch language",
     "menu": "Open menu"
   },
@@ -47,7 +45,8 @@
     "title_em": "shipped",
     "featured": "Featured",
     "view_all": "View all projects",
-    "meta_desc": "Projects and achievements in full-stack development, data engineering and DevOps."
+    "meta_desc": "Projects and achievements in full-stack development, data engineering and DevOps.",
+    "load_error": "Could not load projects. Please try again later."
   },
   "blog": {
     "section": "04 — Blog",
@@ -57,16 +56,11 @@
     "view_all": "View all articles",
     "min_read": "min read",
     "no_posts": "No articles available yet.",
+    "load_error": "Could not load articles. Please try again later.",
     "meta_desc": "Articles on development, data engineering and web technologies.",
     "toc": "Table of contents",
     "copied": "Copied!",
     "copy_code": "Copy"
-  },
-  "travel": {
-    "section": "05 — International",
-    "title_1": "A career",
-    "title_em": "without borders",
-    "desc": "Working across different cultures has taught me to communicate with precision, adapt quickly, and design universal solutions in very different contexts."
   },
   "contact": {
     "section": "06 — Contact",
@@ -97,11 +91,5 @@
   "theme": {
     "toggle_dark": "Dark mode",
     "toggle_light": "Light mode"
-  },
-  "skills": {
-    "backend": "Backend",
-    "frontend": "Frontend",
-    "devops": "DevSecOps",
-    "data": "Data"
   }
 }
