@@ -7,3 +7,6 @@ dist/
 .playwright-cli
 .claude
 skills-lock.json
+# Playwright
+test-results/
+playwright-report/

@@ -16,10 +16,21 @@ yarn deploy       # nuxt generate + gh-pages -d .output/public (manual deploy)
 yarn typecheck    # nuxt typecheck (vue-tsc)
 ```
 
-There is no linter and there are no unit or e2e tests. `yarn typecheck` is the
-only static check, and it is **clean — zero errors**. Keep it that way: it is
-the sole automated guard on this codebase, and its value collapses the moment
-a baseline of "expected" errors is tolerated again.
+There is no linter and there are no unit tests. Two automated guards exist and
+both must stay green:
+
+- `yarn typecheck` — **clean, zero errors.** Keep it that way; its value
+  collapses the moment a baseline of "expected" errors is tolerated again.
+- `yarn test:e2e` — Playwright, runs against the **static build** (not the dev
+  server), desktop + mobile. Every test maps to a bug that actually shipped
+  here. Run `npx playwright install chromium` once after cloning.
+
+The e2e suite guards failure modes that produce **no console error**: the theme
+desyncing from the DOM, Vuetify utility classes silently not shipping, text
+rendered in a colour that matches its background, horizontal overflow, and
+missing accessible names. Do not delete a test here without replacing the
+guarantee — each one was written after the corresponding bug reached the
+built output.
 
 **TypeScript is pinned to 5.x on purpose.** TypeScript 7 dropped the
 `./lib/tsc` subpath export that `vue-tsc` requires; letting it float to 7
@@ -48,6 +59,22 @@ Theme state lives in **Vuetify** (`dark`/`light` themes defined in [app/plugins/
 
 - An **inline `<head>` script** in [nuxt.config.ts](nuxt.config.ts) reads `localStorage['portfolio-theme']` and sets `data-theme` + `colorScheme` *before paint* to prevent a flash. Inline CSS hides the body (`opacity:0`) until `html.hydrated`.
 - [app/composables/useAppTheme.ts](app/composables/useAppTheme.ts) has a **single reactive watcher** on `theme.name` that writes localStorage + the DOM `data-theme` attribute.
+
+Two ordering constraints are load-bearing. Both were violated during the
+refactor and both produced the *same* silent symptom — `data-theme="light"`
+with `.v-application` stuck on `v-theme--dark`:
+
+1. **The watcher must NOT be `immediate`.** At setup the theme name is still
+   the SSR default (`dark`), so an immediate run writes `dark` to localStorage
+   and destroys a saved `light` preference before anything reads it.
+2. **The restore must NOT happen in the Vuetify plugin.** Calling
+   `theme.change()` during plugin install races hydration, and Vue re-patches
+   `.v-application` back to the SSR theme. The restore belongs in
+   `app.vue`'s `onMounted` (via `syncTheme()`), after hydration and before the
+   anti-flash reveal.
+
+Constraint 2 reproduces only intermittently, so it survives manual testing —
+it was caught by `yarn test:e2e`, not by looking.
 
 Keep this one-way flow intact: **Vuetify theme name → watcher → DOM/localStorage**.
 Never write `data-theme` or localStorage by hand.
