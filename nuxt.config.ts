@@ -16,6 +16,9 @@ export default defineNuxtConfig({
   },
 
   app: {
+    // The page transition is driven by GSAP JS hooks defined on <NuxtPage>
+    // in app.vue (css: false). This entry stays as the SSR/no-JS fallback
+    // name; `mode: out-in` keeps the two pages from overlapping.
     pageTransition: { name: "page", mode: "out-in" },
     head: {
       title: "Hamed Bouare",
@@ -31,7 +34,10 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t})()`,
+          // Also marks <html> as scripting-capable: scroll-reveal blocks rest
+          // at opacity 0 and are revealed by GSAP, so without JS they must
+          // fall back to visible rather than staying blank.
+          innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t;d.classList.add('js')})()`,
           tagPosition: "head",
         },
       ],

@@ -1,19 +1,19 @@
 <template>
-  <section class="hero-section">
+  <section ref="heroRoot" class="hero-section">
     <v-container class="hero-inner px-6 px-md-10" fluid>
       <v-row align="center" class="min-h-screen py-24">
         <!-- LEFT -->
         <v-col cols="12" md="7" class="hero-left">
-          <UiEyebrow class="hero-tag animate-1">
+          <UiEyebrow class="hero-tag hero-beat">
             {{ $t("hero.tag") }}
           </UiEyebrow>
-          <UiDisplayTitle tag="h1" level="xxl" class="animate-2">
+          <UiDisplayTitle ref="titleEl" tag="h1" level="xxl" class="hero-title">
             {{ $t("hero.title_1") }}<br />
             <span class="text-muted">{{ $t("hero.title_em") }}</span
             ><br />
             {{ $t("hero.title_3") }}
           </UiDisplayTitle>
-          <p class="hero-subtitle type-body-lg text-muted animate-3">
+          <p class="hero-subtitle type-body-lg text-muted hero-beat">
             {{ $t("hero.subtitle") }}
           </p>
 
@@ -23,7 +23,7 @@
             primary one takes the pill; the other two drop to text links so
             the band still reads as having one CTA.
           -->
-          <div class="d-flex align-center ga-4 mt-10 animate-4 flex-wrap">
+          <div class="d-flex align-center ga-4 mt-10 hero-beat flex-wrap">
             <v-btn :to="localePath('/projects')" size="large">
               {{ $t("hero.cta_projects") }}
             </v-btn>
@@ -41,7 +41,7 @@
           </div>
 
           <!-- International pills -->
-          <div class="animate-5 mt-12">
+          <div class="hero-beat mt-12">
             <UiEyebrow tone="muted" class="mb-3">
               {{ $t("hero.intl_label") }}
             </UiEyebrow>
@@ -54,7 +54,7 @@
         </v-col>
 
         <!-- RIGHT: stats -->
-        <v-col cols="12" md="5" class="d-none d-md-flex justify-end animate-4">
+        <v-col cols="12" md="5" class="d-none d-md-flex justify-end hero-beat">
           <v-row ref="statsRef" class="stats-grid" no-gutters>
             <v-col v-for="(stat, index) in stats" :key="stat.key" cols="6">
               <!--
@@ -100,7 +100,7 @@
     </v-container>
 
     <!-- Scroll indicator -->
-    <div class="scroll-hint type-micro-cap text-muted animate-5" aria-hidden="true">
+    <div class="scroll-hint type-micro-cap text-muted hero-beat" aria-hidden="true">
       <span class="scroll-line" />
       Scroll
     </div>
@@ -108,6 +108,10 @@
 </template>
 
 <script setup lang="ts">
+import type { ComponentPublicInstance } from "vue"
+import { SplitText } from "gsap/SplitText"
+import { DURATION, EASE, STAGGER, DISTANCE } from "~/config/motion"
+
 const localePath = useLocalePath()
 
 const { t, locale } = useI18n()
@@ -125,49 +129,115 @@ const stats = [
   { value: "∞", key: "stat_curiosity" },
 ]
 
-// Animated counter
 const statsRef = ref<HTMLElement | ComponentPublicInstance | null>(null)
 const statsStarted = ref(false)
 const animatedValues = ref<number[]>(stats.map(() => 0))
 
+/** Ease-out count-up. GSAP drives the tick so it obeys the global ticker. */
 const animateCountUp = () => {
-  const duration = 2500
-  const startTime = performance.now()
   const targets = stats.map((s) => s.numeric ?? 0)
-
-  const step = (now: number) => {
-    const progress = Math.min((now - startTime) / duration, 1)
-    const eased = 1 - Math.pow(1 - progress, 3) // ease-out cubic
-
-    animatedValues.value = targets.map((target) => Math.round(target * eased))
-
-    if (progress < 1) {
-      requestAnimationFrame(step)
-    }
-  }
-
-  requestAnimationFrame(step)
+  const proxy = { p: 0 }
+  gsap.to(proxy, {
+    p: 1,
+    duration: 2.5,
+    ease: EASE.out,
+    onUpdate: () => {
+      animatedValues.value = targets.map((v) => Math.round(v * proxy.p))
+    },
+  })
 }
 
-onMounted(() => {
-  // statsRef is bound to <v-row>, so at runtime it is a component instance
-  // whose root element hangs off $el — not an HTMLElement directly.
-  const raw = statsRef.value
-  const el = raw && "$el" in raw ? (raw.$el as HTMLElement) : raw
-  if (!el) return
+const unwrap = (r: HTMLElement | ComponentPublicInstance | null) =>
+  r && "$el" in r ? (r.$el as HTMLElement) : r
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0]?.isIntersecting && !statsStarted.value) {
+const heroRoot = ref<HTMLElement | null>(null)
+const titleEl = ref<ComponentPublicInstance | null>(null)
+
+const { gsap, ScrollTrigger } = useGsap()
+
+useMotion(heroRoot, ({ motion, mobile }) => {
+  const statsEl = unwrap(statsRef.value)
+  const titleNode = unwrap(titleEl.value)
+  const targets = stats.map((s) => s.numeric ?? 0)
+
+  // ── Reduced motion: reveal the final counter values immediately, with no
+  // scroll dependency, and skip every reveal. Everything else already rests
+  // at its final state in the DOM.
+  if (!motion) {
+    statsStarted.value = true
+    animatedValues.value = targets
+    return
+  }
+
+  // ── Count-up: fire when the stats grid enters view (immediately if it is
+  // already above the fold). Hidden on mobile, so guarded by statsEl.
+  if (statsEl) {
+    ScrollTrigger.create({
+      trigger: statsEl,
+      start: "top 90%",
+      once: true,
+      onEnter: () => {
+        if (statsStarted.value) return
         statsStarted.value = true
         animateCountUp()
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.2 },
-  )
+      },
+    })
+  }
 
-  observer.observe(el)
+  const beats = gsap.utils.toArray<HTMLElement>(".hero-beat")
+
+  const tl = gsap.timeline({ defaults: { ease: EASE.out } })
+
+  // Display title: a masked line reveal — each line rises out from behind
+  // its own clipped edge. This is the hero's signature moment.
+  //
+  // On mobile the line split is skipped: recomputing line breaks on every
+  // resize is expensive, and the whole-title fade reads just as well at
+  // that size. SplitText.create's onSplit re-runs on font load and resize,
+  // so line breaks are always correct; the instance is reverted by
+  // matchMedia on cleanup.
+  // The SplitText instance is created inside this matchMedia scope, so it is
+  // reverted automatically on cleanup — no manual revert needed.
+  if (titleNode && !mobile) {
+    SplitText.create(titleNode, {
+      type: "lines",
+      mask: "lines",
+      linesClass: "hero-line",
+      autoSplit: true,
+      onSplit: (self) =>
+        gsap.from(self.lines, {
+          yPercent: 110,
+          duration: DURATION.slow,
+          ease: EASE.out,
+          stagger: STAGGER.line,
+        }),
+    })
+  } else if (titleNode) {
+    tl.fromTo(
+      titleNode,
+      { autoAlpha: 0, y: DISTANCE.base },
+      { autoAlpha: 1, y: 0, duration: DURATION.base },
+      0,
+    )
+  }
+
+  // Supporting beats rise in just behind the title. fromTo (not from):
+  // the beats rest at opacity 0 in CSS to avoid a pre-reveal flash, so the
+  // end state must be stated explicitly rather than read from the DOM.
+  tl.fromTo(
+    beats,
+    { autoAlpha: 0, y: DISTANCE.base },
+    {
+      autoAlpha: 1,
+      y: 0,
+      duration: DURATION.base,
+      stagger: STAGGER.beat,
+      // Clear ONLY transform: the inline opacity:1 must persist, otherwise
+      // the element falls back to the CSS resting `opacity: 0` and vanishes.
+      clearProps: "transform",
+    },
+    mobile ? 0.1 : 0.25,
+  )
 })
 </script>
 
@@ -263,23 +333,20 @@ onMounted(() => {
 // No per-component type breakpoints: every tier used here (display-xxl,
 // micro-cap, body-lg) stair-steps from the :root tokens in main.scss.
 
-// Entrance animations
-@for $i from 1 through 5 {
-  .animate-#{$i} {
-    animation: fadeUp 0.8s ease forwards #{$i * 0.2}s;
-    opacity: 0;
-  }
+// ── Entrance (GSAP) ────────────────────────────────────────────────────
+// The staggered CSS keyframes were replaced by an orchestrated timeline in
+// script. Beats rest hidden so there is no flash before the timeline runs;
+// they are revealed by gsap.from(), which also clears these inline styles.
+// Guards: no-JS and reduced-motion keep everything visible.
+html.js .hero-beat {
+  opacity: 0;
 }
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-  to {
+@media (prefers-reduced-motion: reduce) {
+  html.js .hero-beat {
     opacity: 1;
-    transform: translateY(0);
   }
 }
+
 @keyframes scrollPulse {
   0%,
   100% {

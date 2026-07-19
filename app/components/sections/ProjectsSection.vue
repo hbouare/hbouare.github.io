@@ -2,10 +2,8 @@
 <template>
   <section id="projects" class="section-pad">
     <v-container class="px-6 px-md-10" fluid>
-      <UiRevealBlock>
-        <div
-          class="d-flex align-end justify-space-between flex-wrap ga-4 mb-14"
-        >
+      <!-- Header self-animates; the row is no longer reveal-wrapped. -->
+      <div class="d-flex align-end justify-space-between flex-wrap ga-4 mb-14">
           <UiSectionHeader
             :label="$t('projects.section')"
             :line1="$t('projects.title_1')"
@@ -18,8 +16,7 @@
           >
             {{ $t("projects.view_all") }}
           </v-btn>
-        </div>
-      </UiRevealBlock>
+      </div>
 
       <div class="projects-grid">
         <!-- Skeleton loaders while data loads -->

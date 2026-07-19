@@ -3,13 +3,11 @@
   <div class="blog-page">
     <UiPlumBlossom />
     <v-container class="px-6 px-md-10 section-v-pad position-relative" fluid>
-      <UiRevealBlock>
-        <UiSectionHeader
+      <UiSectionHeader
           :label="$t('blog.section')"
           :line1="$t('blog.title_1')"
           :line-em="$t('blog.title_em')"
         />
-      </UiRevealBlock>
 
       <!-- Skeleton loaders -->
       <v-row v-if="!posts" class="mt-14">

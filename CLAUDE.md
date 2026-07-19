@@ -247,6 +247,75 @@ Nuxt auto-imports from `app/components/<dir>/`, so a component in `ui/` is `<Ui.
 
 [app/components/sections/ContactSection.vue](app/components/sections/ContactSection.vue) / [app/pages/contact.vue](app/pages/contact.vue) send via `@emailjs/browser` using `runtimeConfig.public.emailjs*` (empty in repo, supplied by CI secrets).
 
+## Motion (GSAP)
+
+Animation is GSAP, centralised so it stays coherent and accessible. The rules
+below are not optional — two of them guard real accessibility failures.
+
+### The one entry point: `useMotion`
+
+**Never call gsap directly in a component.** Use `useMotion(rootRef, build)`
+([app/composables/useMotion.ts](app/composables/useMotion.ts)). It wraps
+`gsap.matchMedia` scoped to the component root and guarantees three things
+CSS and raw GSAP cannot:
+
+1. **Reduced motion is honoured.** The CSS `prefers-reduced-motion` block
+   cannot stop GSAP — GSAP writes inline styles from JS and ignores
+   `animation-duration: 0`. `build` receives `{ motion }`; when it is false,
+   reveal the final state and return.
+2. **Selectors are scoped** to the root — `.card` never reaches another
+   instance.
+3. **Everything reverts on unmount** (tweens, ScrollTriggers, SplitText).
+   Verified: 0 MB heap growth over 48 navigations.
+
+`build` also receives `{ mobile, tablet, desktop }`. **These breakpoints are
+exhaustive on purpose** — `gsap.matchMedia` only invokes the callback when a
+condition matches, so a gap would leave a component un-initialised at some
+width under reduced motion (this shipped once: the hero counter froze at 0).
+
+### Timings live in one file
+
+Durations, eases, staggers and distances are in
+[app/config/motion.ts](app/config/motion.ts). Import them; never hardcode a
+duration or ease in a component. The system's motion is **short and decisive —
+no bounce or elastic**, which would fight the "engineered" identity.
+
+### SSR / no-JS / flash
+
+Reveal targets rest at `opacity: 0` in CSS, guarded by `html.js` (added by the
+inline head script) so they fall back to visible without JS. `gsap.from`
+reads the *current* value as the END state — when an element rests at
+`opacity: 0`, use `fromTo` (or `gsap.to`), never `from`, or it animates 0→0.
+When clearing props after a reveal, clear `transform` only: clearing `opacity`
+drops the element back to its CSS resting `0`.
+
+### What is animated, and what is deliberately not
+
+- **Hero**: orchestrated timeline; the display title does a masked line reveal
+  (SplitText, desktop/tablet only — line splitting is recomputed on resize and
+  not worth it on mobile). SplitText is registered globally (it is on the
+  landing page).
+- **Section openers** (`UiSectionHeader`): self-animating — eyebrow fade +
+  masked title reveal. **Do not wrap them in `UiRevealBlock`** — it doubles
+  the entrance.
+- **`UiRevealBlock`**: scroll reveal via ScrollTrigger. Public API unchanged
+  (`:delay` ms).
+- **Page transitions**: GSAP JS hooks on `<NuxtPage :transition>` in
+  [app/app.vue](app/app.vue) (`css: false`). The hooks MUST call `done()` on
+  every path, including reduced motion, or navigation hangs.
+- **Marquee**: GSAP loop + velocity-driven skew (CSS cannot compose the loop's
+  translate with the skew on one transform). Static under reduced motion.
+- **Nav scroll state, logo draw, infinity SVG, hover states**: kept as CSS —
+  GSAP would add no value. Do not "upgrade" working CSS transitions to GSAP.
+
+### Verifying motion changes
+
+`yarn test:e2e` includes `tests/e2e/motion.spec.ts`, which asserts reduced
+motion reveals everything, the hero counter reaches its value, navigation
+never blocks, and the marquee stays still under reduced motion — all silent
+failure modes. Always test **desktop AND mobile, motion AND reduced-motion**;
+several bugs here only appeared in one specific combination.
+
 ## Design reference
 
 [DESIGN.md](DESIGN.md) is the source design-system spec (colors, typography,

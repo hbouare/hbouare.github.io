@@ -3,13 +3,14 @@
     <v-container class="px-6 px-md-10" fluid>
       <v-row>
         <v-col cols="12" md="5">
-          <UiRevealBlock>
-            <UiSectionHeader
-              :label="$t('about.section')"
-              :line1="$t('about.title_1')"
-              :line-em="$t('about.title_em')"
-              :line3="$t('about.title_3')"
-            />
+          <!-- SectionHeader self-animates; the body keeps its own reveal. -->
+          <UiSectionHeader
+            :label="$t('about.section')"
+            :line1="$t('about.title_1')"
+            :line-em="$t('about.title_em')"
+            :line3="$t('about.title_3')"
+          />
+          <UiRevealBlock :delay="120">
             <div class="type-body-lg text-muted mt-6">
               <p>{{ $t("about.p1") }}</p>
               <p class="mt-4">{{ $t("about.p2") }}</p>

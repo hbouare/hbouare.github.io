@@ -1,13 +1,11 @@
 <template>
   <section id="experience" class="section-pad section-surface">
     <v-container class="px-6 px-md-10" fluid>
-      <UiRevealBlock>
-        <UiSectionHeader
+      <UiSectionHeader
           :label="$t('experience.section')"
           :line1="$t('experience.title_1')"
           :line-em="$t('experience.title_em')"
         />
-      </UiRevealBlock>
 
       <div class="exp-list mt-14">
         <!-- Skeleton loaders while data loads -->

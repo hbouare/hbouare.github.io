@@ -1,11 +1,55 @@
 <template>
   <NuxtLayout>
-    <NuxtPage />
+    <NuxtPage :transition="pageTransition" />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+import { gsap } from "gsap"
+import { DURATION, EASE } from "~/config/motion"
+
 const { syncTheme } = useAppTheme()
+
+// ── Page transition (GSAP JS hooks) ───────────────────────────────────
+// css: false hands full control to GSAP. `mode: out-in` (from config) means
+// leave completes before enter starts, so a short fade+lift on each side
+// reads as one continuous motion without the two pages ever overlapping.
+//
+// Reduced motion: resolve the hooks instantly so navigation is never held
+// up and nothing moves.
+const prefersReduced = () =>
+  import.meta.client &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+const pageTransition = {
+  mode: "out-in" as const,
+  css: false,
+  onLeave(el: Element, done: () => void) {
+    if (prefersReduced()) return done()
+    gsap.to(el, {
+      autoAlpha: 0,
+      y: -12,
+      duration: DURATION.fast,
+      ease: EASE.inOut,
+      onComplete: done,
+    })
+  },
+  onEnter(el: Element, done: () => void) {
+    if (prefersReduced()) return done()
+    gsap.fromTo(
+      el,
+      { autoAlpha: 0, y: 12 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: DURATION.base,
+        ease: EASE.out,
+        clearProps: "transform",
+        onComplete: done,
+      },
+    )
+  },
+}
 
 // SEO: hreflang, canonical, og:locale, html lang.
 // `lang`, `dir` and `seo` all default to true — the old

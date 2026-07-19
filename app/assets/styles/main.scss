@@ -234,19 +234,8 @@ p {
   line-height: 1.7;
 }
 
-// ── Page transitions ───────────────────────────────────────────────────
-.page-enter-active,
-.page-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.page-enter-from {
-  opacity: 0;
-  transform: translateY(12px);
-}
-.page-leave-to {
-  opacity: 0;
-  transform: translateY(-12px);
-}
+// Page transitions are GSAP JS hooks now (css: false in app.vue), so there
+// is no .page-enter-*/.page-leave-* CSS to define here.
 
 // ── Reduced motion — accessibility ─────────────────────────────────────
 // These !important are intentional: accessibility overrides must win.
@@ -262,14 +251,11 @@ p {
   html {
     scroll-behavior: auto;
   }
-  .page-enter-active,
-  .page-leave-active {
-    transition: none;
-  }
+  // Scroll reveals are GSAP-driven now and cannot be stopped by CSS —
+  // gsap.matchMedia() in useMotion handles them. This rule remains as a
+  // belt-and-braces guarantee that content is never left hidden.
   .reveal-block {
     opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
   }
 }
 
