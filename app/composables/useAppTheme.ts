@@ -11,6 +11,10 @@ export const useAppTheme = () => {
   // Every theme change flows through here, no matter the source. Keep this
   // one-way: change the theme through Vuetify (`change`/`toggle`) and let
   // the watcher mirror it outwards. Never write data-theme directly.
+  //
+  // Deliberately NOT immediate. At setup the name is still the SSR default
+  // ('dark'), so an immediate run would write 'dark' to localStorage and
+  // destroy a saved 'light' preference before syncTheme() gets to read it.
   if (import.meta.client) {
     watch(
       () => theme.name.value,
@@ -19,7 +23,6 @@ export const useAppTheme = () => {
         document.documentElement.setAttribute('data-theme', name)
         document.documentElement.style.colorScheme = name
       },
-      { immediate: true },
     )
   }
 
