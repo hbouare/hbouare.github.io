@@ -43,7 +43,12 @@
       "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.stat-box'\\)\\).backgroundColor\")",
       "Bash(playwright-cli --raw eval \"window.scrollTo\\(0, 1200\\)\")",
       "Bash(playwright-cli --raw eval \"Array.from\\(document.querySelectorAll\\('.reveal-block'\\)\\).filter\\(e=>getComputedStyle\\(e\\).opacity==='1'\\).length\")",
-      "Bash(playwright-cli --raw eval \"document.querySelectorAll\\('.reveal-block'\\).length\")"
+      "Bash(playwright-cli --raw eval \"document.querySelectorAll\\('.reveal-block'\\).length\")",
+      "Bash(python -c ' *)",
+      "Bash(yarn test:e2e)",
+      "Bash(yarn test:e2e --project=desktop -g \"/ renders\")",
+      "Bash(npx playwright *)",
+      "Bash(grep -v \"^\\\\s*$\")"
     ],
     "deny": [
       "Bash(**/.env)",

@@ -185,7 +185,7 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
   border: 1px solid rgb(var(--v-theme-border));
   padding: 1.5rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--type-code);
   line-height: 2;
 }
 .code-line {

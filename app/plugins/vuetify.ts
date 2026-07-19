@@ -110,17 +110,13 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
   nuxtApp.vueApp.use(vuetify)
 
-  // Restore the saved theme on the client.
+  // NOTE: the saved theme is deliberately NOT restored here.
   //
-  // Vuetify 4 removed writable `theme.global.name` — assigning it hits a
-  // deprecation Proxy that is a no-op in production builds, so the theme
-  // silently never changes. `change()` is the supported API. No transition
-  // here: the initial restore must be instant, before first paint.
-  if (import.meta.client) {
-    const resolved =
-      document.documentElement.getAttribute('data-theme')
-      || localStorage.getItem('portfolio-theme')
-      || 'dark'
-    vuetify.theme.change(resolved)
-  }
+  // Calling theme.change() during plugin install races hydration: Vue then
+  // re-patches .v-application back to the SSR-rendered theme, leaving
+  // data-theme="light" while the app stays v-theme--dark. It reproduces
+  // intermittently, so it survives casual manual testing.
+  //
+  // The restore happens in app.vue's onMounted (via syncTheme), after
+  // hydration and before the anti-flash reveal. See CLAUDE.md.
 })

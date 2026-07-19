@@ -216,11 +216,11 @@ function setupCopyButtons() {
   }
 
   :deep(h2) {
-    font-size: 1.75rem;
+    font-size: var(--type-prose-h2);
   }
 
   :deep(h3) {
-    font-size: 1.25rem;
+    font-size: var(--type-title);
   }
 
   :deep(p) {
@@ -239,7 +239,7 @@ function setupCopyButtons() {
     padding: 1.25rem;
     margin: 0;
     overflow-x: auto;
-    font-size: 0.72rem;
+    font-size: var(--type-code);
   }
 
   :deep(.copy-btn) {
@@ -247,7 +247,7 @@ function setupCopyButtons() {
     top: 0.5rem;
     right: 0.5rem;
     padding: 0.25rem 0.6rem;
-    font-size: 0.55rem;
+    font-size: calc(var(--type-code) * 0.8);
     letter-spacing: 0.05em;
     text-transform: uppercase;
     background: rgb(var(--v-theme-surface-2));

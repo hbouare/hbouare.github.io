@@ -27,8 +27,12 @@
   --type-display-lg: 48px;
 
   // Fixed tiers
+  --type-prose-h2: 28px;
   --type-title: 20px;
   --type-body-lg: 16px;
+  // Code tier — the one place the mono family is used. Shared by prose code
+  // blocks, inline code and the decorative code plate so they stay in step.
+  --type-code: 13px;
   --type-body-md: 16px;
   --type-button-cap: 13px;
   --type-micro-cap: 12px;

@@ -23,6 +23,11 @@ useHead(() => ({
 
 // Fix #4: attendre que Vuetify ait peint les bonnes CSS variables avant de révéler.
 onMounted(() => {
+  // Restore the saved theme AFTER hydration. Doing it in the Vuetify plugin
+  // instead races hydration, which re-patches .v-application back to the
+  // SSR theme — the DOM ends up light while Vuetify stays dark.
+  syncTheme()
+
   nextTick(() => {
     requestAnimationFrame(() => {
       document.documentElement.classList.add('hydrated')
