@@ -3,12 +3,12 @@
   <div class="blog-layout">
     <!-- Main content -->
     <div class="blog-main">
-      <v-container class="px-6 px-md-10" fluid style="max-width: 800px">
+      <v-container class="px-6 px-md-10" fluid >
         <div class="section-v-pad">
           <UiRevealBlock>
             <NuxtLink
               :to="localePath('/blog')"
-              class="back-link font-mono text-muted"
+              class="back-link type-micro-cap text-muted"
             >
               <v-icon size="14" class="mr-1">mdi-arrow-left</v-icon>
               {{ $t("blog.view_all") }}
@@ -17,64 +17,40 @@
 
           <!-- Skeleton while loading -->
           <div v-if="!post && !postError" class="py-8">
-            <v-skeleton-loader
-              type="heading"
-              color="surface"
-              rounded="0"
-              class="mb-6"
-            />
-            <v-skeleton-loader
-              type="paragraph"
-              color="surface"
-              rounded="0"
-              class="mb-4"
-            />
-            <v-skeleton-loader
-              type="paragraph"
-              color="surface"
-              rounded="0"
-              class="mb-4"
-            />
-            <v-skeleton-loader type="paragraph" color="surface" rounded="0" />
+            <v-skeleton-loader type="heading" class="mb-6" />
+            <v-skeleton-loader type="paragraph" class="mb-4" />
+            <v-skeleton-loader type="paragraph" class="mb-4" />
+            <v-skeleton-loader type="paragraph" />
           </div>
 
           <div v-if="post">
             <UiRevealBlock>
               <div class="d-flex align-center ga-3 mb-6 flex-wrap">
-                <span class="font-mono text-muted blog-meta">{{
+                <span class="type-micro-cap text-muted">{{
                   formatDate(post.date)
                 }}</span>
-                <span class="font-mono text-muted">·</span>
-                <span class="font-mono text-muted blog-meta"
+                <span class="type-micro-cap text-muted">·</span>
+                <span class="type-micro-cap text-muted"
                   >{{ post.readTime }} {{ $t("blog.min_read") }}</span
                 >
               </div>
 
-              <h1 class="post-title font-playfair">{{ post.title }}</h1>
+              <h1 class="post-title type-display-lg">{{ post.title }}</h1>
 
               <div class="d-flex flex-wrap ga-1 mt-5">
-                <v-chip
-                  v-for="tag in post.tags"
-                  :key="tag"
-                  variant="outlined"
-                  color="primary"
-                  rounded="0"
-                  size="x-small"
-                  class="font-mono"
-                  >{{ tag }}</v-chip
-                >
+                <v-chip v-for="tag in post.tags" :key="tag" size="x-small">{{ tag }}</v-chip>
               </div>
             </UiRevealBlock>
 
-            <v-divider class="my-10" :color="'primary'" opacity="0.15" />
+            <v-divider class="my-10" />
 
-            <div ref="contentRef" class="post-content font-mono">
+            <div ref="contentRef" class="post-content">
               <ContentRenderer :value="post" />
             </div>
           </div>
 
           <div v-else-if="postError" class="text-center py-20">
-            <p class="font-mono text-muted">Article introuvable.</p>
+            <p class="type-body-md text-muted">{{ $t("blog.not_found") }}</p>
           </div>
         </div>
       </v-container>
@@ -200,54 +176,51 @@ function setupCopyButtons() {
   padding-right: 1rem;
 }
 
+// Size and tracking come from .type-micro-cap.
 .back-link {
   display: inline-flex;
   align-items: center;
-  font-size: 0.65rem;
-  letter-spacing: 0.05em;
   text-decoration: none;
   margin-bottom: 2rem;
   transition: color 0.2s ease;
 
-  &:hover {
-    color: rgb(var(--v-theme-primary)) !important;
+  &:hover,
+  &:focus-visible {
+    color: rgb(var(--v-theme-on-background));
   }
 }
 
-.blog-meta {
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-}
-
-.post-title {
-  font-size: clamp(32px, 4vw, 52px);
-  font-weight: 900;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-
+// Long-form prose. Body runs at the reading tier, not the UI tier — this
+// is the one surface where line length and leading matter most.
 .post-content {
-  font-size: 0.82rem;
-  line-height: 2;
+  font-size: var(--type-body-lg);
+  line-height: 1.8;
   color: rgb(var(--v-theme-on-background));
 
-  :deep(h1),
   :deep(h2),
   :deep(h3) {
-    font-family: "Playfair Display", serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.4px;
     margin-top: 2em;
     margin-bottom: 0.5em;
     color: rgb(var(--v-theme-on-background));
   }
 
+  // Nuxt Content wraps headings in an anchor for deep-linking; the UA
+  // underline on it must not read as a link inside the prose.
+  :deep(h2 a),
+  :deep(h3 a) {
+    text-decoration: none;
+    color: inherit;
+  }
+
   :deep(h2) {
-    font-size: 1.6rem;
+    font-size: 1.75rem;
   }
 
   :deep(h3) {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
   }
 
   :deep(p) {
@@ -262,7 +235,7 @@ function setupCopyButtons() {
 
   :deep(pre) {
     background: rgb(var(--v-theme-surface));
-    border: 1px solid rgba(var(--v-theme-primary), 0.12);
+    border: 1px solid rgb(var(--v-theme-border));
     padding: 1.25rem;
     margin: 0;
     overflow-x: auto;
@@ -277,26 +250,26 @@ function setupCopyButtons() {
     font-size: 0.55rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    background: rgba(var(--v-theme-primary), 0.08);
+    background: rgb(var(--v-theme-surface-2));
     color: rgb(var(--v-theme-muted));
-    border: 1px solid rgba(var(--v-theme-primary), 0.15);
+    border: 1px solid rgb(var(--v-theme-border));
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: "DM Mono", monospace;
+    font-family: var(--font-mono);
   }
 
   :deep(.copy-btn:hover) {
-    background: rgba(var(--v-theme-primary), 0.15);
-    color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-background));
+    border-color: rgb(var(--v-theme-on-background));
   }
 
   :deep(.copy-btn--success) {
-    color: rgb(var(--v-theme-primary));
-    border-color: rgba(var(--v-theme-primary), 0.3);
+    color: rgb(var(--v-theme-on-background));
+    border-color: rgb(var(--v-theme-on-background));
   }
 
   :deep(code) {
-    font-family: "DM Mono", monospace;
+    font-family: var(--font-mono);
   }
 
   :deep(ul),
@@ -310,8 +283,10 @@ function setupCopyButtons() {
     color: rgb(var(--v-theme-muted));
   }
 
+  // Emphasis is weight + full-ink colour, never a hue.
   :deep(strong) {
-    color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-background));
+    font-weight: 700;
   }
 }
 </style>

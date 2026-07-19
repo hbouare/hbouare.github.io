@@ -1,14 +1,53 @@
 {
-    "env": {
-        "CLAUDE_CODE_HIDE_ACCOUNT_INFO": "1"
-    },
-    "permissions": {
-        "deny": [
-            "Bash(**/.env)",
-            "Read(**/.env)",
-            "Write(**/.env)"
-        ]
-    },
-    "model": "opus",
-    "alwaysThinkingEnabled": true
+  "env": {
+    "CLAUDE_CODE_HIDE_ACCOUNT_INFO": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(awk '{print \"entry.css:\", $5, \"octets\"}')",
+      "Bash(yarn typecheck *)",
+      "Read(//c/Users/hamed/AppData/Local/ms-playwright/**)",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Read(//c/Program Files \\\\\\(x86\\\\\\)/Microsoft/Edge/Application/**)",
+      "Bash(node -e \"try{const p=require\\('playwright'\\);console.log\\('playwright resolvable localement'\\)}catch\\(e\\){console.log\\('non resolvable dans le projet'\\)}\")",
+      "Bash(npm ls *)",
+      "Read(//c/Users/hamed/AppData/Local/ms-playwright/b/**)",
+      "Bash(npx --yes serve .output/public -l 4173)",
+      "Bash(curl -s -o /dev/null -w \"serveur: HTTP %{http_code}\\\\n\" http://localhost:4173/)",
+      "Bash(curl -s -o /dev/null -w \"/projects: HTTP %{http_code}\\\\n\" http://localhost:4173/projects)",
+      "Skill(playwright-cli)",
+      "Skill(playwright-cli:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(playwright-cli open *)",
+      "Bash(playwright-cli --raw eval \"document.querySelector\\('.v-application'\\)?.className\")",
+      "Bash(playwright-cli --raw eval \"document.documentElement.getAttribute\\('data-theme'\\)\")",
+      "Bash(playwright-cli click *)",
+      "Bash(playwright-cli --raw localstorage-get portfolio-theme)",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.v-application'\\)\\).backgroundColor\")",
+      "Bash(playwright-cli --raw console)",
+      "Bash(playwright-cli --raw eval \"const b=document.querySelector\\('button.theme-toggle'\\); JSON.stringify\\({found:!!b, rect:b&&b.getBoundingClientRect\\(\\), visible:b&&getComputedStyle\\(b\\).visibility}\\)\")",
+      "Bash(playwright-cli --raw eval \"!!document.querySelector\\('button.theme-toggle'\\)\")",
+      "Bash(playwright-cli --raw eval \"JSON.stringify\\(document.querySelector\\('button.theme-toggle'\\).getBoundingClientRect\\(\\)\\)\")",
+      "Bash(playwright-cli --raw eval \"document.querySelectorAll\\('button.theme-toggle'\\).length\")",
+      "Bash(node -p \"JSON.stringify\\(require\\('./i18n/locales/fr.json'\\).nav,null,1\\)\")",
+      "Bash(node -p \"JSON.stringify\\(require\\('./i18n/locales/en.json'\\).nav,null,1\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(playwright-cli --raw eval \"document.querySelectorAll\\('.hero-cta'\\).length\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.hero-cta'\\)\\).backgroundColor\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.hero-cta'\\)\\).color\")",
+      "Bash(playwright-cli --raw eval \"document.querySelector\\('.hero-cta'\\).textContent.trim\\(\\)\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.stat-number'\\)\\).color\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.stat-number'\\)\\).opacity\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.stat-box'\\)\\).color\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.stat-box'\\)\\).backgroundColor\")"
+    ],
+    "deny": [
+      "Bash(**/.env)",
+      "Read(**/.env)",
+      "Write(**/.env)"
+    ]
+  },
+  "model": "opus",
+  "alwaysThinkingEnabled": true
 }

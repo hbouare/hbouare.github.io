@@ -1,56 +1,40 @@
 <template>
   <section class="hero-section">
-    <!-- Background ghost text -->
-    <!-- <div class="hero-bg-text font-playfair" aria-hidden="true">
-      {{ isDark ? "Build" : "Create" }}
-    </div> -->
-
     <v-container class="hero-inner px-6 px-md-10" fluid>
       <v-row align="center" class="min-h-screen py-24">
         <!-- LEFT -->
         <v-col cols="12" md="7" class="hero-left">
-          <p class="hero-tag font-mono text-primary section-label animate-1">
+          <UiEyebrow class="hero-tag animate-1">
             {{ $t("hero.tag") }}
-          </p>
-          <h1 class="hero-title font-playfair animate-2">
+          </UiEyebrow>
+          <UiDisplayTitle tag="h1" level="xxl" class="animate-2">
             {{ $t("hero.title_1") }}<br />
-            <em class="text-primary">{{ $t("hero.title_em") }}</em
+            <span class="text-muted">{{ $t("hero.title_em") }}</span
             ><br />
             {{ $t("hero.title_3") }}
-          </h1>
-          <p class="hero-subtitle font-mono animate-3">
+          </UiDisplayTitle>
+          <p class="hero-subtitle type-body-lg text-muted animate-3">
             {{ $t("hero.subtitle") }}
           </p>
 
+          <!--
+            The system allows a single ghost pill per band. All three
+            destinations are kept (none of them is redundant), but only the
+            primary one takes the pill; the other two drop to text links so
+            the band still reads as having one CTA.
+          -->
           <div class="d-flex align-center ga-4 mt-10 animate-4 flex-wrap">
-            <v-btn
-              :to="localePath('/projects')"
-              color="primary"
-              variant="flat"
-              rounded="0"
-              size="large"
-              class="font-mono text-uppercase hero-cta"
-            >
+            <v-btn :to="localePath('/projects')" size="large">
               {{ $t("hero.cta_projects") }}
             </v-btn>
-            <v-btn
-              :to="localePath('/contact')"
-              color="primary"
-              variant="flat"
-              rounded="0"
-              size="large"
-              class="font-mono text-uppercase hero-cta"
-            >
+            <v-btn :to="localePath('/contact')" variant="text" size="large">
               {{ $t("hero.cta_contact") }}
             </v-btn>
             <v-btn
               :href="`/cv/cv-hamed-bouare-${locale}.pdf`"
               download
-              color="primary"
-              variant="flat"
-              rounded="0"
+              variant="text"
               size="large"
-              class="font-mono text-uppercase hero-cta"
             >
               {{ $t("hero.cta_cv") }}
             </v-btn>
@@ -58,19 +42,11 @@
 
           <!-- International pills -->
           <div class="animate-5 mt-12">
-            <p class="font-mono text-muted section-label mb-3">
+            <UiEyebrow tone="muted" class="mb-3">
               {{ $t("hero.intl_label") }}
-            </p>
+            </UiEyebrow>
             <div class="d-flex flex-wrap ga-2">
-              <v-chip
-                v-for="country in countries"
-                :key="country"
-                variant="outlined"
-                color="primary"
-                rounded="0"
-                class="font-mono"
-                size="small"
-              >
+              <v-chip v-for="country in countries" :key="country">
                 {{ country }}
               </v-chip>
             </div>
@@ -81,8 +57,14 @@
         <v-col cols="12" md="5" class="d-none d-md-flex justify-end animate-4">
           <v-row ref="statsRef" class="stats-grid" no-gutters>
             <v-col v-for="(stat, index) in stats" :key="stat.key" cols="6">
-              <v-card class="stat-box pa-5" color="surface" variant="outlined">
-                <div class="stat-number font-playfair text-primary">
+              <!--
+                No `color` prop: on an outlined card Vuetify applies it to
+                the text and border, not the background. `color="surface"`
+                was painting the label in the surface colour — invisible
+                against the canvas.
+              -->
+              <v-card class="stat-box hairline-interactive pa-5" variant="outlined">
+                <div class="stat-number">
                   <template v-if="stat.numeric !== undefined">
                     <span>{{ statsStarted ? animatedValues[index] : 0 }}</span>
                     <span v-if="stat.suffix" class="stat-suffix">{{
@@ -107,7 +89,7 @@
                     </svg>
                   </template>
                 </div>
-                <div class="stat-label font-mono text-muted mt-1">
+                <div class="stat-label type-micro-cap text-muted mt-1">
                   {{ $t(`hero.${stat.key}`) }}
                 </div>
               </v-card>
@@ -118,7 +100,7 @@
     </v-container>
 
     <!-- Scroll indicator -->
-    <div class="scroll-hint font-mono text-muted animate-5" aria-hidden="true">
+    <div class="scroll-hint type-micro-cap text-muted animate-5" aria-hidden="true">
       <span class="scroll-line" />
       Scroll
     </div>
@@ -126,7 +108,6 @@
 </template>
 
 <script setup lang="ts">
-const { isDark } = useAppTheme()
 const localePath = useLocalePath()
 
 const { t, locale } = useI18n()
@@ -193,21 +174,6 @@ onMounted(() => {
   min-height: 100vh;
   overflow: hidden;
 }
-.hero-bg-text {
-  position: absolute;
-  top: 50%;
-  left: -10px;
-  transform: translateY(-50%);
-  font-size: clamp(100px, 17vw, 240px);
-  font-weight: 900;
-  font-style: italic;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(var(--v-theme-primary), 0.06);
-  white-space: nowrap;
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
-}
 .hero-inner {
   position: relative;
   z-index: 1;
@@ -215,46 +181,24 @@ onMounted(() => {
 .min-h-screen {
   min-height: 100vh;
 }
-.py-24 {
-  padding-top: 6.5rem;
-  padding-bottom: 6.5rem;
 
-  @media (max-width: 959px) {
-    padding-top: 4.5rem;
-    padding-bottom: 4.5rem;
-  }
-  @media (max-width: 599px) {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
+// Vertical rhythm follows the shared section token — the three duplicated
+// breakpoint blocks that used to live here are gone.
+.py-24 {
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 
+// Size comes from the micro-cap tier; only the rhythm is local.
 .hero-tag {
-  font-size: 0.82rem;
   margin-bottom: 1.5rem;
 }
-.hero-title {
-  font-size: 90px;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  em {
-    font-style: italic;
-  }
-}
 .hero-subtitle {
-  font-size: 0.82rem;
-  line-height: 1.9;
-  color: rgb(var(--v-theme-muted));
   margin-top: 1.5rem;
   max-width: 440px;
 }
-.hero-cta {
-  font-size: 0.82rem;
-  letter-spacing: 0.12em;
-}
 
-// Stats — border-color handled by global .v-card--variant-outlined override
+// Stats — border colour and hover come from .hairline-interactive.
 .stats-grid {
   width: 320px;
 }
@@ -263,13 +207,10 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  transition: border-color 0.3s;
-  &:hover {
-    border-color: rgba(var(--v-theme-primary), 0.45);
-  }
 }
 .stat-number {
-  font-size: 2.6rem;
+  font-family: var(--font-display);
+  font-size: var(--type-display-lg);
   font-weight: 700;
   line-height: 1;
 }
@@ -298,20 +239,11 @@ onMounted(() => {
     stroke-dashoffset: 0;
   }
 }
-.stat-label {
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-// Scroll hint
+// Scroll hint — the micro-cap tier supplies size and tracking.
 .scroll-hint {
   position: absolute;
   bottom: 36px;
   right: 50px;
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -321,46 +253,12 @@ onMounted(() => {
   display: block;
   width: 1px;
   height: 44px;
-  background: rgb(var(--v-theme-primary));
+  background: rgb(var(--v-theme-on-background));
   animation: scrollPulse 2s ease-in-out infinite;
 }
 
-// Responsive text sizes — decrease per breakpoint
-// Tablet (< 960px)
-@media (max-width: 959px) {
-  .hero-title {
-    font-size: 60px;
-  }
-  .hero-tag,
-  .hero-subtitle,
-  .hero-cta {
-    font-size: 0.78rem;
-  }
-  .stat-number {
-    font-size: 2.2rem;
-  }
-  .stat-label {
-    font-size: 0.62rem;
-  }
-  .scroll-hint {
-    font-size: 0.62rem;
-  }
-}
-
-// Mobile (< 600px)
-@media (max-width: 599px) {
-  .hero-title {
-    font-size: 42px;
-  }
-  .hero-tag,
-  .hero-subtitle,
-  .hero-cta {
-    font-size: 0.72rem;
-  }
-  .scroll-hint {
-    font-size: 0.58rem;
-  }
-}
+// No per-component type breakpoints: every tier used here (display-xxl,
+// micro-cap, body-lg) stair-steps from the :root tokens in main.scss.
 
 // Entrance animations
 @for $i from 1 through 5 {

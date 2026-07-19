@@ -14,10 +14,7 @@
           <v-btn
             :to="localePath('/projects')"
             variant="text"
-            color="primary"
-            class="font-mono text-uppercase"
             append-icon="mdi-arrow-right"
-            rounded="0"
           >
             {{ $t("projects.view_all") }}
           </v-btn>
@@ -27,48 +24,29 @@
       <div class="projects-grid">
         <!-- Skeleton loaders while data loads -->
         <template v-if="!projects">
-          <v-skeleton-loader type="card" color="surface" rounded="0" class="mb-1" />
+          <v-skeleton-loader type="card" class="mb-1" />
           <v-row no-gutters class="proj-others-grid">
             <v-col v-for="n in 3" :key="n" cols="12" sm="6" md="4">
-              <v-skeleton-loader type="card" color="surface" rounded="0" />
+              <v-skeleton-loader type="card" />
             </v-col>
           </v-row>
         </template>
 
         <!-- Featured card -->
         <UiRevealBlock v-if="featured">
-          <v-card
-            class="proj-featured"
-            color="surface"
-            variant="outlined"
-            rounded="0"
-          >
+          <v-card class="proj-featured hairline-interactive" variant="outlined">
             <div class="proj-featured-inner">
               <div class="proj-featured-content">
-                <v-chip
-                  color="primary"
-                  variant="flat"
-                  rounded="0"
-                  size="x-small"
-                  class="font-mono mb-4"
-                >
+                <v-chip variant="flat" size="x-small" class="mb-4">
                   {{ $t("projects.featured") }}
                 </v-chip>
-                <p class="proj-num font-mono text-primary mb-4">001</p>
-                <h3 class="proj-title font-playfair">{{ featured.title }}</h3>
-                <div class="proj-body font-mono text-muted mt-3">
+                <p class="proj-num type-micro-cap mb-4">001</p>
+                <h3 class="proj-title type-title">{{ featured.title }}</h3>
+                <div class="proj-body type-body-md text-muted mt-3">
                   <ContentRenderer :value="featured" />
                 </div>
                 <div class="d-flex flex-wrap ga-1 mt-4">
-                  <v-chip
-                    v-for="tag in featured.tags"
-                    :key="tag"
-                    variant="outlined"
-                    color="primary"
-                    rounded="0"
-                    size="x-small"
-                    class="font-mono"
-                  >{{ tag }}</v-chip>
+                  <v-chip v-for="tag in featured.tags" :key="tag" size="x-small">{{ tag }}</v-chip>
                 </div>
               </div>
               <div class="proj-code-box">
@@ -109,33 +87,20 @@
             md="4"
           >
             <UiRevealBlock :delay="i * 100">
-              <v-card
-                class="proj-small"
-                color="surface"
-                variant="outlined"
-                rounded="0"
-              >
+              <v-card class="proj-small hairline-interactive" variant="outlined">
                 <v-card-text class="pa-8">
-                  <p class="proj-num font-mono text-primary mb-3">
+                  <p class="proj-num type-micro-cap mb-3">
                     {{ String(i + 2).padStart(3, "0") }}
                   </p>
-                  <h3 class="proj-title font-playfair">{{ proj.title }}</h3>
-                  <div class="proj-body font-mono text-muted mt-3">
+                  <h3 class="proj-title type-title">{{ proj.title }}</h3>
+                  <div class="proj-body type-body-md text-muted mt-3">
                     <ContentRenderer :value="proj" />
                   </div>
                   <div class="d-flex flex-wrap ga-1 mt-4">
-                    <v-chip
-                      v-for="tag in proj.tags"
-                      :key="tag"
-                      variant="outlined"
-                      color="primary"
-                      rounded="0"
-                      size="x-small"
-                      class="font-mono"
-                    >{{ tag }}</v-chip>
+                    <v-chip v-for="tag in proj.tags" :key="tag" size="x-small">{{ tag }}</v-chip>
                   </div>
                   <v-icon
-                    class="proj-arrow text-primary"
+                    class="proj-arrow"
                     icon="mdi-arrow-top-right"
                     size="small"
                   />
@@ -168,13 +133,7 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
   gap: 2px;
 }
 
-// Featured card — border-color default set by global override
-.proj-featured {
-  transition: border-color 0.4s;
-  &:hover {
-    border-color: rgba(var(--v-theme-primary), 0.45);
-  }
-}
+// Border colour and hover come from .hairline-interactive.
 .proj-featured-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -190,10 +149,9 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
 }
 .proj-small {
   height: 100%;
-  transition: border-color 0.4s, transform 0.3s;
+  transition: transform 0.3s;
   position: relative;
   &:hover {
-    border-color: rgba(var(--v-theme-primary), 0.45);
     transform: translateY(-3px);
   }
   &:hover .proj-arrow {
@@ -201,22 +159,11 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
     transform: translate(0, 0);
   }
 }
-.proj-num {
-  font-size: 0.62rem;
-  letter-spacing: 0.15em;
+// Sizes come from the type tiers — nothing is restated here.
+.proj-body :deep(p) {
+  margin: 0;
 }
-.proj-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-.proj-body {
-  font-size: 0.7rem;
-  line-height: 1.8;
-  :deep(p) {
-    margin: 0;
-  }
-}
+
 .proj-arrow {
   position: absolute;
   bottom: 24px;
@@ -226,13 +173,19 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
   transition: all 0.3s;
 }
 
-// Code box
+// Decorative code plate. This is the one place the mono family is allowed
+// outside real code blocks, because the plate *is* a depiction of code.
+//
+// Syntax "highlighting" is monochrome: the palette has no accent hues, so
+// the token classes differentiate by weight and opacity instead. (They
+// previously pointed at --v-theme-accent and --v-theme-secondary, which no
+// longer exist in the palette and resolved to nothing.)
 .proj-code-box {
   background: rgb(var(--v-theme-background));
-  border: 1px solid rgba(var(--v-theme-primary), 0.12);
+  border: 1px solid rgb(var(--v-theme-border));
   padding: 1.5rem;
-  font-family: "DM Mono", monospace;
-  font-size: 0.62rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   line-height: 2;
 }
 .code-line {
@@ -242,7 +195,15 @@ const others = computed(() => projects.value?.filter((p) => !p.featured) ?? [])
 .code-indent {
   padding-left: 1rem;
 }
-.code-secondary { color: rgb(var(--v-theme-secondary)); }
-.code-accent { color: rgb(var(--v-theme-accent)); }
-.code-primary { color: rgb(var(--v-theme-primary)); }
+.code-secondary {
+  color: rgb(var(--v-theme-on-background));
+}
+.code-accent {
+  color: rgb(var(--v-theme-on-background));
+  font-weight: 700;
+}
+.code-primary {
+  color: rgb(var(--v-theme-on-background));
+  opacity: 0.75;
+}
 </style>

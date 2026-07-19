@@ -5,22 +5,20 @@
         <!-- Left: title + description + social icons -->
         <v-col cols="12" md="5">
           <UiRevealBlock>
-            <p class="font-mono text-primary section-label mb-4">
-              {{ $t("contact.section") }}
-            </p>
-            <h2 class="contact-title font-playfair">
+            <UiEyebrow class="mb-4">{{ $t("contact.section") }}</UiEyebrow>
+            <UiDisplayTitle tag="h2" level="xl">
               {{ $t("contact.title_1") }}<br />
-              <em class="text-primary">{{ $t("contact.title_em") }}</em>
-            </h2>
-            <p class="font-mono text-muted contact-desc mt-6">
+              <span class="text-muted">{{ $t("contact.title_em") }}</span>
+            </UiDisplayTitle>
+            <p class="type-body-lg text-muted contact-desc mt-6">
               {{ $t("contact.desc") }}
             </p>
 
             <!-- Social icons -->
             <div class="mt-8">
-              <p class="font-mono text-muted social-label mb-3">
+              <UiEyebrow tone="muted" class="mb-3">
                 {{ $t("contact.socials") }}
-              </p>
+              </UiEyebrow>
               <div class="d-flex ga-3">
                 <v-btn
                   v-for="social in socials"
@@ -30,9 +28,8 @@
                   rel="noopener noreferrer"
                   :icon="social.icon"
                   variant="outlined"
-                  color="primary"
+                  rounded="circle"
                   size="small"
-                  rounded="0"
                 />
               </div>
             </div>
@@ -42,49 +39,34 @@
         <!-- Right: contact form -->
         <v-col cols="12" md="7">
           <UiRevealBlock :delay="200">
-            <div class="contact-form-wrap">
+            <div class="contact-form-wrap hairline-interactive">
               <v-form ref="formRef" @submit.prevent="submitForm">
                 <v-text-field
                   v-model="form.name"
                   :label="$t('contact.form_name')"
-                  variant="outlined"
-                  color="primary"
-                  base-color="muted"
-                  bg-color="surface"
-                  class="font-mono mb-1"
+                  class="mb-1"
                   :rules="[rules.name]"
                   validate-on="blur"
                   density="comfortable"
-                  rounded="0"
                 />
                 <v-text-field
                   v-model="form.email"
                   :label="$t('contact.form_email')"
-                  variant="outlined"
-                  color="primary"
-                  base-color="muted"
-                  bg-color="surface"
                   type="email"
-                  class="font-mono mb-1"
+                  class="mb-1"
                   :rules="[rules.email, rules.emailFormat]"
                   validate-on="blur"
                   density="comfortable"
-                  rounded="0"
                 />
                 <v-textarea
                   v-model="form.message"
                   :label="$t('contact.form_message')"
-                  variant="outlined"
-                  color="primary"
-                  base-color="muted"
-                  bg-color="surface"
-                  class="font-mono mb-2"
+                  class="mb-2"
                   :rules="[rules.message]"
                   validate-on="blur"
                   rows="5"
                   auto-grow
                   density="comfortable"
-                  rounded="0"
                 />
 
                 <!-- Feedback message -->
@@ -93,8 +75,7 @@
                     v-if="sent"
                     type="success"
                     variant="tonal"
-                    rounded="0"
-                    class="font-mono mb-4"
+                    class="mb-4"
                     density="compact"
                     icon="mdi-check-circle"
                   >
@@ -104,8 +85,7 @@
                     v-else-if="errorMsg"
                     type="error"
                     variant="tonal"
-                    rounded="0"
-                    class="font-mono mb-4"
+                    class="mb-4"
                     density="compact"
                     icon="mdi-alert-circle"
                   >
@@ -115,11 +95,7 @@
 
                 <v-btn
                   type="submit"
-                  color="primary"
-                  variant="flat"
-                  rounded="0"
                   size="large"
-                  class="font-mono text-uppercase"
                   :loading="sending"
                   :disabled="!canSubmit"
                   append-icon="mdi-arrow-right"
@@ -135,29 +111,22 @@
 
     <!-- Confirmation dialog -->
     <v-dialog v-model="showConfirm" max-width="440" persistent>
-      <v-card color="surface" rounded="0" class="confirm-dialog">
-        <v-card-title class="font-playfair text-primary pa-6 pb-2">
+      <v-card color="surface" class="confirm-dialog">
+        <v-card-title class="type-title pa-6 pb-2">
           {{ $t("contact.confirm_title") }}
         </v-card-title>
-        <v-card-text class="font-mono text-muted pa-6 pt-2">
+        <v-card-text class="type-body-md text-muted pa-6 pt-2">
           {{ $t("contact.confirm_text") }}
         </v-card-text>
         <v-card-actions class="pa-6 pt-0">
           <v-spacer />
           <v-btn
-            variant="outlined"
-            color="muted"
-            rounded="0"
-            class="font-mono text-uppercase"
+            variant="text"
             @click="showConfirm = false"
           >
             {{ $t("contact.confirm_cancel") }}
           </v-btn>
           <v-btn
-            variant="flat"
-            color="primary"
-            rounded="0"
-            class="font-mono text-uppercase"
             :loading="sending"
             @click="sendEmail"
           >
@@ -258,51 +227,25 @@ const sendEmail = async () => {
 </script>
 
 <style scoped lang="scss">
+// Vertical rhythm follows the shared section token — the two duplicated
+// breakpoint blocks that used to live here are gone.
 .section-contact {
-  padding: 6.5rem 0;
+  padding: var(--section-pad) 0;
   background: rgb(var(--v-theme-background));
+}
 
-  @media (max-width: 959px) {
-    padding: 4.5rem 0;
-  }
-  @media (max-width: 599px) {
-    padding: 3rem 0;
-  }
-}
-.contact-title {
-  font-size: clamp(44px, 5vw, 80px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  em {
-    font-style: italic;
-  }
-}
-.contact-desc {
-  font-size: 0.8rem;
-  line-height: 1.9;
-}
-.social-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-:deep(.d-flex.ga-3 > .v-btn--variant-outlined .v-btn__overlay) {
-  opacity: 0 !important;
-}
+// Form panel — hairline surface; hover comes from .hairline-interactive.
 .contact-form-wrap {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(var(--v-theme-primary), 0.12);
+  border: 1px solid rgb(var(--v-theme-border));
   padding: 2.5rem;
-  transition: border-color 0.3s;
-  &:hover {
-    border-color: rgba(var(--v-theme-primary), 0.45);
-  }
+
   @media (max-width: 599px) {
     padding: 1.5rem;
   }
 }
+
 .confirm-dialog {
-  border: 1px solid rgba(var(--v-theme-primary), 0.12);
+  border: 1px solid rgb(var(--v-theme-border));
 }
 </style>

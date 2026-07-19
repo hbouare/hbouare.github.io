@@ -5,7 +5,9 @@
     "projects": "Projects",
     "blog": "Blog",
     "contact": "Contact",
-    "hire": "Hire me"
+    "hire": "Hire me",
+    "scroll_top": "Back to top",
+    "menu": "Open menu"
   },
   "hero": {
     "tag": "Full-Stack · Data Engineer · DevOps",
@@ -58,7 +60,8 @@
     "meta_desc": "Articles on development, data engineering and web technologies.",
     "toc": "Table of contents",
     "copied": "Copied!",
-    "copy_code": "Copy"
+    "copy_code": "Copy",
+    "not_found": "Post not found."
   },
   "travel": {
     "section": "05 — International",

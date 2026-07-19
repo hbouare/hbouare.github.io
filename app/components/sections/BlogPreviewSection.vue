@@ -13,10 +13,7 @@
           <v-btn
             :to="localePath('/blog')"
             variant="text"
-            color="primary"
-            class="font-mono text-uppercase"
             append-icon="mdi-arrow-right"
-            rounded="0"
           >
             {{ $t("blog.view_all") }}
           </v-btn>
@@ -26,19 +23,19 @@
       <!-- Skeleton loaders while data loads -->
       <v-row v-if="!posts">
         <v-col v-for="n in 2" :key="n" cols="12" md="6">
-          <v-skeleton-loader type="article" color="background" rounded="0" />
+          <v-skeleton-loader type="article" />
         </v-col>
       </v-row>
 
       <v-row v-else>
         <v-col v-for="(post, i) in posts" :key="post.slug" cols="12" md="6">
           <UiRevealBlock :delay="i * 150">
-            <UiBlogCard :post="post" card-color="background" accent-bar />
+            <UiBlogCard :post="post" accent-bar />
           </UiRevealBlock>
         </v-col>
       </v-row>
 
-      <div v-if="!posts?.length" class="font-mono text-muted text-center py-12">
+      <div v-if="!posts?.length" class="type-body-md text-muted text-center py-12">
         {{ $t("blog.no_posts") }}
       </div>
     </v-container>

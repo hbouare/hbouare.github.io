@@ -25,7 +25,7 @@ export default defineNuxtConfig({
           // Fix #3: CSS anti-flash INLINE dans le <head>, pas dans un fichier externe.
           // Fix #1: opacity:0 au lieu de visibility:hidden (rien ne passe à travers).
           innerHTML:
-            'html,body{margin:0;background:#0a0a08}html[data-theme="light"],html[data-theme="light"] body{background:#faf8f4}html:not(.hydrated) body{opacity:0}html.hydrated body{transition:opacity .1s}',
+            'html,body{margin:0;background:#000}html[data-theme="light"],html[data-theme="light"] body{background:#fff}html:not(.hydrated) body{opacity:0}html.hydrated body{transition:opacity .1s}',
           tagPosition: "head",
         },
       ],
@@ -77,7 +77,11 @@ export default defineNuxtConfig({
         },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400&family=Syne:wght@400;600;700;800&display=swap",
+          // Inter is the design system's documented substitute for D-DIN
+          // (display tiers run 700 uppercase with positive tracking).
+          // DM Mono is kept for code only — a deliberate, documented
+          // deviation, since the source system has no monospace tier.
+          href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=DM+Mono:wght@400&display=swap",
         },
       ],
     },

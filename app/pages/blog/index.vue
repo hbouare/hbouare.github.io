@@ -14,7 +14,7 @@
       <!-- Skeleton loaders -->
       <v-row v-if="!posts" class="mt-14">
         <v-col v-for="n in 6" :key="n" cols="12" md="6" lg="4">
-          <v-skeleton-loader type="article" color="surface" rounded="0" />
+          <v-skeleton-loader type="article" />
         </v-col>
       </v-row>
 
@@ -26,7 +26,7 @@
         </v-col>
       </v-row>
 
-      <p v-if="!posts?.length" class="font-mono text-muted text-center py-16">
+      <p v-if="!posts?.length" class="type-body-md text-muted text-center py-16">
         {{ $t("blog.no_posts") }}
       </p>
     </v-container>

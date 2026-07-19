@@ -1,48 +1,63 @@
 // app/plugins/vuetify.ts
 import '@mdi/font/css/materialdesignicons.min.css'
+// Global stylesheet: carries the reset + all helper/utility/grid classes
+// (spacing, flex, display, responsive variants). vite-plugin-vuetify's
+// autoImport only injects per-component styles, so without this the
+// utility classes used across the templates are silently no-ops.
+import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
+// ── Palette ───────────────────────────────────────────────────────────
+// Black-and-white only. The design system treats the absence of a brand
+// accent as load-bearing: hierarchy is carried by type, tracking and
+// hairlines, never by hue. `primary` is therefore the ink/paper colour
+// itself (white on dark, black on light), not a brand tint.
+//
+// The semantic colours below are the one deliberate exception: they exist
+// purely to carry *functional* meaning in forms and feedback, never for
+// decoration. Keep them low-chroma so they read as signal, not brand.
+
 const darkTheme = {
   dark: true,
   colors: {
-    background:  '#0a0a08',
-    surface:     '#111110',
-    'surface-2': '#1a1a18',
-    primary:     '#c9a96e',
-    'primary-lighten': '#e8c97e',
-    secondary:   '#6aad7b',
-    accent:      '#e07050',
-    error:       '#cf6679',
-    warning:     '#e8a558',
-    info:        '#6b9fdf',
-    success:     '#6aad7b',
-    'on-background': '#f5f0e8',
-    'on-surface':    '#f5f0e8',
-    muted:       '#908a7a',
-    border:      '#2a2a28',
+    background: '#000000', // canvas-night
+    surface: '#0a0a0a', // canvas-night-soft
+    'surface-2': '#141417', // derived — the spec has only two dark steps
+    primary: '#ffffff',
+    'on-primary': '#000000',
+    secondary: '#f0f0fa', // on-primary-mute
+    'on-secondary': '#000000',
+    'on-background': '#ffffff',
+    'on-surface': '#ffffff',
+    muted: '#8a8a92', // derived — spec's #f0f0fa is unusable for body meta
+    border: '#3a3a3f', // hairline-on-dark
+    error: '#e5484d',
+    warning: '#e8a33d',
+    info: '#8a95a8',
+    success: '#46a758',
   },
 }
 
 const lightTheme = {
   dark: false,
   colors: {
-    background:  '#faf8f4',
-    surface:     '#f0ebe0',
-    'surface-2': '#e8e2d6',
-    primary:     '#8a6530',
-    'primary-lighten': '#b08840',
-    secondary:   '#2d5038',
-    accent:      '#b03518',
-    error:       '#b03050',
-    warning:     '#a06020',
-    info:        '#2a5590',
-    success:     '#2d5038',
-    'on-background': '#1a1a14',
-    'on-surface':    '#1a1a14',
-    muted:       '#5c5448',
-    border:      '#d0c8b8',
+    background: '#ffffff', // canvas-light
+    surface: '#f0f0fa', // canvas-cool
+    'surface-2': '#e6e6f0', // derived
+    primary: '#000000', // ink
+    'on-primary': '#ffffff',
+    secondary: '#2a2a2f',
+    'on-secondary': '#ffffff',
+    'on-background': '#000000',
+    'on-surface': '#000000',
+    muted: '#5a5a5f', // ink-mute
+    border: '#e0e0e8', // hairline-on-light
+    error: '#c62a2f',
+    warning: '#a86a12',
+    info: '#4a5a70',
+    success: '#2a7a38',
   },
 }
 
@@ -53,35 +68,59 @@ export default defineNuxtPlugin((nuxtApp) => {
     ssr: true,
     theme: {
       defaultTheme: 'dark',
+      // Vuetify 4 drives the theme swap through the View Transition API
+      // natively; `setTransitionOrigin` in useAppTheme supplies the click
+      // point so the reveal grows from the toggle.
+      transition: { duration: '500ms' },
       themes: {
-        dark:  darkTheme,
+        dark: darkTheme,
         light: lightTheme,
       },
     },
+    // ── Shape & type language ──────────────────────────────────────────
+    // Set once here so components never restate it. Radii map to the
+    // system scale: inputs 4px (default), cards 8px ('lg'), CTAs pill.
     defaults: {
+      // The ghost outlined pill is the system's only CTA shape. Because it
+      // is fully expressed by these defaults, there is no wrapper component
+      // for it — use <v-btn> directly.
       VBtn: {
-        style: 'font-family: "DM Mono", monospace; letter-spacing: 0.1em; text-transform: uppercase;',
+        rounded: 'pill',
+        variant: 'outlined',
+        class: 'type-button-cap',
       },
       VCard: {
         elevation: 0,
-        rounded: 0,
+        rounded: 'lg',
       },
       VChip: {
-        rounded: 0,
+        rounded: 'pill',
         size: 'small',
+        variant: 'outlined',
+      },
+      VTextField: {
+        variant: 'outlined',
+        rounded: undefined,
+      },
+      VTextarea: {
+        variant: 'outlined',
+        rounded: undefined,
       },
     },
   })
   nuxtApp.vueApp.use(vuetify)
 
-  // Restore saved theme on client.
-  // Only set the Vuetify theme name — the reactive watcher in useAppTheme
-  // handles DOM attributes, colorScheme, and localStorage automatically.
+  // Restore the saved theme on the client.
+  //
+  // Vuetify 4 removed writable `theme.global.name` — assigning it hits a
+  // deprecation Proxy that is a no-op in production builds, so the theme
+  // silently never changes. `change()` is the supported API. No transition
+  // here: the initial restore must be instant, before first paint.
   if (import.meta.client) {
     const resolved =
       document.documentElement.getAttribute('data-theme')
       || localStorage.getItem('portfolio-theme')
       || 'dark'
-    vuetify.theme.global.name.value = resolved
+    vuetify.theme.change(resolved)
   }
 })

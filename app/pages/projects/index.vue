@@ -12,7 +12,7 @@
     <!-- Skeleton loaders -->
     <div v-if="!projects" class="proj-grid mt-14">
       <div v-for="n in 4" :key="n" class="proj-skeleton">
-        <v-skeleton-loader type="article" color="surface" rounded="0" />
+        <v-skeleton-loader type="article" />
       </div>
     </div>
 
@@ -23,39 +23,24 @@
         :key="proj.id"
         :delay="i * 100"
       >
-        <v-card class="proj-card" color="surface" variant="flat" rounded="0">
+        <v-card class="proj-card hairline-interactive" variant="outlined">
           <div class="proj-accent-bar" />
           <div class="proj-card-inner">
             <div class="d-flex align-center ga-3 mb-3">
-              <span class="proj-num font-mono text-primary">
+              <span class="proj-num type-micro-cap">
                 {{ String(i + 1).padStart(3, "0") }}
               </span>
-              <v-chip
-                v-if="proj.featured"
-                color="primary"
-                variant="flat"
-                rounded="0"
-                size="x-small"
-                class="font-mono"
-              >
+              <v-chip v-if="proj.featured" variant="flat" size="x-small">
                 {{ $t("projects.featured") }}
               </v-chip>
             </div>
-            <h3 class="proj-title font-playfair">{{ proj.title }}</h3>
-            <div class="proj-body font-mono text-muted mt-3">
+            <h3 class="proj-title type-title">{{ proj.title }}</h3>
+            <div class="proj-body type-body-md text-muted mt-3">
               <ContentRenderer :value="proj" />
             </div>
             <div class="proj-card-footer">
               <div class="d-flex flex-wrap ga-1">
-                <v-chip
-                  v-for="tag in proj.tags"
-                  :key="tag"
-                  variant="outlined"
-                  color="primary"
-                  rounded="0"
-                  size="x-small"
-                  class="font-mono"
-                >{{ tag }}</v-chip>
+                <v-chip v-for="tag in proj.tags" :key="tag" size="x-small">{{ tag }}</v-chip>
               </div>
               <div class="proj-actions mt-5">
                 <v-btn
@@ -63,11 +48,7 @@
                   :href="proj.github"
                   target="_blank"
                   rel="noopener"
-                  variant="outlined"
-                  color="primary"
                   size="small"
-                  class="font-mono"
-                  rounded="0"
                 >
                   GitHub
                   <v-icon end size="x-small" icon="mdi-arrow-top-right" />
@@ -77,11 +58,7 @@
                   :href="proj.demo"
                   target="_blank"
                   rel="noopener"
-                  variant="flat"
-                  color="primary"
                   size="small"
-                  class="font-mono"
-                  rounded="0"
                 >
                   Demo
                   <v-icon end size="x-small" icon="mdi-arrow-top-right" />
@@ -126,32 +103,26 @@ const { data: projects } = await useAsyncData(
   }
 }
 
-// Cards — equal height via stretch
+// Cards — equal height via stretch. Hairline + hover come from
+// .hairline-interactive.
 .proj-card {
   position: relative;
   overflow: hidden;
   height: 100%;
-  border: 1px solid rgba(var(--v-theme-primary), 0.08);
-  transition: border-color 0.3s, box-shadow 0.3s;
-  &:hover {
-    border-color: rgba(var(--v-theme-primary), 0.25);
-    .proj-accent-bar {
-      width: 4px;
-    }
-    .proj-title {
-      color: rgb(var(--v-theme-primary));
-    }
+
+  &:hover .proj-accent-bar {
+    width: 4px;
   }
 }
 
-// Left accent bar
+// Left rule — monochrome, the system has no accent colour.
 .proj-accent-bar {
   position: absolute;
   top: 0;
   left: 0;
   width: 2px;
   height: 100%;
-  background: rgb(var(--v-theme-primary));
+  background: rgb(var(--v-theme-on-background));
   transition: width 0.3s ease;
 }
 
@@ -171,23 +142,12 @@ const { data: projects } = await useAsyncData(
   padding-top: 1.25rem;
 }
 
+// Sizes come from the type tiers.
 .proj-num {
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
   display: block;
 }
-.proj-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  line-height: 1.2;
-  transition: color 0.3s;
-}
-.proj-body {
-  font-size: 0.72rem;
-  line-height: 1.8;
-  :deep(p) {
-    margin: 0;
-  }
+.proj-body :deep(p) {
+  margin: 0;
 }
 .proj-actions {
   display: flex;

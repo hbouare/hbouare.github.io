@@ -1,13 +1,7 @@
 <!-- app/components/sections/MarqueeBar.vue -->
 <template>
-  <v-sheet
-    class="marquee-wrap"
-    color="surface"
-    :style="{
-      borderTop: '1px solid rgba(var(--v-theme-primary), 0.12)',
-      borderBottom: '1px solid rgba(var(--v-theme-primary), 0.12)',
-    }"
-  >
+  <!-- Borders are hairline tokens in CSS, not inline styles. -->
+  <v-sheet class="marquee-wrap" color="surface">
     <div
       class="marquee-track"
       @mouseenter="paused = true"
@@ -19,10 +13,10 @@
         :key="i"
         class="marquee-item-wrap"
       >
-        <span v-if="i % 2 === 0" class="marquee-text font-playfair">{{
+        <span v-if="i % 2 === 0" class="marquee-text type-micro-cap">{{
           item
         }}</span>
-        <span v-else class="marquee-dot text-primary">◆</span>
+        <span v-else class="marquee-dot" aria-hidden="true">◆</span>
       </span>
     </div>
   </v-sheet>
@@ -57,6 +51,8 @@ const items = [
 .marquee-wrap {
   padding: 1rem 0;
   overflow: hidden;
+  border-top: 1px solid rgb(var(--v-theme-border));
+  border-bottom: 1px solid rgb(var(--v-theme-border));
 }
 .marquee-track {
   display: flex;
@@ -69,12 +65,11 @@ const items = [
   width: max-content;
 }
 .marquee-text {
-  font-size: 0.85rem;
-  font-style: italic;
   color: rgb(var(--v-theme-muted));
 }
 .marquee-dot {
-  font-size: 0.85rem;
+  color: rgb(var(--v-theme-muted));
+  font-size: 0.7rem;
 }
 
 @keyframes marquee {

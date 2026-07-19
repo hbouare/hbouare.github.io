@@ -8,6 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
     "deploy": "nuxt generate && gh-pages -d .output/public"
   },
   "dependencies": {
@@ -20,12 +21,14 @@
     "nuxt": "^4.0.0",
     "vite-plugin-vuetify": "^2.0.4",
     "vue": "^3.5.13",
-    "vuetify": "^3.8.4"
+    "vuetify": "^4.1.1"
   },
   "devDependencies": {
     "@nuxt/devtools": "^2.4.0",
     "gh-pages": "^6.3.0",
-    "sass": "^1.88.0"
+    "sass": "^1.88.0",
+    "typescript": "^5.9.0",
+    "vue-tsc": "^3.3.7"
   },
   "packageManager": "yarn@1.22.22"
 }

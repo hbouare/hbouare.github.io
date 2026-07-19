@@ -1,7 +1,7 @@
 <!-- app/components/ui/BlogToc.vue -->
 <template>
   <nav v-if="headings.length" class="blog-toc" aria-label="Table of contents">
-    <p class="toc-title font-mono">{{ $t('blog.toc') }}</p>
+    <p class="toc-title type-micro-cap">{{ $t('blog.toc') }}</p>
     <ul class="toc-list">
       <li
         v-for="heading in headings"
@@ -14,7 +14,7 @@
       >
         <a
           :href="`#${heading.id}`"
-          class="toc-link font-mono"
+          class="toc-link type-caption"
           @click.prevent="scrollTo(heading.id)"
         >
           {{ heading.text }}
@@ -47,14 +47,13 @@ function scrollTo(id: string) {
   max-height: calc(100vh - 140px);
   overflow-y: auto;
   padding-left: 1.5rem;
-  border-left: 1px solid rgba(var(--v-theme-primary), 0.12);
+  border-left: 1px solid rgb(var(--v-theme-border));
 }
 
 .toc-title {
-  font-size: 0.6rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgb(var(--v-theme-primary));
+  color: rgb(var(--v-theme-on-background));
   margin-bottom: 1rem;
   font-weight: 600;
 }
@@ -77,7 +76,6 @@ function scrollTo(id: string) {
 .toc-link {
   display: block;
   padding: 0.3rem 0;
-  font-size: 0.62rem;
   line-height: 1.5;
   color: rgb(var(--v-theme-muted));
   text-decoration: none;
@@ -90,7 +88,7 @@ function scrollTo(id: string) {
 }
 
 .toc-item--active > .toc-link {
-  color: rgb(var(--v-theme-primary));
+  color: rgb(var(--v-theme-on-background));
   font-weight: 600;
 }
 </style>
