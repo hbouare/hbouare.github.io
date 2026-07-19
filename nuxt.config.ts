@@ -97,7 +97,11 @@ export default defineNuxtConfig({
     "@nuxtjs/sitemap",
     (_options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
-        config.plugins?.push(vuetify({ autoImport: true }))
+        // vite-plugin-vuetify, Nuxt and the root all resolve their own copy of
+        // vite's types. The plugin array is structurally identical in each but
+        // nominally distinct, and no single PluginOption import satisfies all
+        // three — so widen the target array instead. Runtime is unaffected.
+        ;(config.plugins as unknown[])?.push(vuetify({ autoImport: true }))
       })
     },
   ],
@@ -147,13 +151,9 @@ export default defineNuxtConfig({
     define: {
       "process.env.DEBUG": false,
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: "modern-compiler",
-        },
-      },
-    },
+    // `css.preprocessorOptions.scss.api = "modern-compiler"` was removed:
+    // the modern Sass compiler is now the only API, so the option no longer
+    // exists in Vite's types.
   },
 
   // Static generation for GitHub Pages

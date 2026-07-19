@@ -136,7 +136,9 @@ const navItems = [
   { key: "contact", to: "/contact" },
 ]
 
-const switchLocale = async (code: string) => {
+type AppLocale = "fr" | "en"
+
+const switchLocale = async (code: AppLocale) => {
   const path = switchLocalePath(code)
   await navigateTo(path, { external: false })
 }

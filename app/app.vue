@@ -7,19 +7,19 @@
 <script setup lang="ts">
 const { syncTheme } = useAppTheme()
 
-// SEO: hreflang, canonical, og:locale, html lang
-const head = useLocaleHead({
-  addDirAttribute: true,
-  addSeoAttributes: true,
-})
-useHead({
-  htmlAttrs: () => ({
+// SEO: hreflang, canonical, og:locale, html lang.
+// `lang`, `dir` and `seo` all default to true — the old
+// addDirAttribute/addSeoAttributes options were renamed and no longer exist.
+const head = useLocaleHead()
+useHead(() => ({
+  htmlAttrs: {
     lang: head.value.htmlAttrs?.lang,
-    dir: head.value.htmlAttrs?.dir,
-  }),
-  link: () => [...(head.value.link || [])],
-  meta: () => [...(head.value.meta || [])],
-})
+    // i18n types dir as a plain string; useHead wants the narrower union.
+    dir: head.value.htmlAttrs?.dir as "auto" | "ltr" | "rtl" | undefined,
+  },
+  link: [...(head.value.link || [])],
+  meta: [...(head.value.meta || [])],
+}))
 
 // Fix #4: attendre que Vuetify ait peint les bonnes CSS variables avant de révéler.
 onMounted(() => {

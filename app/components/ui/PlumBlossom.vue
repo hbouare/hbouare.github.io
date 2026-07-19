@@ -107,6 +107,9 @@ onMounted(() => {
     ]
 
     corners.forEach((corner, qi) => {
+      const queue = queues[qi]
+      if (!queue) return
+
       // Offset only inward (toward center) so branches never start out of bounds
       const ox = corner.x === 0 ? rand(0, 20) : rand(-20, 0)
       const oy = corner.y === 0 ? rand(0, 20) : rand(-20, 0)
@@ -115,7 +118,7 @@ onMounted(() => {
         const cx = corner.x + ox + rand(0, 10)
         const cy = corner.y + oy + rand(0, 10)
         const a = corner.angle + rand(-0.3, 0.3)
-        queues[qi].push(() => step(queues[qi], cx, cy, a, 0))
+        queue.push(() => step(queue, cx, cy, a, 0))
       }
     })
   }

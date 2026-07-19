@@ -6,7 +6,7 @@ export const useScrollReveal = () => {
   onMounted(() => {
     if (!el.value) return
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { revealed.value = true; observer.disconnect() } },
+      ([entry]) => { if (entry?.isIntersecting) { revealed.value = true; observer.disconnect() } },
       { threshold: 0.1 }
     )
     observer.observe(el.value)

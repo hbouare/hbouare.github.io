@@ -126,7 +126,7 @@ const stats = [
 ]
 
 // Animated counter
-const statsRef = ref<HTMLElement | null>(null)
+const statsRef = ref<HTMLElement | ComponentPublicInstance | null>(null)
 const statsStarted = ref(false)
 const animatedValues = ref<number[]>(stats.map(() => 0))
 
@@ -150,7 +150,10 @@ const animateCountUp = () => {
 }
 
 onMounted(() => {
-  const el = statsRef.value?.$el ?? statsRef.value
+  // statsRef is bound to <v-row>, so at runtime it is a component instance
+  // whose root element hangs off $el — not an HTMLElement directly.
+  const raw = statsRef.value
+  const el = raw && "$el" in raw ? (raw.$el as HTMLElement) : raw
   if (!el) return
 
   const observer = new IntersectionObserver(
