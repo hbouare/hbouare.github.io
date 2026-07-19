@@ -96,8 +96,20 @@
     </v-container>
   </v-app-bar>
 
-  <!-- Mobile drawer -->
+  <!--
+    Mobile drawer — rendered only below the md breakpoint (< 960px), the
+    same switch the nav links/button use in CSS. On desktop it is not in the
+    DOM at all rather than merely hidden.
+
+    SSR-safe: with `ssr: true` (createVuetify), useDisplay reports the same
+    assumed breakpoint on the server and on first client render, so this
+    v-if produces no hydration mismatch; the real viewport is measured in
+    onMounted and the drawer appears after hydration on mobile. The menu
+    button stays CSS-driven, so mobile users see it immediately with no flash
+    — the drawer only needs to exist once they tap, well after hydration.
+  -->
   <v-navigation-drawer
+    v-if="smAndDown"
     v-model="mobileMenu"
     location="right"
     width="280"
@@ -119,13 +131,26 @@
 </template>
 
 <script setup lang="ts">
+import { useDisplay } from "vuetify"
+
 const { locale } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const { isDark, toggleTheme } = useAppTheme()
 
+// Matches the md switch used by the nav links/button CSS (d-md-flex /
+// d-md-none). Gates the drawer's presence so it never renders on desktop.
+const { smAndDown } = useDisplay()
+
 const scrolled = ref(false)
 const mobileMenu = ref(false)
+
+// If the viewport grows past the breakpoint while the drawer is open, close
+// it: the v-if unmounts the drawer, and without this mobileMenu would stay
+// true and re-open it on a later shrink back to mobile.
+watch(smAndDown, (isMobile) => {
+  if (!isMobile) mobileMenu.value = false
+})
 
 const route = useRoute()
 

@@ -15,7 +15,7 @@ tags:
     "Docker",
     "Jenkins",
     "SinonJs",
-    "Rally
+    "Rally",
   ]
 ---
 
