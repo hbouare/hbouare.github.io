@@ -24,16 +24,16 @@
             the band still reads as having one CTA.
           -->
           <div class="d-flex align-center ga-4 mt-10 hero-beat flex-wrap">
-            <v-btn :to="localePath('/projects')" size="large">
+            <v-btn :to="localePath('/projects')"  size="large">
               {{ $t("hero.cta_projects") }}
             </v-btn>
-            <v-btn :to="localePath('/contact')" variant="text" size="large">
+            <v-btn :to="localePath('/contact')"  size="large">
               {{ $t("hero.cta_contact") }}
             </v-btn>
             <v-btn
               :href="`/cv/cv-hamed-bouare-${locale}.pdf`"
               download
-              variant="text"
+              
               size="large"
             >
               {{ $t("hero.cta_cv") }}

@@ -1,23 +1,28 @@
 <!-- app/components/ui/PlumBlossom.vue -->
 <!--
-  Ambient plum-blossom branches that frame the blog page from its corners.
+  Ambient branches that frame the blog page from its corners — but instead of
+  a one-shot entrance you might miss on load, they DRAW THEMSELVES as you
+  read: each branch's growth is scrubbed by scroll position, root to tips.
+  The page builds its frame the deeper you scroll.
 
-  The generative branch art is kept from the original, but the mechanics
-  changed: instead of a continuous rAF loop that *grows* the fractal pixel by
-  pixel, each corner's branch is generated ONCE into its own canvas, and all
-  motion (entrance choreography + idle sway) is pure CSS on transform/opacity.
+  Why scroll-linked rather than time-based: the site's identity is
+  deterministic and "engineered", so tying the motion to a real signal (how
+  far you've read) is more coherent — and more distinctive — than an
+  arbitrary timed reveal. Top branches draw early, bottom branches as you
+  near the footer, so the frame assembles top-to-bottom.
 
-  That switch is what makes the requested cinematic entrance possible — a
-  canvas fractal cannot be translated/rotated/scaled/overshot — while also
-  removing the continuous JavaScript and being far cheaper.
+  The branch geometry is still the generative canvas art, generated ONCE.
+  Only what fraction of it is painted changes on scroll — a trivial redraw.
+  A whisper of parallax (foreground drifts more than background) adds depth.
 
   Every tunable lives in the TREES config below (no magic values scattered).
 -->
 <template>
-  <div class="plum-field" aria-hidden="true">
+  <div ref="fieldRoot" class="plum-field" aria-hidden="true">
     <div
       v-for="t in TREES"
       :key="t.pos"
+      :ref="(el) => registerWrap(t.pos, el)"
       class="plum"
       :class="`plum--${t.pos}`"
       :style="styleFor(t)"
@@ -33,57 +38,53 @@
 import type { ComponentPublicInstance } from "vue"
 
 const { isDark } = useAppTheme()
+const { gsap, ScrollTrigger } = useGsap()
 
 // ── Config — the single source of every tunable ─────────────────────────
-// Depth is baked in: bottom corners read as foreground (bigger, more opaque,
-// more travel, faster, more sway); top corners as background (smaller,
-// dimmer, slower, less sway). Entrance order is bl → br → tl → tr.
+// Depth: bottom corners are foreground (bigger, more opaque, more parallax);
+// top corners are background (smaller, dimmer). growStart/growEnd are the
+// window of overall scroll progress [0..1] across which each branch draws;
+// base is how much is already drawn at scroll top (a hint before you move).
 type Pos = "bl" | "br" | "tl" | "tr"
 interface Tree {
   pos: Pos
-  dx: -1 | 1 // entrance travel direction (x): -1 from left, +1 from right
-  dy: -1 | 1 // entrance travel direction (y): -1 from top, +1 from bottom
-  anchor: string // transform-origin (the corner the branch is rooted at)
+  anchor: string // transform-origin (the rooted corner)
   size: number // display size in px at --rs = 1
   op: number // resting opacity (depth)
-  travel: number // entrance offset distance in px
-  rot: number // entrance start rotation in deg
-  scale: number // entrance start scale
-  dur: number // entrance duration in ms
-  delay: number // entrance delay in ms
-  swayDur: number // idle sway period in ms
-  swayDeg: number // idle sway amplitude in deg
+  growStart: number // scroll progress where this branch starts drawing
+  growEnd: number // scroll progress where it is fully drawn
+  base: number // fraction already drawn at scroll top
+  parallax: number // vertical parallax amplitude in px (depth)
+  swayDur: number
+  swayDeg: number
 }
 
+// Growth windows are tuned so each branch draws WHILE it is on screen: the
+// top pair (anchored at the page top) grows in the first sliver of scroll,
+// before it leaves the viewport; the bottom pair grows as the footer nears.
 const TREES: Tree[] = [
-  { pos: "bl", dx: -1, dy: 1, anchor: "0% 100%", size: 300, op: 0.5, travel: 90, rot: -6, scale: 0.82, dur: 1100, delay: 0, swayDur: 7000, swayDeg: 0.8 },
-  { pos: "br", dx: 1, dy: 1, anchor: "100% 100%", size: 300, op: 0.5, travel: 90, rot: 6, scale: 0.82, dur: 1100, delay: 140, swayDur: 7800, swayDeg: 0.8 },
-  { pos: "tl", dx: -1, dy: -1, anchor: "0% 0%", size: 240, op: 0.35, travel: 70, rot: -5, scale: 0.86, dur: 1300, delay: 300, swayDur: 9000, swayDeg: 0.6 },
-  { pos: "tr", dx: 1, dy: -1, anchor: "100% 0%", size: 240, op: 0.35, travel: 70, rot: 5, scale: 0.86, dur: 1300, delay: 440, swayDur: 9600, swayDeg: 0.6 },
+  { pos: "tl", anchor: "0% 0%", size: 240, op: 0.4, growStart: 0, growEnd: 0.13, base: 0.28, parallax: 10, swayDur: 9000, swayDeg: 0.6 },
+  { pos: "tr", anchor: "100% 0%", size: 240, op: 0.4, growStart: 0, growEnd: 0.15, base: 0.28, parallax: 10, swayDur: 9600, swayDeg: 0.6 },
+  { pos: "bl", anchor: "0% 100%", size: 300, op: 0.55, growStart: 0.5, growEnd: 0.9, base: 0, parallax: 22, swayDur: 7000, swayDeg: 0.8 },
+  { pos: "br", anchor: "100% 100%", size: 300, op: 0.55, growStart: 0.55, growEnd: 0.94, base: 0, parallax: 22, swayDur: 7800, swayDeg: 0.8 },
 ]
 
-/** Logical space the branch geometry is generated in. Fixed, so the canvas
- *  never needs regenerating on resize — CSS scales it, shapes stay stable. */
+/** Logical space the branch geometry lives in. Fixed, so the canvas never
+ *  needs regenerating on resize — CSS scales it, shapes stay stable. */
 const DRAW_SIZE = 360
 
 const styleFor = (t: Tree) => ({
-  "--dx": String(t.dx),
-  "--dy": String(t.dy),
-  "--anchor": t.anchor,
   "--size": `${t.size}px`,
   "--rest-op": String(t.op),
-  "--travel": `${t.travel}px`,
-  "--rot": `${t.rot}deg`,
-  "--scale": String(t.scale),
-  "--dur": `${t.dur}ms`,
-  "--delay": `${t.delay}ms`,
   "--sway-dur": `${t.swayDur}ms`,
   "--sway-deg": `${t.swayDeg}deg`,
-  // Sway begins once the entrance has landed.
-  "--sway-delay": `${t.delay + t.dur}ms`,
+  "--anchor": t.anchor,
 })
 
-// ── Geometry: generate once, render per theme ───────────────────────────
+// ── Geometry: generate once, paint a growing fraction on scroll ──────────
+// Each segment carries [t0, t1]: its start/end position along the branch,
+// normalised 0 (root) → 1 (furthest tip). Painting up to progress p draws
+// every segment with t0 < p, clipping the one straddling p to a growing tip.
 interface Segment {
   x1: number
   y1: number
@@ -91,25 +92,32 @@ interface Segment {
   y2: number
   w: number
   a: number
+  t0: number
+  t1: number
 }
 interface Blossom {
   x: number
   y: number
   r: number
   a: number
+  t: number
 }
 
 const canvases = new Map<Pos, HTMLCanvasElement>()
+const wraps = new Map<Pos, HTMLElement>()
 const geometry = new Map<Pos, { segs: Segment[]; blossoms: Blossom[] }>()
+const fieldRoot = ref<HTMLElement | null>(null)
 
 const registerCanvas = (pos: Pos, el: Element | ComponentPublicInstance | null) => {
   if (el instanceof HTMLCanvasElement) canvases.set(pos, el)
 }
+const registerWrap = (pos: Pos, el: Element | ComponentPublicInstance | null) => {
+  if (el instanceof HTMLElement) wraps.set(pos, el)
+}
 
 const rand = (a: number, b: number) => Math.random() * (b - a) + a
+const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v)
 
-/** Root point + initial growth angle (radians) per corner, in DRAW_SIZE
- *  space. Each branch grows inward from its outer corner. */
 const ROOTS: Record<Pos, { x: number; y: number; angle: number }> = {
   bl: { x: 0, y: DRAW_SIZE, angle: -Math.PI / 4 },
   br: { x: DRAW_SIZE, y: DRAW_SIZE, angle: (-3 * Math.PI) / 4 },
@@ -117,12 +125,9 @@ const ROOTS: Record<Pos, { x: number; y: number; angle: number }> = {
   tr: { x: DRAW_SIZE, y: 0, angle: (3 * Math.PI) / 4 },
 }
 
-/**
- * Grow one branch: a deterministic tapering trunk of `steps` segments that
- * drifts inward, occasionally spawning a SHORTER side branch. Using a fixed
- * trunk length (rather than pure per-step probability) keeps the branch long
- * and delicate without the exponential blow-up that would fill the canvas.
- */
+/** Deterministic tapering trunk that drifts inward and occasionally forks
+ *  into a shorter side branch. `lenFromRoot` accumulates so each segment can
+ *  later be ordered by distance from the corner (the growth order). */
 const grow = (
   segs: Segment[],
   blossoms: Blossom[],
@@ -131,11 +136,13 @@ const grow = (
   startAngle: number,
   steps: number,
   width: number,
+  lenFromRoot: number,
 ) => {
   let x = startX
   let y = startY
   let angle = startAngle
   let w = width
+  let acc = lenFromRoot
 
   for (let i = 0; i < steps; i++) {
     const len = rand(6, 10)
@@ -144,30 +151,21 @@ const grow = (
     if (nx < -20 || nx > DRAW_SIZE + 20 || ny < -20 || ny > DRAW_SIZE + 20) break
 
     const a = Math.max(0.06, 0.42 - i * 0.012)
-    segs.push({ x1: x, y1: y, x2: nx, y2: ny, w: Math.max(0.35, w), a })
+    segs.push({ x1: x, y1: y, x2: nx, y2: ny, w: Math.max(0.35, w), a, t0: acc, t1: acc + len })
 
-    // A few blossoms toward the tips.
     if (i > steps * 0.5 && Math.random() < 0.08) {
-      blossoms.push({ x: nx, y: ny, r: rand(1, 2.2), a: a * 0.85 })
+      blossoms.push({ x: nx, y: ny, r: rand(1, 2.2), a: a * 0.85, t: acc + len })
     }
 
-    // Occasional side branch — shorter, so recursion always terminates.
     if (i > 3 && Math.random() < 0.16) {
       const dir = Math.random() > 0.5 ? 1 : -1
-      grow(
-        segs,
-        blossoms,
-        nx,
-        ny,
-        angle + dir * rand(0.4, 0.85),
-        Math.floor(steps * rand(0.3, 0.55)),
-        w * 0.7,
-      )
+      grow(segs, blossoms, nx, ny, angle + dir * rand(0.4, 0.85), Math.floor(steps * rand(0.3, 0.55)), w * 0.7, acc + len)
     }
 
     x = nx
     y = ny
-    angle += rand(-0.13, 0.13) // gentle inward drift
+    acc += len
+    angle += rand(-0.13, 0.13)
     w *= 0.97
   }
 }
@@ -178,27 +176,25 @@ const generate = (pos: Pos) => {
   const blossoms: Blossom[] = []
   const trunks = Math.floor(rand(2, 4))
   for (let i = 0; i < trunks; i++) {
-    grow(
-      segs,
-      blossoms,
-      root.x,
-      root.y,
-      root.angle + rand(-0.35, 0.35),
-      Math.floor(rand(20, 28)),
-      1,
-    )
+    grow(segs, blossoms, root.x, root.y, root.angle + rand(-0.35, 0.35), Math.floor(rand(20, 28)), 1, 0)
   }
+  // Normalise growth params to [0,1] per tree so `progress` is comparable.
+  let max = 0
+  for (const s of segs) if (s.t1 > max) max = s.t1
+  max = max || 1
+  for (const s of segs) {
+    s.t0 /= max
+    s.t1 /= max
+  }
+  for (const b of blossoms) b.t /= max
   geometry.set(pos, { segs, blossoms })
 }
 
 const inkColor = () =>
-  getComputedStyle(document.documentElement)
-    .getPropertyValue("--v-theme-primary")
-    .trim() || "255,255,255"
+  getComputedStyle(document.documentElement).getPropertyValue("--v-theme-primary").trim() || "255,255,255"
 
-/** Paint stored geometry with the current ink colour. Reused on theme flip
- *  so the shape stays identical and only the colour changes. */
-const render = (pos: Pos) => {
+/** Paint the branch up to `progress` (0..1) in the current ink colour. */
+const render = (pos: Pos, progress: number) => {
   const canvas = canvases.get(pos)
   const geo = geometry.get(pos)
   if (!canvas || !geo) return
@@ -216,14 +212,18 @@ const render = (pos: Pos) => {
 
   const color = inkColor()
   for (const s of geo.segs) {
+    if (s.t0 >= progress) continue
+    // Clip the segment straddling `progress` to a growing tip.
+    const f = s.t1 <= progress ? 1 : (progress - s.t0) / (s.t1 - s.t0)
     ctx.beginPath()
     ctx.moveTo(s.x1, s.y1)
-    ctx.lineTo(s.x2, s.y2)
+    ctx.lineTo(s.x1 + (s.x2 - s.x1) * f, s.y1 + (s.y2 - s.y1) * f)
     ctx.strokeStyle = `rgba(${color}, ${s.a})`
     ctx.lineWidth = s.w
     ctx.stroke()
   }
   for (const b of geo.blossoms) {
+    if (b.t > progress) continue
     ctx.beginPath()
     ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2)
     ctx.fillStyle = `rgba(${color}, ${b.a})`
@@ -231,39 +231,73 @@ const render = (pos: Pos) => {
   }
 }
 
-const renderAll = () => TREES.forEach((t) => render(t.pos))
+/** Per-tree growth fraction for a given overall scroll progress. */
+const growthOf = (t: Tree, scroll: number) => {
+  const local = clamp01((scroll - t.growStart) / (t.growEnd - t.growStart))
+  return t.base + (1 - t.base) * local
+}
 
-onMounted(() => {
+let scrollProgress = 0
+const paintAll = () => TREES.forEach((t) => render(t.pos, growthOf(t, scrollProgress)))
+
+useMotion(fieldRoot, ({ motion }) => {
   TREES.forEach((t) => generate(t.pos))
-  renderAll()
-  // Re-paint (same geometry, new ink) when the theme flips — a discrete
-  // event, not a loop.
-  watch(isDark, () => renderAll())
+
+  // Reduced motion: draw the finished branches once, no scrub, no parallax.
+  if (!motion) {
+    scrollProgress = 1
+    paintAll()
+    return
+  }
+
+  const setY = new Map<Pos, (v: number) => void>()
+  TREES.forEach((t) => {
+    const wrap = wraps.get(t.pos)
+    if (wrap) setY.set(t.pos, gsap.quickSetter(wrap, "y", "px") as (v: number) => void)
+  })
+
+  ScrollTrigger.create({
+    trigger: fieldRoot.value ?? undefined,
+    start: "top top",
+    end: "bottom bottom",
+    scrub: true,
+    onUpdate: (self) => {
+      scrollProgress = self.progress
+      for (const t of TREES) {
+        render(t.pos, growthOf(t, scrollProgress))
+        // Parallax: foreground drifts more; centred so it's ~0 mid-scroll.
+        setY.get(t.pos)?.((scrollProgress - 0.5) * -2 * t.parallax)
+      }
+    },
+  })
+
+  // Initial paint (base growths). The scrub's onUpdate takes over on the
+  // first scroll / ScrollTrigger refresh.
+  paintAll()
 })
+
+// Re-paint (same geometry, new ink) on theme flip — a discrete event.
+// Declared at setup root, NOT inside useMotion's callback: matchMedia re-runs
+// that callback on breakpoint changes, which would stack duplicate watchers.
+watch(isDark, () => paintAll())
 </script>
 
 <style scoped lang="scss">
 .plum-field {
   position: absolute;
   inset: 0;
-  overflow: hidden; // clips the off-screen entrance → no horizontal scrollbar
+  overflow: hidden; // clips anything past the edges → no horizontal scrollbar
   pointer-events: none;
   z-index: 0;
   color: rgb(var(--v-theme-primary));
-  // Responsive master knob: one value scales every tree's size and travel.
-  --rs: 1;
+  --rs: 1; // responsive master knob: scales every tree at once
 }
 
 .plum {
   position: absolute;
   width: calc(var(--size) * var(--rs));
   height: calc(var(--size) * var(--rs));
-  opacity: 0;
-  transform-origin: var(--anchor);
-  // Entrance: slide in from the corner + rotate + scale + fade, with a
-  // restrained overshoot (no bounce — it would fight the engineered feel).
-  animation: plum-enter var(--dur) cubic-bezier(0.22, 1.1, 0.36, 1)
-    var(--delay) forwards;
+  opacity: var(--rest-op);
 }
 
 .plum--bl {
@@ -287,29 +321,14 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   transform-origin: var(--anchor);
-  // Idle ambient sway, staggered per tree, starting after the entrance.
-  animation: plum-sway var(--sway-dur) ease-in-out var(--sway-delay) infinite;
+  // Idle ambient sway, staggered per tree — almost imperceptible.
+  animation: plum-sway var(--sway-dur) ease-in-out infinite;
 }
 
 .plum-canvas {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-@keyframes plum-enter {
-  from {
-    opacity: 0;
-    transform: translate(
-        calc(var(--dx) * var(--travel) * var(--rs)),
-        calc(var(--dy) * var(--travel) * var(--rs))
-      )
-      rotate(var(--rot)) scale(var(--scale));
-  }
-  to {
-    opacity: var(--rest-op);
-    transform: translate(0, 0) rotate(0deg) scale(1);
-  }
 }
 
 @keyframes plum-sway {
@@ -338,13 +357,8 @@ onMounted(() => {
   }
 }
 
-// ── Reduced motion: rest at final state, no entrance, no sway ────────────
+// ── Reduced motion: static, no sway (growth is drawn full by the script) ─
 @media (prefers-reduced-motion: reduce) {
-  .plum {
-    animation: none;
-    opacity: var(--rest-op);
-    transform: none;
-  }
   .plum-sway {
     animation: none;
   }
