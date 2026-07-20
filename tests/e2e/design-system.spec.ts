@@ -139,7 +139,7 @@ test.describe("contrast", () => {
 
 test.describe("layout", () => {
   test("no horizontal overflow", async ({ page }) => {
-    for (const path of ["/", "/projects", "/blog", "/contact"]) {
+    for (const path of ["/", "/projects", "/research", "/blog", "/contact"]) {
       await page.goto(path)
       const overflows = await page.evaluate(
         () =>
@@ -169,11 +169,13 @@ test.describe("routes", () => {
   const paths = [
     "/",
     "/projects",
+    "/research",
     "/blog",
     "/contact",
     "/blog/nuxt4-introduction",
     "/en",
     "/en/blog",
+    "/en/research",
   ]
   for (const path of paths) {
     test(`${path} renders`, async ({ page }) => {
@@ -182,6 +184,34 @@ test.describe("routes", () => {
       await expect(page.locator(".v-application")).toBeVisible()
     })
   }
+})
+
+test.describe("research", () => {
+  // The publications page must render every real paper as a card that links
+  // out to the original publication — the page's whole credibility rests on
+  // those links resolving to external sources.
+  test("every publication card links out to its source", async ({ page }) => {
+    await page.goto("/research")
+    const cards = page.locator(".pub-card")
+    const count = await cards.count()
+    expect(count).toBe(5)
+
+    for (let i = 0; i < count; i++) {
+      const link = cards.nth(i).locator("a.pub-link")
+      await expect(link).toHaveAttribute("href", /^https?:\/\//)
+      await expect(link).toHaveAttribute("target", "_blank")
+    }
+  })
+
+  // The impact section is Act III — it ties the research back to engineering
+  // and must render its full set of items, revealed on scroll.
+  test("impact section reveals its items", async ({ page }) => {
+    await page.goto("/research")
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    const items = page.locator(".impact-item")
+    await expect(items.first()).toBeVisible({ timeout: 8_000 })
+    expect(await items.count()).toBe(8)
+  })
 })
 
 test.describe("accessibility", () => {

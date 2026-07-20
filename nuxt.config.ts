@@ -173,6 +173,8 @@ export default defineNuxtConfig({
         "/en/blog",
         "/projects",
         "/en/projects",
+        "/research",
+        "/en/research",
         "/contact",
         "/en/contact",
       ],

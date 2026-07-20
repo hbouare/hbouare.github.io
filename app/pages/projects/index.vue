@@ -8,7 +8,7 @@
     />
 
     <!-- Privacy policy, stated once rather than on every card. -->
-    <p class="projects-privacy type-caption text-muted mt-6">
+    <p class="projects-privacy type-body-md text-muted mt-6">
       {{ $t("projects.privacy_note") }}
     </p>
 
