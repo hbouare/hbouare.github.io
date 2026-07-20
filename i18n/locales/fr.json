@@ -49,7 +49,9 @@
     "meta_desc": "Projets et réalisations en développement full-stack, data engineering et DevOps.",
     "privacy_note": "Ces projets ont été menés dans un cadre professionnel — leur code source est privé. Sur demande motivée, je fournis un accès en lecture ou une présentation technique détaillée.",
     "status_private": "Privé",
-    "request_access": "Demander l’accès"
+    "request_access": "Demander l’accès",
+    "view_case": "Voir l’étude de cas",
+    "back": "Retour aux projets"
   },
   "blog": {
     "section": "04 — Blog",
@@ -99,5 +101,12 @@
   "theme": {
     "toggle_dark": "Mode sombre",
     "toggle_light": "Mode clair"
+  },
+  "case": {
+    "context": "Contexte",
+    "challenge": "Le défi",
+    "solution": "La solution",
+    "highlights": "Points forts",
+    "impact": "Impact"
   }
 }

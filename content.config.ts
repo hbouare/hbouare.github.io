@@ -13,18 +13,27 @@ const experienceSchema = z.object({
 })
 
 const projectSchema = z.object({
-  id:       z.string(),
+  // `slug`, not `id`: Nuxt Content reserves `id` for its own internal
+  // collection identifier (a full source path), so a frontmatter `id` is
+  // silently shadowed. `slug` is the clean route key — same as the blog.
+  slug:     z.string(),
   order:    z.number(),
   title:    z.string(),
   featured: z.boolean().default(false),
   tags:     z.array(z.string()),
   // Case-study fields — all optional so an unfilled project degrades
   // gracefully (the card simply omits them) rather than shipping a
-  // half-built layout.
-  context:  z.string().optional(),         // anonymised client, e.g. "Fintech scale-up"
-  role:     z.string().optional(),         // your role, e.g. "Lead back-end"
-  period:   z.string().optional(),         // e.g. "2023 · 6 months"
-  impact:   z.array(z.string()).optional(),// 1-3 measurable outcomes
+  // half-built layout. Together they drive the /projects/[slug] narrative:
+  // hook → context (intro) → challenge → solution → highlights → impact.
+  context:    z.string().optional(),          // anonymised client, e.g. "Fintech scale-up"
+  role:       z.string().optional(),          // your role, e.g. "Lead back-end"
+  period:     z.string().optional(),          // e.g. "2023 · 6 months"
+  hook:       z.string().optional(),          // one-line pitch (teaser + case-study hero)
+  intro:      z.string().optional(),          // context paragraph: who / what need
+  challenge:  z.string().optional(),          // the business/technical challenge
+  solution:   z.string().optional(),          // how the product answers it
+  highlights: z.array(z.string()).optional(), // standout features / technical points
+  impact:     z.array(z.string()).optional(), // measurable outcomes
   // Source visibility. `private` (default) shows a "request access" CTA
   // instead of dead repo/demo buttons.
   access:   z.enum(['private', 'public']).default('private'),

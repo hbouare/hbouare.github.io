@@ -214,24 +214,36 @@ test.describe("accessibility", () => {
 })
 
 test.describe("projects", () => {
-  // Private projects have no repo/demo link. Every card must still offer a
-  // path forward (request access → contact) rather than being a dead end.
-  test("private project cards route to contact instead of dead-ending", async ({
-    page,
-  }) => {
+  // Each index card is a teaser that links to its full case study.
+  test("every project teaser links to its case study", async ({ page }) => {
     await page.goto("/projects")
     const cards = page.locator(".proj-card")
     const count = await cards.count()
     expect(count).toBeGreaterThan(0)
 
     for (let i = 0; i < count; i++) {
-      const card = cards.nth(i)
-      // Either a public source link, or a request-access CTA to /contact.
-      const publicLink = card.locator('.proj-actions a[href*="github"], .proj-actions a[href*="http"]')
-      const contactCta = card.locator('.proj-actions a[href$="/contact"]')
-      const hasAction =
-        (await publicLink.count()) > 0 || (await contactCta.count()) > 0
-      expect(hasAction, `project card ${i} must offer an action`).toBe(true)
+      const href = await cards.nth(i).getAttribute("href")
+      expect(href, `card ${i} links to a case study`).toMatch(
+        /\/projects\/[a-z]+$/,
+      )
     }
+  })
+
+  // The case study must render its narrative and still offer a way forward
+  // (request access → contact, or a public link) rather than dead-ending.
+  test("case study renders and routes to contact", async ({ page }) => {
+    const res = await page.goto("/projects/fleetops")
+    expect(res?.status()).toBe(200)
+    // The hook is above the fold; the impact block and CTA reveal on scroll
+    // (visibility:hidden via autoAlpha until then), so drive to the bottom.
+    await expect(page.locator(".case-hook")).toBeVisible()
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await expect(page.locator(".case-impact")).toBeVisible({ timeout: 8_000 })
+
+    const contactCta = page.locator('.case-cta a[href$="/contact"]')
+    const publicLink = page.locator('.case-cta a[href^="http"]')
+    const hasWayForward =
+      (await contactCta.count()) > 0 || (await publicLink.count()) > 0
+    expect(hasWayForward, "case study must offer a way forward").toBe(true)
   })
 })

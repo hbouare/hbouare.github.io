@@ -19,14 +19,17 @@
       </div>
     </div>
 
-    <!-- All projects — uniform 2-column grid -->
+    <!-- Teasers — each links to its full case study. -->
     <div v-else class="proj-grid ga-4 ga-md-6 mt-14">
       <UiRevealBlock
         v-for="(proj, i) in projects"
-        :key="proj.id"
+        :key="proj.slug"
         :delay="i * 100"
       >
-        <v-card class="proj-card hairline-interactive" variant="outlined">
+        <NuxtLink
+          :to="localePath(`/projects/${proj.slug}`)"
+          class="proj-card hairline-interactive text-decoration-none"
+        >
           <div class="proj-accent-bar" />
           <div class="proj-card-inner">
             <div class="d-flex align-center ga-3 mb-3">
@@ -40,29 +43,13 @@
 
             <h3 class="proj-title type-title">{{ proj.title }}</h3>
 
-            <!-- Context line: anonymised client · period -->
-            <p
-              v-if="proj.context || proj.period"
-              class="proj-meta type-micro-cap text-muted mt-2"
-            >
-              <span v-if="proj.context">{{ proj.context }}</span>
-              <span v-if="proj.context && proj.period"> · </span>
-              <span v-if="proj.period">{{ proj.period }}</span>
-            </p>
-            <p v-if="proj.role" class="proj-role type-micro-cap mt-1">
-              {{ proj.role }}
+            <p v-if="proj.context" class="proj-context type-micro-cap text-muted mt-2">
+              {{ proj.context }}
             </p>
 
-            <div class="proj-body type-body-md text-muted mt-3">
-              <ContentRenderer :value="proj" />
-            </div>
-
-            <!-- Impact — the one full-ink moment, carries the credibility. -->
-            <ul v-if="proj.impact?.length" class="proj-impact mt-4">
-              <li v-for="line in proj.impact" :key="line" class="type-body-md">
-                {{ line }}
-              </li>
-            </ul>
+            <p v-if="proj.hook" class="proj-hook type-body-md mt-4">
+              {{ proj.hook }}
+            </p>
 
             <div class="proj-card-footer">
               <div class="d-flex flex-wrap ga-1">
@@ -70,51 +57,13 @@
                   {{ tag }}
                 </v-chip>
               </div>
-
-              <div class="proj-actions mt-5">
-                <!-- Public source: real links. -->
-                <template v-if="proj.access === 'public'">
-                  <v-btn
-                    v-if="proj.github"
-                    :href="proj.github"
-                    target="_blank"
-                    rel="noopener"
-                    size="small"
-                  >
-                    GitHub
-                    <v-icon end size="x-small" icon="mdi-arrow-top-right" />
-                  </v-btn>
-                  <v-btn
-                    v-if="proj.demo"
-                    :href="proj.demo"
-                    target="_blank"
-                    rel="noopener"
-                    size="small"
-                  >
-                    Demo
-                    <v-icon end size="x-small" icon="mdi-arrow-top-right" />
-                  </v-btn>
-                </template>
-
-                <!-- Private source: state it, and turn the dead-end into a
-                     qualified contact rather than empty buttons. -->
-                <template v-else>
-                  <v-chip size="x-small" class="proj-private">
-                    {{ $t("projects.status_private") }}
-                  </v-chip>
-                  <v-btn
-                    :to="localePath('/contact')"
-                    variant="text"
-                    size="small"
-                    append-icon="mdi-arrow-right"
-                  >
-                    {{ $t("projects.request_access") }}
-                  </v-btn>
-                </template>
-              </div>
+              <p class="proj-cta type-micro-cap mt-5">
+                {{ $t("projects.view_case") }}
+                <v-icon size="small" icon="mdi-arrow-right" class="proj-arrow" />
+              </p>
             </div>
           </div>
-        </v-card>
+        </NuxtLink>
       </UiRevealBlock>
     </div>
   </v-container>
@@ -142,38 +91,40 @@ const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, ()
   max-width: 640px;
 }
 
-// 2-column grid. The gap is set with Vuetify's responsive `ga-*` utilities
-// on the element (ga-6 → ga-md-10 = 24px → 40px), not here — so spacing
-// stays in the markup with the rest of the layout utilities.
-//
-// One column below md, two at md and up: the column switch is aligned with
-// the `ga-md` breakpoint (960px), and the longer case-study cards stay
-// single-column and readable on tablet.
+// 2-column grid. Gap set with Vuetify's responsive `ga-*` utilities on the
+// element. One column below md, two at md and up.
 .proj-grid {
   display: grid;
   grid-template-columns: 1fr;
   @media (min-width: 960px) {
     grid-template-columns: 1fr 1fr;
   }
-  // Stretch reveal wrappers so cards fill equal height (grid alignment)
   :deep(.reveal-block) {
     height: 100%;
   }
 }
 
-// Cards — equal height via stretch. Hairline + hover come from
+// Teaser card — the whole card is the link. Hairline + hover come from
 // .hairline-interactive.
 .proj-card {
+  display: block;
   position: relative;
   overflow: hidden;
   height: 100%;
+  border: 1px solid rgb(var(--v-theme-border));
 
   &:hover .proj-accent-bar {
     width: 4px;
   }
+  &:hover .proj-arrow {
+    transform: translateX(4px);
+  }
+  &:hover .proj-title {
+    color: rgb(var(--v-theme-on-background));
+  }
 }
 
-// Left rule — monochrome, the system has no accent colour.
+// Left rule — monochrome.
 .proj-accent-bar {
   position: absolute;
   top: 0;
@@ -194,56 +145,31 @@ const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, ()
   }
 }
 
-// Sizes come from the type tiers.
 .proj-num {
   display: block;
 }
-.proj-meta {
-  line-height: 1.5;
-}
-.proj-role {
+.proj-title {
   color: rgb(var(--v-theme-on-background));
+  transition: color 0.3s ease;
 }
-.proj-body :deep(p) {
-  margin: 0;
-}
-
-// Impact list — full ink, hairline-marked, the card's one emphatic moment.
-.proj-impact {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-
-  li {
-    color: rgb(var(--v-theme-on-background));
-    padding-left: 1.1rem;
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.75em;
-      width: 12px;
-      height: 1px;
-      background: currentColor;
-    }
-  }
+.proj-hook {
+  color: rgb(var(--v-theme-muted));
+  max-width: 42ch;
 }
 
-// Push tags + actions to bottom so cards align
+// Push tags + CTA to the bottom so cards align.
 .proj-card-footer {
   margin-top: auto;
-  padding-top: 1.25rem;
+  padding-top: 1.5rem;
 }
-.proj-actions {
-  display: flex;
+.proj-cta {
+  display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  gap: 0.4rem;
+  color: rgb(var(--v-theme-on-background));
+}
+.proj-arrow {
+  transition: transform 0.3s ease;
 }
 .proj-skeleton {
   padding: 1rem;
