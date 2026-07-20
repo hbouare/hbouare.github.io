@@ -20,7 +20,9 @@ export function useTableOfContents(containerRef: Ref<HTMLElement | null>) {
       .map((el) => ({
         id: el.id,
         text: el.textContent?.trim() ?? '',
-        level: parseInt(el.tagName[1]),
+        // tagName is 'H2'/'H3' here (the querySelector above guarantees it),
+        // but index access is typed as possibly-undefined under noUncheckedIndexedAccess.
+        level: parseInt(el.tagName[1] ?? '2'),
       }))
   }
 

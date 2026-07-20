@@ -1,23 +1,17 @@
 <template>
   <section id="experience" class="section-pad section-surface">
     <v-container class="px-6 px-md-10" fluid>
-      <UiRevealBlock>
-        <UiSectionHeader
+      <UiSectionHeader
           :label="$t('experience.section')"
           :line1="$t('experience.title_1')"
           :line-em="$t('experience.title_em')"
         />
-      </UiRevealBlock>
 
       <div class="exp-list mt-14">
         <!-- Skeleton loaders while data loads -->
         <template v-if="!experiences">
           <div v-for="n in 3" :key="n" class="exp-skeleton">
-            <v-skeleton-loader
-              type="list-item-three-line"
-              color="surface"
-              rounded="0"
-            />
+            <v-skeleton-loader type="list-item-three-line" />
           </div>
         </template>
 
@@ -28,36 +22,26 @@
         >
           <div class="exp-item">
             <v-row no-gutters class="exp-row">
-              <v-col cols="12" md="2" class="exp-year font-mono text-muted">
+              <v-col cols="12" md="2" class="type-micro-cap text-muted">
                 {{ exp.period }}
               </v-col>
               <v-col cols="12" md="8">
-                <h3 class="exp-role font-playfair">{{ exp.role }}</h3>
-                <p class="exp-company font-mono text-primary mt-1">
-                  {{ exp.company }}
-                </p>
+                <h3 class="exp-role type-title">{{ exp.role }}</h3>
+                <p class="type-micro-cap mt-1">{{ exp.company }}</p>
                 <!-- Mobile location -->
-                <div class="d-md-none font-mono text-muted mt-1" style="font-size: 0.65rem;">
+                <div class="d-md-none type-micro-cap text-muted mt-1">
                   <span class="exp-flag">{{ exp.flag }}</span> {{ exp.location }}
                 </div>
-                <div class="exp-body font-mono text-muted mt-3">
+                <div class="exp-body type-body-md text-muted mt-3">
                   <ContentRenderer :value="exp" />
                 </div>
                 <div class="d-flex flex-wrap ga-1 mt-3">
-                  <v-chip
-                    v-for="tag in exp.tags"
-                    :key="tag"
-                    variant="outlined"
-                    color="primary"
-                    rounded="0"
-                    size="x-small"
-                    class="font-mono"
-                  >
+                  <v-chip v-for="tag in exp.tags" :key="tag" size="x-small">
                     {{ tag }}
                   </v-chip>
                 </div>
               </v-col>
-              <v-col md="2" class="d-none d-md-flex exp-location font-mono text-muted">
+              <v-col md="2" class="d-none d-md-flex exp-location type-micro-cap text-muted">
                 <span class="exp-flag">{{ exp.flag }}</span>
                 <span class="mt-1">{{ exp.location }}</span>
               </v-col>
@@ -81,39 +65,25 @@ const { data: experiences } = await useAsyncData(
 
 <style scoped lang="scss">
 .exp-item {
-  border-top: 1px solid rgba(var(--v-theme-primary), 0.12);
+  border-top: 1px solid rgb(var(--v-theme-border));
 }
 .exp-row {
   padding: 1.25rem 0;
   align-items: baseline;
 }
-.exp-year {
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  line-height: 1.4;
-}
+// Role dims to muted when the row is not hovered — the system's only
+// available emphasis device without a hue.
 .exp-role {
-  font-size: 1.4rem;
-  font-weight: 700;
+  color: rgb(var(--v-theme-muted));
   transition: color 0.3s;
   .exp-item:hover & {
-    color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-background));
   }
 }
-.exp-company {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-}
-.exp-body {
-  font-size: 0.72rem;
-  line-height: 1.8;
-  :deep(p) {
-    margin: 0;
-  }
+.exp-body :deep(p) {
+  margin: 0;
 }
 .exp-location {
-  font-size: 0.65rem;
-  letter-spacing: 0.08em;
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
@@ -122,7 +92,7 @@ const { data: experiences } = await useAsyncData(
   font-size: 1.2rem;
 }
 .exp-skeleton {
-  border-top: 1px solid rgba(var(--v-theme-primary), 0.12);
+  border-top: 1px solid rgb(var(--v-theme-border));
   padding: 1rem 0;
 }
 </style>

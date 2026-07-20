@@ -16,6 +16,9 @@ export default defineNuxtConfig({
   },
 
   app: {
+    // The page transition is driven by GSAP JS hooks defined on <NuxtPage>
+    // in app.vue (css: false). This entry stays as the SSR/no-JS fallback
+    // name; `mode: out-in` keeps the two pages from overlapping.
     pageTransition: { name: "page", mode: "out-in" },
     head: {
       title: "Hamed Bouare",
@@ -25,13 +28,16 @@ export default defineNuxtConfig({
           // Fix #3: CSS anti-flash INLINE dans le <head>, pas dans un fichier externe.
           // Fix #1: opacity:0 au lieu de visibility:hidden (rien ne passe à travers).
           innerHTML:
-            'html,body{margin:0;background:#0a0a08}html[data-theme="light"],html[data-theme="light"] body{background:#faf8f4}html:not(.hydrated) body{opacity:0}html.hydrated body{transition:opacity .1s}',
+            'html,body{margin:0;background:#000}html[data-theme="light"],html[data-theme="light"] body{background:#fff}html:not(.hydrated) body{opacity:0}html.hydrated body{transition:opacity .1s}',
           tagPosition: "head",
         },
       ],
       script: [
         {
-          innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t})()`,
+          // Also marks <html> as scripting-capable: scroll-reveal blocks rest
+          // at opacity 0 and are revealed by GSAP, so without JS they must
+          // fall back to visible rather than staying blank.
+          innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t;d.classList.add('js')})()`,
           tagPosition: "head",
         },
       ],
@@ -77,7 +83,11 @@ export default defineNuxtConfig({
         },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400&family=Syne:wght@400;600;700;800&display=swap",
+          // Inter is the design system's documented substitute for D-DIN
+          // (display tiers run 700 uppercase with positive tracking).
+          // DM Mono is kept for code only — a deliberate, documented
+          // deviation, since the source system has no monospace tier.
+          href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=DM+Mono:wght@400&display=swap",
         },
       ],
     },
@@ -93,7 +103,11 @@ export default defineNuxtConfig({
     "@nuxtjs/sitemap",
     (_options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
-        config.plugins?.push(vuetify({ autoImport: true }))
+        // vite-plugin-vuetify, Nuxt and the root all resolve their own copy of
+        // vite's types. The plugin array is structurally identical in each but
+        // nominally distinct, and no single PluginOption import satisfies all
+        // three — so widen the target array instead. Runtime is unaffected.
+        ;(config.plugins as unknown[])?.push(vuetify({ autoImport: true }))
       })
     },
   ],
@@ -143,13 +157,9 @@ export default defineNuxtConfig({
     define: {
       "process.env.DEBUG": false,
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: "modern-compiler",
-        },
-      },
-    },
+    // `css.preprocessorOptions.scss.api = "modern-compiler"` was removed:
+    // the modern Sass compiler is now the only API, so the option no longer
+    // exists in Vite's types.
   },
 
   // Static generation for GitHub Pages

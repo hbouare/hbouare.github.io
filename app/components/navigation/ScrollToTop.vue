@@ -3,8 +3,10 @@
     v-show="visible"
     class="scroll-to-top"
     icon="mdi-arrow-up"
-    color="primary"
+    variant="outlined"
+    rounded="circle"
     size="small"
+    :aria-label="$t('nav.scroll_top')"
     @click="scrollToTop"
   />
 </template>

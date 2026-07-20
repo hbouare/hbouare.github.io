@@ -1,18 +1,17 @@
+<!-- app/components/navigation/Footer.vue -->
 <template>
   <footer class="app-footer">
     <v-container
       class="d-flex align-center justify-space-between py-5 px-6 px-md-10 flex-wrap ga-3"
       fluid
     >
-      <span class="font-mono text-caption text-muted">
+      <span class="type-caption text-muted">
         © {{ new Date().getFullYear() }} Hamed Bouare —
         {{ $t("footer.rights") }}
       </span>
       <div class="d-flex align-center ga-2">
         <span class="status-dot" />
-        <span class="font-mono text-caption text-primary">{{
-          $t("footer.available")
-        }}</span>
+        <span class="type-micro-cap">{{ $t("footer.available") }}</span>
       </div>
     </v-container>
   </footer>
@@ -20,13 +19,16 @@
 
 <style scoped lang="scss">
 .app-footer {
-  border-top: 1px solid rgba(var(--v-theme-primary), 0.12);
+  border-top: 1px solid rgb(var(--v-theme-border));
 }
+
+// The availability indicator is functional, not decorative — it stays
+// monochrome like the rest of the system and relies on motion, not hue.
 .status-dot {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: rgb(var(--v-theme-secondary));
+  background: rgb(var(--v-theme-on-background));
   border-radius: 50%;
   animation: blink 2s ease-in-out infinite;
 }

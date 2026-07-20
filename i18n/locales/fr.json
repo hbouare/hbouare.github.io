@@ -5,7 +5,8 @@
     "projects": "Projets",
     "blog": "Blog",
     "contact": "Contact",
-    "hire": "Me recruter"
+    "scroll_top": "Retour en haut",
+    "menu": "Ouvrir le menu"
   },
   "hero": {
     "tag": "Full-Stack · Data Engineer · DevOps",
@@ -58,7 +59,8 @@
     "meta_desc": "Articles sur le développement, la data engineering et les technologies web.",
     "toc": "Sommaire",
     "copied": "Copié !",
-    "copy_code": "Copier"
+    "copy_code": "Copier",
+    "not_found": "Article introuvable."
   },
   "travel": {
     "section": "05 — International",
@@ -94,11 +96,5 @@
   "theme": {
     "toggle_dark": "Mode sombre",
     "toggle_light": "Mode clair"
-  },
-  "skills": {
-    "backend": "Backend",
-    "frontend": "Frontend",
-    "devops": "DevOps",
-    "data": "Data"
   }
 }

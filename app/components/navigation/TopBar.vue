@@ -1,10 +1,14 @@
 <!-- app/components/navigation/TopBar.vue -->
 <template>
+  <!--
+    No `color` prop: it emits an inline background-color that only
+    !important could beat. Leaving it off lets plain author CSS own the
+    background — see the unscoped block below.
+  -->
   <v-app-bar
     :elevation="0"
     :class="['app-nav', { 'nav-scrolled': scrolled }]"
     height="72"
-    color="transparent"
     flat
   >
     <v-container class="d-flex align-center px-6 px-md-10 h-100" fluid>
@@ -46,7 +50,7 @@
           :key="item.key"
           :to="localePath(item.to)"
           :class="[
-            'nav-link font-mono text-uppercase text-caption',
+            'nav-link type-micro-cap',
             {
               'router-link-exact-active':
                 item.exact && route.path === localePath(item.to),
@@ -60,7 +64,7 @@
 
       <!-- Compact lang toggle -->
       <button
-        class="nav-icon-btn lang-toggle font-mono"
+        class="nav-icon-btn lang-toggle"
         @click="switchLocale(locale === 'fr' ? 'en' : 'fr')"
       >
         {{ locale === "fr" ? "EN" : "FR" }}
@@ -68,7 +72,7 @@
 
       <!-- Theme toggle -->
       <button
-        class="nav-icon-btn theme-toggle"
+        class="nav-icon-btn nav-icon-btn--square theme-toggle"
         :aria-label="
           isDark ? $t('theme.toggle_light') : $t('theme.toggle_dark')
         "
@@ -80,9 +84,19 @@
         />
       </button>
 
-      <!-- Mobile menu -->
+      <!--
+        Mobile menu — rendered only below md, gated by v-if like the drawer.
+        Vuetify's display utilities (d-md-none) CANNOT hide it: `.nav-icon-btn`
+        is unlayered scoped CSS with `display: inline-flex`, and unlayered
+        author CSS beats Vuetify's layered utilities, so d-md-none is inert
+        here. v-if sidesteps the cascade entirely and keeps this consistent
+        with the drawer's smAndDown gate.
+      -->
       <button
-        class="nav-icon-btn theme-toggle d-flex d-md-none ml-1"
+        v-if="smAndDown"
+        class="nav-icon-btn nav-icon-btn--square menu-toggle ml-1"
+        :aria-label="$t('nav.menu')"
+        :aria-expanded="mobileMenu"
         @click="mobileMenu = !mobileMenu"
       >
         <v-icon icon="mdi-menu" size="18" />
@@ -90,8 +104,20 @@
     </v-container>
   </v-app-bar>
 
-  <!-- Mobile drawer -->
+  <!--
+    Mobile drawer — rendered only below the md breakpoint (< 960px), the
+    same switch the nav links/button use in CSS. On desktop it is not in the
+    DOM at all rather than merely hidden.
+
+    SSR-safe: with `ssr: true` (createVuetify), useDisplay reports the same
+    assumed breakpoint on the server and on first client render, so this
+    v-if produces no hydration mismatch; the real viewport is measured in
+    onMounted and the drawer appears after hydration on mobile. The menu
+    button stays CSS-driven, so mobile users see it immediately with no flash
+    — the drawer only needs to exist once they tap, well after hydration.
+  -->
   <v-navigation-drawer
+    v-if="smAndDown"
     v-model="mobileMenu"
     location="right"
     width="280"
@@ -103,8 +129,7 @@
         v-for="item in navItems"
         :key="item.key"
         :to="localePath(item.to)"
-        class="font-mono text-uppercase mb-2"
-        rounded="0"
+        class="type-micro-cap mb-2"
         @click="mobileMenu = false"
       >
         {{ $t(`nav.${item.key}`) }}
@@ -114,13 +139,26 @@
 </template>
 
 <script setup lang="ts">
+import { useDisplay } from "vuetify"
+
 const { locale } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const { isDark, toggleTheme } = useAppTheme()
 
+// Matches the md switch used by the nav links/button CSS (d-md-flex /
+// d-md-none). Gates the drawer's presence so it never renders on desktop.
+const { smAndDown } = useDisplay()
+
 const scrolled = ref(false)
 const mobileMenu = ref(false)
+
+// If the viewport grows past the breakpoint while the drawer is open, close
+// it: the v-if unmounts the drawer, and without this mobileMenu would stay
+// true and re-open it on a later shrink back to mobile.
+watch(smAndDown, (isMobile) => {
+  if (!isMobile) mobileMenu.value = false
+})
 
 const route = useRoute()
 
@@ -131,7 +169,9 @@ const navItems = [
   { key: "contact", to: "/contact" },
 ]
 
-const switchLocale = async (code: string) => {
+type AppLocale = "fr" | "en"
+
+const switchLocale = async (code: AppLocale) => {
   const path = switchLocalePath(code)
   await navigateTo(path, { external: false })
 }
@@ -223,18 +263,19 @@ onUnmounted(() => {
   }
 }
 
+// Size and tracking come from .type-micro-cap; only state is local.
 .nav-link {
   color: rgb(var(--v-theme-muted));
   text-decoration: none;
-  letter-spacing: 0.1em;
-  font-size: 0.72rem;
   transition: color 0.2s;
   &:hover,
+  &:focus-visible,
   &.router-link-active,
   &.router-link-exact-active {
-    color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-background));
   }
 }
+
 .nav-icon-btn {
   display: inline-flex;
   align-items: center;
@@ -247,62 +288,70 @@ onUnmounted(() => {
   transition:
     color 0.25s,
     border-color 0.25s;
-  &:hover {
-    color: rgb(var(--v-theme-primary));
-    border-color: rgba(var(--v-theme-primary), 0.25);
+  &:hover,
+  &:focus-visible {
+    color: rgb(var(--v-theme-on-background));
+    border-color: rgb(var(--v-theme-border));
   }
 }
-.lang-toggle {
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  margin-right: 4px;
-}
-.theme-toggle {
+
+// Square 34px icon affordance, shared by the theme and menu toggles.
+.nav-icon-btn--square {
   width: 34px;
   height: 34px;
   padding: 0;
 }
+
+.lang-toggle {
+  font-size: var(--type-micro-cap);
+  letter-spacing: 0.96px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  margin-right: 4px;
+}
 </style>
 
-<!-- Unscoped: overrides need to beat Vuetify's .v-app-bar.v-toolbar (0,2,0) specificity -->
+<!--
+  Unscoped: the app bar background and the teleported drawer both live
+  outside this component's scope.
+
+  Vuetify 4 wraps its own CSS in @layer, so unlayered author styles like
+  these win on cascade order alone — no !important and no doubled selectors
+  needed. Dropping the `color` prop removed the last inline style that
+  would have required one.
+-->
 <style lang="scss">
-// ── TopBar background ────────────────────────────────────────
-// Vuetify CSS: .v-app-bar.v-toolbar { background: rgb(var(--v-theme-surface)) }
-// We need specificity > 0,2,0 and !important to also beat Vuetify's
-// inline backgroundColor from color="transparent".
-.v-application .v-app-bar.app-nav {
-  background: transparent !important;
+.v-app-bar.app-nav {
+  background: transparent;
   transition: box-shadow 0.3s ease;
 }
-.v-application .v-app-bar.app-nav.nav-scrolled {
-  background: rgb(var(--v-theme-background)) !important;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  // Glassmorphism only when backdrop-filter is reliable
+// Scrolled state: the nav leaves overlay mode and takes the canvas.
+// The system has no shadow tier, so separation is a hairline, not a shadow.
+.v-app-bar.app-nav.nav-scrolled {
+  background: rgb(var(--v-theme-background));
+  border-bottom: 1px solid rgb(var(--v-theme-border));
+
   @supports (backdrop-filter: blur(1px)) {
-    background: rgba(var(--v-theme-background), 0.92) !important;
+    background: rgba(var(--v-theme-background), 0.92);
     backdrop-filter: blur(12px);
   }
 }
 
-// ── Mobile drawer (teleported to body, scoped styles won't reach it) ──
+// Mobile drawer — teleported to body, so scoped styles can't reach it.
 .v-navigation-drawer {
   .v-list-item {
-    color: rgb(var(--v-theme-muted)) !important;
+    color: rgb(var(--v-theme-muted));
     transition: color 0.25s;
 
     &:hover,
-    &:focus-visible {
-      color: rgb(var(--v-theme-primary)) !important;
-    }
+    &:focus-visible,
     &.router-link-active {
-      color: rgb(var(--v-theme-primary)) !important;
+      color: rgb(var(--v-theme-on-background));
     }
   }
   .v-list-item__overlay {
-    display: none !important;
+    display: none;
   }
 }
 </style>

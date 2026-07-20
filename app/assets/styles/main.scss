@@ -1,137 +1,247 @@
 // app/assets/styles/main.scss
+//
+// Design system foundations. Everything here is token-first: components
+// consume the custom properties below rather than restating sizes, and the
+// responsive stair-step lives in ONE place (the :root breakpoint blocks)
+// instead of being copy-pasted into every component's media queries.
 
-// ── Font utility classes ─────────────────────────────────────
-// Use .v-application prefix to beat Vuetify's font-family without !important
-.v-application .font-playfair { font-family: 'Playfair Display', serif; }
-.v-application .font-mono     { font-family: 'DM Mono', monospace; }
-.v-application .font-syne     { font-family: 'Syne', sans-serif; }
+// ── Design tokens ──────────────────────────────────────────────────────
+:root {
+  // Spacing — 8px base with denser sub-units
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 18px;
+  --space-xl: 24px;
+  --space-xxl: 32px;
+  --space-huge: 48px;
 
-// Anti-flash CSS is now inlined in <head> (nuxt.config.ts), not here.
+  // Section rhythm
+  --section-pad: 64px;
 
-// ── Fluid typography ───────────────────────────────────────────
-// Base font-size scales with viewport:
-//   320px → ~13px  |  768px → ~15px  |  1440px → ~18px
-html {
-  font-size: clamp(13px, 0.45vw + 11.5px, 18px);
-  scroll-behavior: smooth;
+  // Display tier — stair-steps at the breakpoints below.
+  // Uppercase + positive tracking is the system's typographic signature.
+  --type-display-xxl: 80px;
+  --type-display-xl: 60px;
+  --type-display-lg: 48px;
 
-  -webkit-font-smoothing: antialiased;
+  // Fixed tiers
+  --type-prose-h2: 28px;
+  --type-title: 20px;
+  --type-body-lg: 16px;
+  // Code tier — the one place the mono family is used. Shared by prose code
+  // blocks, inline code and the decorative code plate so they stay in step.
+  --type-code: 13px;
+  --type-body-md: 16px;
+  --type-button-cap: 13px;
+  --type-micro-cap: 12px;
+  --type-caption: 13px;
+
+  // Families
+  --font-display: 'Inter', 'Arial Narrow', Arial, Verdana, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, monospace;
 }
 
-// ── Global resets ──────────────────────────────────────────────
-*, *::before, *::after { box-sizing: border-box; }
-
-body {
-  font-family: 'Syne', sans-serif;
-  background: #0a0a08;
-}
-html[data-theme="light"] body { background: #faf8f4; }
-
-// ── Scrollbar ──────────────────────────────────────────────────
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(var(--v-theme-primary), 0.5); border-radius: 2px; }
-
-// ── Vuetify overrides ──────────────────────────────────────────
-// Use doubled selectors or parent context for specificity
-.v-application {
-  font-family: 'Syne', sans-serif;
-}
-
-// App bar background is fully controlled by TopBar.vue scoped styles with !important
-
-// Card outlined: use our primary border color instead of Vuetify's currentColor
-.v-application .v-card.v-card--variant-outlined {
-  border-color: rgba(var(--v-theme-primary), 0.12);
-}
-
-// Card flat with manual border: ensure flat cards have no border by default
-.v-application .v-card.v-card--variant-flat {
-  border-color: rgba(var(--v-theme-primary), 0.08);
-}
-
-// ── View Transition - Theme toggle clip-path animation ─────────
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-::view-transition-old(root) {
-  z-index: 1;
-}
-::view-transition-new(root) {
-  z-index: 9999;
-}
-
-// ── Global reusable utilities ──────────────────────────────────
-.v-application .text-muted { color: rgb(var(--v-theme-muted)); }
-
-.section-pad {
-  padding: 6.5rem 0;
-  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.12);
-}
-
-// Reusable vertical padding matching section-pad (without border/snap)
-.section-v-pad {
-  padding-top: 6.5rem;
-  padding-bottom: 6.5rem;
-}
-
-// Responsive reduction for all section spacing
-@media (max-width: 959px) {
-  .section-pad {
-    padding: 4.5rem 0;
+// Display stair-step: 80 → 60 → 48 → 40
+@media (max-width: 960px) {
+  :root {
+    --type-display-xxl: 60px;
+    --type-display-xl: 48px;
+    --type-display-lg: 36px;
+    --section-pad: 48px;
   }
-  .section-v-pad {
-    padding-top: 4.5rem;
-    padding-bottom: 4.5rem;
+}
+@media (max-width: 767px) {
+  :root {
+    --type-display-xxl: 48px;
+    --type-display-xl: 40px;
+    --type-display-lg: 32px;
   }
 }
 @media (max-width: 599px) {
-  .section-pad {
-    padding: 3rem 0;
-  }
-  .section-v-pad {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+  :root {
+    --type-display-xxl: 40px;
+    --type-display-xl: 34px;
+    --type-display-lg: 28px;
+    --section-pad: 40px;
   }
 }
 
-.section-label {
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
+// ── Base ───────────────────────────────────────────────────────────────
+// Fixed 16px root. The previous fluid clamp() scaling is gone: it made every
+// rem value viewport-dependent, which is why component styles had drifted
+// into ad-hoc 0.82/0.72/0.62rem values with hand-written breakpoints.
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background: #000;
+}
+html[data-theme='light'] body {
+  background: #fff;
+}
+
+.v-application {
+  font-family: var(--font-body);
+}
+
+// ── Type utilities ─────────────────────────────────────────────────────
+// Prefixed with .v-application to beat Vuetify's own font-family without
+// resorting to !important.
+// No `.font-body` utility: body is already the default family on
+// `.v-application`, so the class would never do anything.
+.v-application {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+// Display tiers — always uppercase, always 700, always positively tracked.
+.type-display-xxl,
+.type-display-xl,
+.type-display-lg {
+  font-family: var(--font-display);
+  font-weight: 700;
   text-transform: uppercase;
-  &::before {
-    content: '';
-    display: inline-block;
-    width: 28px; height: 1px;
-    background: currentColor;
-    vertical-align: middle;
-    margin-right: 10px;
-  }
+}
+.type-display-xxl {
+  font-size: var(--type-display-xxl);
+  line-height: 0.95;
+  letter-spacing: 1.6px;
+}
+.type-display-xl {
+  font-size: var(--type-display-xl);
+  line-height: 1.2;
+  letter-spacing: 1.2px;
+}
+.type-display-lg {
+  font-size: var(--type-display-lg);
+  line-height: 1.25;
+  letter-spacing: 0.96px;
 }
 
+// Card / list-item title.
+//
+// Documented extension: the source system has no title tier because it has
+// no cards — its scale jumps straight from 48px display to 16px body. A
+// portfolio is card-driven (projects, posts, experience), so it needs one.
+// Deliberately NOT uppercase: the uppercase rule applies to display tiers,
+// and long post titles become unreadable in caps.
+.type-title {
+  font-family: var(--font-display);
+  font-size: var(--type-title);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.4px;
+}
+
+.type-body-lg {
+  font-size: var(--type-body-lg);
+  line-height: 1.7;
+  letter-spacing: 0.32px;
+}
+.type-body-md {
+  font-size: var(--type-body-md);
+  line-height: 1.5;
+  letter-spacing: 0.32px;
+}
+.type-micro-cap {
+  font-size: var(--type-micro-cap);
+  line-height: 2;
+  letter-spacing: 0.96px;
+  text-transform: uppercase;
+}
+.type-caption {
+  font-size: var(--type-caption);
+  line-height: 1.5;
+}
+
+// Applied globally to VBtn via the plugin defaults — the all-caps button
+// label is part of the system's chrome, not a per-button decision.
+.v-application .type-button-cap {
+  font-size: var(--type-button-cap);
+  font-weight: 700;
+  letter-spacing: 1.17px;
+  text-transform: uppercase;
+}
+
+// ── Layout helpers ─────────────────────────────────────────────────────
+.section-pad {
+  padding: var(--section-pad) 0;
+  border-bottom: 1px solid rgb(var(--v-theme-border));
+}
+.section-v-pad {
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
+}
 .section-surface {
   background: rgb(var(--v-theme-surface));
 }
 
-// ── Page transitions ─────────────────────────────────────────
-.page-enter-active,
-.page-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+// ── Chrome ─────────────────────────────────────────────────────────────
+::-webkit-scrollbar {
+  width: 3px;
 }
-.page-enter-from {
-  opacity: 0;
-  transform: translateY(12px);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-.page-leave-to {
-  opacity: 0;
-  transform: translateY(-12px);
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--v-theme-border));
 }
-// ── Reduced motion — accessibility ──────────────────────────
-// These !important are intentional: accessibility overrides must win over everything
+
+// Hairline borders on outlined surfaces use the border token rather than
+// Vuetify's currentColor default.
+.v-application .v-card--variant-outlined {
+  border-color: rgb(var(--v-theme-border));
+}
+
+// Interactive hairline surface. The system has no shadow tier and no accent
+// colour, so hover is expressed by the hairline strengthening to full ink.
+// Previously reimplemented identically in stat-box, proj-featured,
+// proj-small and BlogCard — define it once, use it everywhere.
+.hairline-interactive {
+  transition: border-color 0.3s ease;
+
+  &:hover,
+  &:focus-visible,
+  &:focus-within {
+    border-color: rgb(var(--v-theme-on-background));
+  }
+}
+
+// Links carry a persistent underline on both canvases (system rule).
+a {
+  color: inherit;
+}
+
+p {
+  line-height: 1.7;
+}
+
+// Page transitions are GSAP JS hooks now (css: false in app.vue), so there
+// is no .page-enter-*/.page-leave-* CSS to define here.
+
+// ── Reduced motion — accessibility ─────────────────────────────────────
+// These !important are intentional: accessibility overrides must win.
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -140,34 +250,25 @@ html[data-theme="light"] body { background: #faf8f4; }
   html {
     scroll-behavior: auto;
   }
-  .page-enter-active,
-  .page-leave-active {
-    transition: none;
-  }
+  // Scroll reveals are GSAP-driven now and cannot be stopped by CSS —
+  // gsap.matchMedia() in useMotion handles them. This rule remains as a
+  // belt-and-braces guarantee that content is never left hidden.
   .reveal-block {
     opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
   }
 }
 
-// Link defaults
-a { color: inherit; }
-
-// Prose
-p { line-height: 1.8; }
-
-// ── Shiki syntax highlighting — theme-aware ─────────────────
-// Shiki generates selectors for `html .dark` / `html .default`,
-// but this project uses `data-theme` attribute. Override here.
-html[data-theme="dark"] .shiki span {
+// ── Shiki syntax highlighting — theme-aware ────────────────────────────
+// Shiki emits selectors for `html .dark` / `html .default`; this project
+// switches on the data-theme attribute instead.
+html[data-theme='dark'] .shiki span {
   color: var(--shiki-dark) !important;
   background: var(--shiki-dark-bg) !important;
   font-style: var(--shiki-dark-font-style) !important;
   font-weight: var(--shiki-dark-font-weight) !important;
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
-html[data-theme="light"] .shiki span {
+html[data-theme='light'] .shiki span {
   color: var(--shiki-default) !important;
   background: var(--shiki-default-bg) !important;
   font-style: var(--shiki-default-font-style) !important;

@@ -4,4 +4,9 @@ node_modules/
 dist/
 .output/
 .env
-CLAUDE.md
+.playwright-cli
+.claude
+skills-lock.json
+# Playwright
+test-results/
+playwright-report/
