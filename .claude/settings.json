@@ -112,7 +112,9 @@
       "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum--tl'\\)\\).display\")",
       "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum'\\)\\).animationName\")",
       "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum'\\)\\).opacity\")",
-      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum-sway'\\)\\).animationName\")"
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum-sway'\\)\\).animationName\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.proj-grid'\\)\\).gridTemplateColumns.split\\(' '\\).length\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.proj-grid'\\)\\).gap\")"
     ],
     "deny": [
       "Bash(**/.env)",

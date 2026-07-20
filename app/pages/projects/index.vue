@@ -13,14 +13,14 @@
     </p>
 
     <!-- Skeleton loaders -->
-    <div v-if="!projects" class="proj-grid mt-14">
+    <div v-if="!projects" class="proj-grid ga-4 ga-md-6 mt-14">
       <div v-for="n in 4" :key="n" class="proj-skeleton">
         <v-skeleton-loader type="article" />
       </div>
     </div>
 
     <!-- All projects — uniform 2-column grid -->
-    <div v-else class="proj-grid mt-14">
+    <div v-else class="proj-grid ga-4 ga-md-6 mt-14">
       <UiRevealBlock
         v-for="(proj, i) in projects"
         :key="proj.id"
@@ -142,15 +142,20 @@ const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, ()
   max-width: 640px;
 }
 
-// 2-column uniform grid
+// 2-column grid. The gap is set with Vuetify's responsive `ga-*` utilities
+// on the element (ga-6 → ga-md-10 = 24px → 40px), not here — so spacing
+// stays in the markup with the rest of the layout utilities.
+//
+// One column below md, two at md and up: the column switch is aligned with
+// the `ga-md` breakpoint (960px), and the longer case-study cards stay
+// single-column and readable on tablet.
 .proj-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  grid-template-columns: 1fr;
+  @media (min-width: 960px) {
+    grid-template-columns: 1fr 1fr;
   }
-  // Stretch reveal wrappers so cards fill equal height
+  // Stretch reveal wrappers so cards fill equal height (grid alignment)
   :deep(.reveal-block) {
     height: 100%;
   }
