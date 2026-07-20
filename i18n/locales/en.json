@@ -51,7 +51,8 @@
     "status_private": "Private",
     "request_access": "Request access",
     "view_case": "View case study",
-    "back": "Back to projects"
+    "back": "Back to projects",
+    "not_found": "Project not found."
   },
   "blog": {
     "section": "04 — Blog",
