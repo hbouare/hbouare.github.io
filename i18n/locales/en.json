@@ -106,7 +106,13 @@
     "context": "Context",
     "challenge": "The challenge",
     "solution": "The solution",
-    "highlights": "Highlights",
-    "impact": "Impact"
+    "highlights": "Key features",
+    "impact": "Results",
+    "objectives": "Objectives",
+    "architecture": "Architecture",
+    "deliverables": "Deliverables",
+    "private_title": "Private project",
+    "private_note": "Delivered under a client engagement — the source code is private. Detailed architecture, a demo, documentation or repository access can be provided on request.",
+    "open_title": "Source code"
   }
 }

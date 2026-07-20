@@ -240,8 +240,8 @@ test.describe("projects", () => {
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
     await expect(page.locator(".case-impact")).toBeVisible({ timeout: 8_000 })
 
-    const contactCta = page.locator('.case-cta a[href$="/contact"]')
-    const publicLink = page.locator('.case-cta a[href^="http"]')
+    const contactCta = page.locator('.case-encart a[href$="/contact"]')
+    const publicLink = page.locator('.case-encart a[href^="http"]')
     const hasWayForward =
       (await contactCta.count()) > 0 || (await publicLink.count()) > 0
     expect(hasWayForward, "case study must offer a way forward").toBe(true)

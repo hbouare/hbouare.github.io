@@ -106,7 +106,13 @@
     "context": "Contexte",
     "challenge": "Le défi",
     "solution": "La solution",
-    "highlights": "Points forts",
-    "impact": "Impact"
+    "highlights": "Fonctionnalités clés",
+    "impact": "Résultats",
+    "objectives": "Objectifs",
+    "architecture": "Architecture",
+    "deliverables": "Livrables",
+    "private_title": "Projet privé",
+    "private_note": "Réalisé dans un cadre client — le code source est privé. Architecture détaillée, démonstration, documentation ou accès au dépôt peuvent être fournis sur demande.",
+    "open_title": "Code source"
   }
 }

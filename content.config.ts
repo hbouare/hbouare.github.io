@@ -28,12 +28,15 @@ const projectSchema = z.object({
   context:    z.string().optional(),          // anonymised client, e.g. "Fintech scale-up"
   role:       z.string().optional(),          // your role, e.g. "Lead back-end"
   period:     z.string().optional(),          // e.g. "2023 · 6 months"
-  hook:       z.string().optional(),          // one-line pitch (teaser + case-study hero)
-  intro:      z.string().optional(),          // context paragraph: who / what need
-  challenge:  z.string().optional(),          // the business/technical challenge
-  solution:   z.string().optional(),          // how the product answers it
-  highlights: z.array(z.string()).optional(), // standout features / technical points
-  impact:     z.array(z.string()).optional(), // measurable outcomes
+  hook:         z.string().optional(),          // one-line pitch (teaser + case-study hero)
+  intro:        z.string().optional(),          // context paragraph: who / what need
+  objectives:   z.array(z.string()).optional(), // business objectives
+  challenge:    z.string().optional(),          // the business/technical challenge
+  solution:     z.string().optional(),          // how the product answers it
+  architecture: z.string().optional(),          // general architecture (from the stack)
+  highlights:   z.array(z.string()).optional(), // standout features / technical points
+  deliverables: z.array(z.string()).optional(), // what was delivered
+  impact:       z.array(z.string()).optional(), // outcomes / value
   // Source visibility. `private` (default) shows a "request access" CTA
   // instead of dead repo/demo buttons.
   access:   z.enum(['private', 'public']).default('private'),

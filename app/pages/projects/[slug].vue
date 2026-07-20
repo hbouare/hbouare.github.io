@@ -42,6 +42,15 @@
         </section>
       </UiRevealBlock>
 
+      <UiRevealBlock v-if="project.objectives?.length">
+        <section class="case-section">
+          <UiEyebrow :rule="false" class="case-label">{{ $t("case.objectives") }}</UiEyebrow>
+          <ul class="case-list">
+            <li v-for="o in project.objectives" :key="o" class="type-body-md">{{ o }}</li>
+          </ul>
+        </section>
+      </UiRevealBlock>
+
       <UiRevealBlock v-if="project.challenge">
         <section class="case-section">
           <UiEyebrow :rule="false" class="case-label">{{ $t("case.challenge") }}</UiEyebrow>
@@ -56,11 +65,27 @@
         </section>
       </UiRevealBlock>
 
+      <UiRevealBlock v-if="project.architecture">
+        <section class="case-section">
+          <UiEyebrow :rule="false" class="case-label">{{ $t("case.architecture") }}</UiEyebrow>
+          <p class="case-prose type-body-lg">{{ project.architecture }}</p>
+        </section>
+      </UiRevealBlock>
+
       <UiRevealBlock v-if="project.highlights?.length">
         <section class="case-section">
           <UiEyebrow :rule="false" class="case-label">{{ $t("case.highlights") }}</UiEyebrow>
-          <ul class="case-highlights">
+          <ul class="case-list">
             <li v-for="h in project.highlights" :key="h" class="type-body-md">{{ h }}</li>
+          </ul>
+        </section>
+      </UiRevealBlock>
+
+      <UiRevealBlock v-if="project.deliverables?.length">
+        <section class="case-section">
+          <UiEyebrow :rule="false" class="case-label">{{ $t("case.deliverables") }}</UiEyebrow>
+          <ul class="case-list">
+            <li v-for="d in project.deliverables" :key="d" class="type-body-md">{{ d }}</li>
           </ul>
         </section>
       </UiRevealBlock>
@@ -78,24 +103,35 @@
         </section>
       </UiRevealBlock>
 
-      <!-- Access CTA -->
+      <!-- Private-project note — a professional invitation to reach out. -->
       <UiRevealBlock>
-        <div class="case-cta">
+        <aside class="case-encart section-surface">
           <template v-if="project.access === 'public'">
-            <v-btn v-if="project.github" :href="project.github" target="_blank" rel="noopener" size="large">
-              GitHub<v-icon end size="small" icon="mdi-arrow-top-right" />
-            </v-btn>
-            <v-btn v-if="project.demo" :href="project.demo" target="_blank" rel="noopener" variant="text" size="large">
-              Demo<v-icon end size="small" icon="mdi-arrow-top-right" />
-            </v-btn>
+            <UiEyebrow :rule="false" class="mb-3">{{ $t("case.open_title") }}</UiEyebrow>
+            <div class="d-flex flex-wrap ga-3">
+              <v-btn v-if="project.github" :href="project.github" target="_blank" rel="noopener" size="large">
+                GitHub<v-icon end size="small" icon="mdi-arrow-top-right" />
+              </v-btn>
+              <v-btn v-if="project.demo" :href="project.demo" target="_blank" rel="noopener" variant="text" size="large">
+                Demo<v-icon end size="small" icon="mdi-arrow-top-right" />
+              </v-btn>
+            </div>
           </template>
           <template v-else>
-            <p class="type-caption text-muted mb-4">{{ $t("projects.privacy_note") }}</p>
-            <v-btn :to="localePath('/contact')" size="large" append-icon="mdi-arrow-right">
+            <UiEyebrow :rule="false" class="mb-3">{{ $t("case.private_title") }}</UiEyebrow>
+            <p class="case-encart-text type-body-md text-muted">
+              {{ $t("case.private_note") }}
+            </p>
+            <v-btn
+              :to="localePath('/contact')"
+              size="large"
+              append-icon="mdi-arrow-right"
+              class="mt-6"
+            >
               {{ $t("projects.request_access") }}
             </v-btn>
           </template>
-        </div>
+        </aside>
       </UiRevealBlock>
     </div>
 
@@ -178,8 +214,9 @@ if (project.value) {
   color: rgb(var(--v-theme-muted));
 }
 
-// Highlights — hairline-marked list (the system's marker, not icons).
-.case-highlights {
+// Objectives / features / deliverables — hairline-marked list (the system's
+// marker, not icons).
+.case-list {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -247,7 +284,17 @@ if (project.value) {
   }
 }
 
-.case-cta {
-  padding-top: 3rem;
+// Private-project encart — a distinct, professional invitation to reach out.
+.case-encart {
+  margin-top: 3rem;
+  border: 1px solid rgb(var(--v-theme-border));
+  padding: 2rem 2.25rem;
+
+  @media (max-width: 599px) {
+    padding: 1.5rem;
+  }
+}
+.case-encart-text {
+  max-width: 560px;
 }
 </style>
