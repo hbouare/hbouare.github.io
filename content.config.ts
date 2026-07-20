@@ -7,6 +7,9 @@ const experienceSchema = z.object({
   role:     z.string(),
   company:  z.string(),
   period:   z.string(),
+  // Contract type (e.g. "Freelance", "Temps plein"). Optional — only set it
+  // where it disambiguates, e.g. two overlapping missions run in parallel.
+  employment: z.string().optional(),
   location: z.string(),
   flag:     z.string(),
   tags:     z.array(z.string()),

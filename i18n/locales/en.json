@@ -11,10 +11,10 @@
   },
   "hero": {
     "tag": "Full-Stack · Data Engineer · DevOps",
-    "title_1": "Building",
-    "title_em": "the future",
-    "title_3": "line by line",
-    "subtitle": "Engineer and PhD specializing in the design and development of data-driven digital systems. Experienced across the full application lifecycle, from data modeling and backend services to interface development and production deployment. Focused on turning complex data challenges into scalable and reliable technical solutions that support both research and operational teams.",
+    "title_1": "From raw",
+    "title_em": "data",
+    "title_3": "to production",
+    "subtitle": "Software engineer and PhD in mechanics. I build applications that put data to work — from data modelling to production — and stay close to the people who use them every day.",
     "cta_projects": "See my projects",
     "cta_contact": "Contact me",
     "cta_cv": "Download CV",
@@ -22,7 +22,6 @@
     "stat_years": "Years of exp.",
     "stat_countries": "Countries",
     "stat_projects": "Projects shipped",
-    "stat_curiosity": "Curiosity",
     "country_france": "🇫🇷 France",
     "country_uk": "🇬🇧 United Kingdom",
     "country_algeria": "🇩🇿 Algeria"
@@ -32,9 +31,9 @@
     "title_1": "Versatile",
     "title_em": "developer",
     "title_3": "& world explorer",
-    "p1": "Working on projects across several countries has shaped the way I approach engineering challenges: listening first, understanding the context, and collaborating with teams from diverse cultural and professional backgrounds.",
-    "p2": "I believe the best software is the kind that genuinely simplifies people’s work and frees up time for what truly matters.",
-    "p3": "This belief guides both my technical decisions and the way I collaborate with product and business teams."
+    "p1": "I’ve worked on projects in France, the United Kingdom and Algeria. Different teams, cultures and ways of working taught me to read the context before proposing anything, and to adapt rather than apply a ready-made recipe.",
+    "p2": "To me, good software is measured by the time it saves the people who use it, not by how sophisticated it is under the hood.",
+    "p3": "That’s what drives my technical choices: I’d rather ship the solution a team can keep alive after I’m gone than the one that looks most impressive today."
   },
   "experience": {
     "section": "02 — Experience",

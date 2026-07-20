@@ -24,6 +24,9 @@
             <v-row no-gutters class="exp-row">
               <v-col cols="12" md="2" class="type-micro-cap text-muted">
                 {{ exp.period }}
+                <span v-if="exp.employment" class="exp-employment d-block mt-1">
+                  {{ exp.employment }}
+                </span>
               </v-col>
               <v-col cols="12" md="8">
                 <h3 class="exp-role type-title">{{ exp.role }}</h3>
@@ -70,6 +73,11 @@ const { data: experiences } = await useAsyncData(
 .exp-row {
   padding: 1.25rem 0;
   align-items: baseline;
+}
+// Contract type under the period — fuller ink than the muted date so it
+// reads as a distinct label (used to flag two overlapping missions).
+.exp-employment {
+  color: rgb(var(--v-theme-on-background));
 }
 // Role dims to muted when the row is not hovered — the system's only
 // available emphasis device without a hue.

@@ -28,7 +28,7 @@ impact:
   - "Credentials encrypted before storage — protected even if the database leaks"
   - "Strong password generator and instant search"
   - "Encrypted import / export and change history"
-tags: ["Python","Vue.js","Typescript","MongoDB","Docker","GitLab CI"]
+tags: ["Python","Vue.js","TypeScript","MongoDB","Docker","GitLab CI"]
 access: "private"
 ---
 

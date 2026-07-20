@@ -28,7 +28,7 @@ impact:
   - "Tirages garantis équitables via un moteur de génération aléatoire sécurisé"
   - "Campagnes entièrement configurables et pilotées depuis un back-office"
   - "Suivi de la participation et des ventes de tickets en temps réel"
-tags: ["Node.js","Vue.js","Typescript","MongoDB","Docker","Travis CI"]
+tags: ["Node.js","Vue.js","TypeScript","MongoDB","Docker","Travis CI"]
 access: "private"
 ---
 

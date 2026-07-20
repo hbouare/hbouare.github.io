@@ -56,7 +56,7 @@
         <!-- RIGHT: stats -->
         <v-col cols="12" md="5" class="d-none d-md-flex justify-end hero-beat">
           <v-row ref="statsRef" class="stats-grid" no-gutters>
-            <v-col v-for="(stat, index) in stats" :key="stat.key" cols="6">
+            <v-col v-for="(stat, index) in stats" :key="stat.key" cols="12">
               <!--
                 No `color` prop: on an outlined card Vuetify applies it to
                 the text and border, not the background. `color="surface"`
@@ -65,29 +65,10 @@
               -->
               <v-card class="stat-box hairline-interactive pa-5" variant="outlined">
                 <div class="stat-number">
-                  <template v-if="stat.numeric !== undefined">
-                    <span>{{ statsStarted ? animatedValues[index] : 0 }}</span>
-                    <span v-if="stat.suffix" class="stat-suffix">{{
-                      stat.suffix
-                    }}</span>
-                  </template>
-                  <template v-else>
-                    <svg
-                      class="infinity-svg"
-                      :class="{ 'infinity-animate': statsStarted }"
-                      viewBox="0 0 60 30"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        class="infinity-path"
-                        d="M30 15C30 15 38 3 47 3C52.5 3 57 7.5 57 15C57 22.5 52.5 27 47 27C38 27 30 15 30 15C30 15 22 3 13 3C7.5 3 3 7.5 3 15C3 22.5 7.5 27 13 27C22 27 30 15 30 15Z"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                  </template>
+                  <span>{{ statsStarted ? animatedValues[index] : 0 }}</span>
+                  <span v-if="stat.suffix" class="stat-suffix">{{
+                    stat.suffix
+                  }}</span>
                 </div>
                 <div class="stat-label type-micro-cap text-muted mt-1">
                   {{ $t(`hero.${stat.key}`) }}
@@ -126,7 +107,6 @@ const stats = [
   { value: "8+", key: "stat_years", numeric: 8, suffix: "+" },
   { value: "3", key: "stat_countries", numeric: 3 },
   { value: "20+", key: "stat_projects", numeric: 20, suffix: "+" },
-  { value: "∞", key: "stat_curiosity" },
 ]
 
 const statsRef = ref<HTMLElement | ComponentPublicInstance | null>(null)
@@ -291,25 +271,6 @@ useMotion(heroRoot, ({ motion, mobile }) => {
   margin-left: 1px;
 }
 
-// Infinity SVG draw animation
-.infinity-svg {
-  height: 1em;
-  width: 2em;
-  vertical-align: middle;
-  display: inline-block;
-}
-.infinity-path {
-  stroke-dasharray: 160;
-  stroke-dashoffset: 160;
-}
-.infinity-animate .infinity-path {
-  animation: drawInfinity 2.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-}
-@keyframes drawInfinity {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
 // Scroll hint — the micro-cap tier supplies size and tracking.
 .scroll-hint {
   position: absolute;

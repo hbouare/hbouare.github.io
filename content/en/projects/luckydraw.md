@@ -28,7 +28,7 @@ impact:
   - "Draws provably fair via a secure random-generation engine"
   - "Fully configurable campaigns, operated from a back-office"
   - "Real-time tracking of participation and ticket sales"
-tags: ["Node.js","Vue.js","Typescript","MongoDB","Docker","Travis CI"]
+tags: ["Node.js","Vue.js","TypeScript","MongoDB","Docker","Travis CI"]
 access: "private"
 ---
 

@@ -28,7 +28,7 @@ impact:
   - "Identifiants chiffrés avant stockage — protégés même en cas de fuite de base"
   - "Générateur de mots de passe robustes et recherche instantanée"
   - "Import / export chiffré et historique des modifications"
-tags: ["Python","Vue.js","Typescript","MongoDB","Docker","GitLab CI"]
+tags: ["Python","Vue.js","TypeScript","MongoDB","Docker","GitLab CI"]
 access: "private"
 ---
 

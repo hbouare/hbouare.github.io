@@ -11,10 +11,10 @@
   },
   "hero": {
     "tag": "Full-Stack · Data Engineer · DevOps",
-    "title_1": "Construire",
-    "title_em": "l'avenir",
-    "title_3": "ligne par ligne",
-    "subtitle": "Ingénieur et docteur spécialisé dans la conception et le développement de systèmes numériques orientés données. Expérience couvrant l’ensemble du cycle de vie des applications, de la modélisation des données et du développement des services backend jusqu’à la conception des interfaces et au déploiement en production. Les projets menés visent à transformer des problématiques complexes liées aux données en solutions techniques robustes, exploitables par les équipes métier",
+    "title_1": "Des données",
+    "title_em": "brutes",
+    "title_3": "à la production",
+    "subtitle": "Ingénieur logiciel et docteur en mécanique. Je conçois des applications qui exploitent la donnée, de la modélisation à la mise en production, en restant au contact des personnes qui s’en servent au quotidien.",
     "cta_projects": "Voir mes projets",
     "cta_contact": "Me contacter",
     "cta_cv": "Télécharger CV",
@@ -22,7 +22,6 @@
     "stat_years": "Années d'exp.",
     "stat_countries": "Pays",
     "stat_projects": "Projets livrés",
-    "stat_curiosity": "Curiosité",
     "country_france": "🇫🇷 France",
     "country_uk": "🇬🇧 Royaume-Uni",
     "country_algeria": "🇩🇿 Algérie"
@@ -32,9 +31,9 @@
     "title_1": "Développeur",
     "title_em": "polyvalent",
     "title_3": "& curieux du monde",
-    "p1": "L’expérience acquise à travers des projets menés dans plusieurs pays a profondément façonné ma manière d’aborder les projets : prendre le temps d’écouter avant de proposer, s’adapter aux contextes locaux et collaborer avec des équipes aux cultures et aux pratiques différentes.",
-    "p2": "Je suis convaincu que le meilleur logiciel est celui qui simplifie réellement le travail des utilisateurs et leur permet de consacrer davantage de temps à ce qui compte vraiment.",
-    "p3": "Cette conviction guide à la fois mes choix techniques et ma manière de collaborer avec les équipes métier."
+    "p1": "J’ai mené des projets en France, au Royaume-Uni et en Algérie. Travailler avec des équipes et des cultures différentes m’a appris à écouter le contexte avant de proposer, et à m’adapter plutôt qu’à appliquer une recette toute faite.",
+    "p2": "Pour moi, un bon logiciel se mesure au temps qu’il fait gagner à ceux qui s’en servent, pas à sa sophistication technique.",
+    "p3": "C’est ce qui oriente mes choix techniques : je préfère la solution qu’une équipe pourra faire vivre après moi à la plus impressionnante sur le moment."
   },
   "experience": {
     "section": "02 — Parcours",
