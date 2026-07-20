@@ -18,6 +18,16 @@ const projectSchema = z.object({
   title:    z.string(),
   featured: z.boolean().default(false),
   tags:     z.array(z.string()),
+  // Case-study fields — all optional so an unfilled project degrades
+  // gracefully (the card simply omits them) rather than shipping a
+  // half-built layout.
+  context:  z.string().optional(),         // anonymised client, e.g. "Fintech scale-up"
+  role:     z.string().optional(),         // your role, e.g. "Lead back-end"
+  period:   z.string().optional(),         // e.g. "2023 · 6 months"
+  impact:   z.array(z.string()).optional(),// 1-3 measurable outcomes
+  // Source visibility. `private` (default) shows a "request access" CTA
+  // instead of dead repo/demo buttons.
+  access:   z.enum(['private', 'public']).default('private'),
   github:   z.string().optional(),
   demo:     z.string().optional(),
 })

@@ -4,12 +4,17 @@ order: 4
 title: "Secure Password Manager"
 featured: false
 tags: ["Python", "Vue.js", "Typescript", "MongoDB", "Docker", "GitLab CI"]
+context: "Personal / security R&D project"
+role: "Full-stack design & development"
+impact:
+  - "Credentials encrypted before storage — protected even if the database leaks"
+  - "Strong password generator and instant search"
+  - "Encrypted import / export and change history"
+access: "private"
 github: ""
 demo: ""
 ---
 
-A secure web-based password management application designed to help users store and organize their credentials within a protected environment.
+**The problem.** Storing sensitive credentials demands a strong guarantee: even if the database leaks, the secrets must stay unreadable — while keeping day-to-day use frictionless.
 
-Sensitive information is encrypted prior to storage using strong cryptographic mechanisms, ensuring that credentials remain protected even in the event of unauthorized database access. Users can organize their credentials into customizable categories such as personal accounts, professional services, or web applications.
-
-The platform includes a secure password generator to create strong credentials, as well as a fast search interface enabling users to quickly retrieve stored information. Additional features include credential updates, encrypted data export and import capabilities, and a change history system to track password modifications.
+**The approach.** A vault where information is encrypted before storage using strong cryptography, organised into categories, with a robust password generator and instant search. Change history and encrypted import/export round out the management tools.

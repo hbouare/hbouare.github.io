@@ -212,3 +212,26 @@ test.describe("accessibility", () => {
     }
   })
 })
+
+test.describe("projects", () => {
+  // Private projects have no repo/demo link. Every card must still offer a
+  // path forward (request access → contact) rather than being a dead end.
+  test("private project cards route to contact instead of dead-ending", async ({
+    page,
+  }) => {
+    await page.goto("/projects")
+    const cards = page.locator(".proj-card")
+    const count = await cards.count()
+    expect(count).toBeGreaterThan(0)
+
+    for (let i = 0; i < count; i++) {
+      const card = cards.nth(i)
+      // Either a public source link, or a request-access CTA to /contact.
+      const publicLink = card.locator('.proj-actions a[href*="github"], .proj-actions a[href*="http"]')
+      const contactCta = card.locator('.proj-actions a[href$="/contact"]')
+      const hasAction =
+        (await publicLink.count()) > 0 || (await contactCta.count()) > 0
+      expect(hasAction, `project card ${i} must offer an action`).toBe(true)
+    }
+  })
+})

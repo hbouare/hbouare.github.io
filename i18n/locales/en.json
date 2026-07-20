@@ -46,7 +46,10 @@
     "title_em": "shipped",
     "featured": "Featured",
     "view_all": "View all projects",
-    "meta_desc": "Projects and achievements in full-stack development, data engineering and DevOps."
+    "meta_desc": "Projects and achievements in full-stack development, data engineering and DevOps.",
+    "privacy_note": "These projects were delivered under professional engagements — their source code is private. On a reasoned request, I can provide read access or a detailed technical walkthrough.",
+    "status_private": "Private",
+    "request_access": "Request access"
   },
   "blog": {
     "section": "04 — Blog",

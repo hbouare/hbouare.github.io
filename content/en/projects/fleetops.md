@@ -4,12 +4,17 @@ order: 1
 title: "Vehicle Fleet Management System"
 featured: true
 tags: ["Python", "Vue.js", "PostgreSQL", "Docker", "GitLab CI"]
+context: "Client engagement — transport & services"
+role: "Full-stack design & development"
+impact:
+  - "Fleet data, previously scattered across spreadsheets, centralised in one place"
+  - "Maintenance and compliance deadlines tracked automatically instead of by hand"
+  - "Visibility over fleet operating costs"
+access: "private"
 github: ""
 demo: ""
 ---
 
-A fleet management platform designed to streamline the operational monitoring of vehicles used by transportation and service companies.
+**The problem.** Transport and service companies tracked their fleet across scattered spreadsheets — mileage, servicing, insurance and regulatory documents lived in separate files, with no overview and no way to anticipate deadlines.
 
-The system centralizes all vehicle-related information, including driver assignments, mileage tracking, maintenance history, insurance policies, regulatory documentation, and fuel consumption.
-
-A maintenance scheduling module proactively anticipates servicing operations by automatically generating alerts when technical inspections, insurance renewals, or administrative deadlines approach. Fleet managers can access a consolidated dashboard providing insights into fleet utilization, maintenance costs, and overall operational performance.
+**The approach.** A web platform centralising all vehicle and driver data, backed by a scheduling module that automatically raises alerts as inspections, insurance renewals and regulatory deadlines approach. A dashboard aggregates fleet status and operating costs.

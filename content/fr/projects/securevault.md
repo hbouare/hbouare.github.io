@@ -4,12 +4,17 @@ order: 4
 title: "Gestionnaire de mots de passe sécurisé"
 featured: false
 tags: ["Python", "Vue.js", "Typescript", "MongoDB", "Docker", "GitLab CI"]
+context: "Projet personnel / R&D sécurité"
+role: "Conception & développement full-stack"
+impact:
+  - "Identifiants chiffrés avant stockage — protégés même en cas de fuite de base"
+  - "Générateur de mots de passe robustes et recherche instantanée"
+  - "Import / export chiffré et historique des modifications"
+access: "private"
 github: ""
 demo: ""
 ---
 
-Application web permettant aux utilisateurs de stocker et gérer leurs identifiants et mots de passe dans un espace sécurisé accessible depuis une interface centralisée.
+**Le problème.** Stocker des identifiants sensibles impose une garantie forte : même si la base de données fuite, les secrets doivent rester illisibles — tout en gardant une expérience fluide au quotidien.
 
-Les informations sensibles sont chiffrées avant stockage à l’aide d’un mécanisme de chiffrement fort, garantissant que les données restent protégées même en cas d’accès non autorisé à la base de données. L’application permet d’organiser les identifiants par catégories (professionnel, personnel, services web, etc.) et propose un générateur de mots de passe robustes pour renforcer la sécurité des comptes.
-
-Une fonctionnalité de recherche rapide permet de retrouver instantanément un identifiant enregistré, tandis que l’interface propose également des outils de gestion tels que l’historique des modifications, la mise à jour sécurisée des mots de passe et l’import/export chiffré des données.
+**L’approche.** Un coffre où les informations sont chiffrées avant stockage via un mécanisme de chiffrement fort, organisées par catégories, avec générateur de mots de passe robustes et recherche instantanée. Historique des modifications et import/export chiffré complètent la gestion.

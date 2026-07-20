@@ -46,7 +46,10 @@
     "title_em": "bâti",
     "featured": "Projet phare",
     "view_all": "Voir tous les projets",
-    "meta_desc": "Projets et réalisations en développement full-stack, data engineering et DevOps."
+    "meta_desc": "Projets et réalisations en développement full-stack, data engineering et DevOps.",
+    "privacy_note": "Ces projets ont été menés dans un cadre professionnel — leur code source est privé. Sur demande motivée, je fournis un accès en lecture ou une présentation technique détaillée.",
+    "status_private": "Privé",
+    "request_access": "Demander l’accès"
   },
   "blog": {
     "section": "04 — Blog",

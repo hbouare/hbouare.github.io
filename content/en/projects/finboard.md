@@ -4,12 +4,17 @@ order: 2
 title: "Financial Monitoring Dashboard"
 featured: false
 tags: ["Python", "Vue.js", "PostgreSQL", "Docker", "GitLab CI"]
+context: "Client engagement — SMB, finance"
+role: "Full-stack design & development"
+impact:
+  - "Transaction reconciliation and categorisation automated, previously manual"
+  - "Monthly reporting and accounting exports (CSV / PDF) generated on demand"
+  - "Real-time alerts on overdue invoices and abnormal cash-flow patterns"
+access: "private"
 github: ""
 demo: ""
 ---
 
-A web-based financial monitoring platform designed to help small and medium-sized businesses gain clear visibility into their financial operations through a centralized dashboard.
+**The problem.** SMBs reconciled and categorised financial flows from multiple sources by hand — slow, repetitive, error-prone work, with no consolidated view of their indicators.
 
-The application allows organizations to import and track financial transactions, monitor revenues and expenses, manage customer and supplier invoices, and analyze key financial indicators through interactive visualizations.
-
-A rule-based categorization engine automatically classifies financial transactions, enabling users to organize expenses and revenue streams efficiently. The system also provides automated reporting features, including monthly financial summaries, CSV and PDF exports, and alert mechanisms for overdue payments or abnormal financial patterns.
+**The approach.** A single dashboard that imports transactions automatically, tracks revenue and expenses, manages invoices and visualises key indicators. At its core, a rule-based categorisation engine — editable by the business rather than a black box — for trust and auditability.
