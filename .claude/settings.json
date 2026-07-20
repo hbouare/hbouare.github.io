@@ -97,7 +97,22 @@
       "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const el=document.querySelector\\('.menu-toggle'\\); const out=[]; for\\(const s of document.styleSheets\\){let rules; try{rules=s.cssRules}catch\\(e\\){continue} for\\(const r of rules||[]\\){ if\\(r.selectorText && /d-flex|d-md-none|nav-icon-btn|menu-toggle/.test\\(r.selectorText\\) && r.style && r.style.display\\){ out.push\\(r.selectorText+' {display:'+r.style.display+\\(r.style.getPropertyPriority\\('display'\\)?' !important':''\\)+'}'\\); } if\\(r.cssRules\\){ for\\(const rr of r.cssRules\\){ if\\(rr.selectorText && /d-md-none|d-flex/.test\\(rr.selectorText\\) && rr.style && rr.style.display\\){ out.push\\('@layer '+\\(r.name||''\\)+' '+rr.selectorText+' {display:'+rr.style.display+\\(rr.style.getPropertyPriority\\('display'\\)?' !important':''\\)+'}'\\); } } } } } return out.join\\('\\\\n'\\);}\\)\\(\\)\")",
       "Bash(playwright-cli --raw eval \"document.querySelector\\('.menu-toggle'\\).className\")",
       "Bash(playwright-cli --raw eval ' *)",
-      "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const d=document.querySelector\\('.v-navigation-drawer'\\); return d?getComputedStyle\\(d\\).transform:'absent';}\\)\\(\\)\")"
+      "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const d=document.querySelector\\('.v-navigation-drawer'\\); return d?getComputedStyle\\(d\\).transform:'absent';}\\)\\(\\)\")",
+      "Bash(pkill -f playwright)",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum-canvas'\\)\\).backgroundColor\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum'\\)\\).backgroundColor\")",
+      "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const c=document.querySelector\\('.plum-canvas'\\); return c.width+'x'+c.height;}\\)\\(\\)\")",
+      "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const c=document.querySelector\\('.plum-canvas'\\); const ctx=c.getContext\\('2d'\\); const d=ctx.getImageData\\(0,0,c.width,c.height\\).data; let nz=0,tot=d.length/4; for\\(let i=3;i<d.length;i+=4\\) if\\(d[i]>0\\) nz++; return Math.round\\(100*nz/tot\\)+'% opaques';}\\)\\(\\)\")",
+      "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const c=document.querySelector\\('.plum-canvas'\\); const ctx=c.getContext\\('2d'\\); const d=ctx.getImageData\\(0,0,c.width,c.height\\).data; let nz=0; for\\(let i=3;i<d.length;i+=4\\) if\\(d[i]>0\\) nz++; return Math.round\\(100*nz/\\(d.length/4\\)\\)+'%';}\\)\\(\\)\")",
+      "Bash(playwright-cli --raw eval \"document.documentElement.scrollWidth > document.documentElement.clientWidth ? 'OUI \\(bug!\\)' : 'non ✓'\")",
+      "Bash(playwright-cli --raw eval \"document.querySelectorAll\\('.plum'\\).length\")",
+      "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const el=document.querySelector\\('.plum--bl'\\); const r=el.getBoundingClientRect\\(\\); const ph=document.querySelector\\('.blog-page'\\).getBoundingClientRect\\(\\).height; return 'bottom du bl à '+Math.round\\(r.bottom\\)+'px / page '+Math.round\\(ph\\)+'px';}\\)\\(\\)\")",
+      "Bash(playwright-cli --raw eval \"Array.from\\(document.querySelectorAll\\('.plum'\\)\\).filter\\(e=>getComputedStyle\\(e\\).display!=='none'\\).length\")",
+      "Bash(playwright-cli --raw eval \"document.documentElement.scrollWidth>document.documentElement.clientWidth?'OUI':'non'\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum--tl'\\)\\).display\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum'\\)\\).animationName\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum'\\)\\).opacity\")",
+      "Bash(playwright-cli --raw eval \"getComputedStyle\\(document.querySelector\\('.plum-sway'\\)\\).animationName\")"
     ],
     "deny": [
       "Bash(**/.env)",
