@@ -258,19 +258,24 @@ p {
 }
 
 // ── Shiki syntax highlighting — theme-aware ────────────────────────────
-// Shiki emits selectors for `html .dark` / `html .default`; this project
-// switches on the data-theme attribute instead.
+// Nuxt Content's dual-theme Shiki emits the palette as CSS custom properties
+// (`--shiki-dark` / `--shiki-default`) on hashed token classes; it does NOT
+// set `color` inline or ship a competing `.shiki span` colour rule. These two
+// rules are therefore the ONLY declarations painting the tokens, so they need
+// no `!important` — there is nothing to override. (Verified by measuring the
+// computed token colours in both themes.) The switch is on the data-theme
+// attribute rather than Shiki's default `.dark` / `.default` classes.
 html[data-theme='dark'] .shiki span {
-  color: var(--shiki-dark) !important;
-  background: var(--shiki-dark-bg) !important;
-  font-style: var(--shiki-dark-font-style) !important;
-  font-weight: var(--shiki-dark-font-weight) !important;
-  text-decoration: var(--shiki-dark-text-decoration) !important;
+  color: var(--shiki-dark);
+  background: var(--shiki-dark-bg);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
 }
 html[data-theme='light'] .shiki span {
-  color: var(--shiki-default) !important;
-  background: var(--shiki-default-bg) !important;
-  font-style: var(--shiki-default-font-style) !important;
-  font-weight: var(--shiki-default-font-weight) !important;
-  text-decoration: var(--shiki-default-text-decoration) !important;
+  color: var(--shiki-default);
+  background: var(--shiki-default-bg);
+  font-style: var(--shiki-default-font-style);
+  font-weight: var(--shiki-default-font-weight);
+  text-decoration: var(--shiki-default-text-decoration);
 }
