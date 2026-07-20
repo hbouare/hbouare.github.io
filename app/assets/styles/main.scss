@@ -101,11 +101,10 @@ html[data-theme='light'] body {
 // Prefixed with .v-application to beat Vuetify's own font-family without
 // resorting to !important.
 // No `.font-body` utility: body is already the default family on
-// `.v-application`, so the class would never do anything.
+// `.v-application`, so the class would never do anything. No `.font-display`
+// utility either: it was never used as a class — components reference the
+// `--font-display` custom property directly.
 .v-application {
-  .font-display {
-    font-family: var(--font-display);
-  }
   .font-mono {
     font-family: var(--font-mono);
   }

@@ -99,7 +99,7 @@ test.describe("page transitions", () => {
   // Unique-href links only. The home link (logo + About both point at "/")
   // is intentionally excluded to keep each hop unambiguous.
   const hops: [string, string, string][] = [
-    ['.app-nav a[href="/projects"]', "/projects", ".proj-grid"],
+    ['.app-nav a[href="/projects"]', "/projects", ".proj-card"],
     ['.app-nav a[href="/blog"]', "/blog", ".blog-card"],
     ['.app-nav a[href="/contact"]', "/contact", "form"],
   ]
@@ -131,6 +131,6 @@ test.describe("page transitions", () => {
     await page.goto("/")
     await page.locator('.app-nav a[href="/projects"]').first().click()
     await expect(page).toHaveURL(/\/projects$/)
-    await expect(page.locator(".proj-grid")).toBeVisible()
+    await expect(page.locator(".proj-card").first()).toBeVisible()
   })
 })

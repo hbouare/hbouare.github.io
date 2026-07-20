@@ -105,7 +105,7 @@
 
       <!-- Private-project note — a professional invitation to reach out. -->
       <UiRevealBlock>
-        <aside class="case-encart section-surface">
+        <aside class="case-encart section-surface pa-6 py-sm-8 px-sm-9">
           <template v-if="project.access === 'public'">
             <UiEyebrow :rule="false" class="mb-3">{{ $t("case.open_title") }}</UiEyebrow>
             <div class="d-flex flex-wrap ga-3">
@@ -285,14 +285,11 @@ if (project.value) {
 }
 
 // Private-project encart — a distinct, professional invitation to reach out.
+// Padding comes from Vuetify utilities in the template (pa-6 py-sm-8 px-sm-9),
+// so the responsive step no longer needs a media query.
 .case-encart {
   margin-top: 3rem;
   border: 1px solid rgb(var(--v-theme-border));
-  padding: 2rem 2.25rem;
-
-  @media (max-width: 599px) {
-    padding: 1.5rem;
-  }
 }
 .case-encart-text {
   max-width: 560px;

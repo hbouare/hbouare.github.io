@@ -1,7 +1,7 @@
 <template>
   <section ref="heroRoot" class="hero-section">
     <v-container class="hero-inner px-6 px-md-10" fluid>
-      <v-row align="center" class="min-h-screen py-24">
+      <v-row align="center" class="hero-fill section-v-pad">
         <!-- LEFT -->
         <v-col cols="12" md="7" class="hero-left">
           <UiEyebrow class="hero-tag hero-beat">
@@ -251,15 +251,13 @@ useMotion(heroRoot, ({ motion, mobile }) => {
   position: relative;
   z-index: 1;
 }
-.min-h-screen {
+// Forces the row to fill the viewport so `align="center"` centres the hero
+// content vertically. Named semantically (not `.min-h-screen`) so it is not
+// mistaken for a Vuetify utility — Vuetify ships no min-height helper.
+// Vertical rhythm comes from the shared `.section-v-pad` token in main.scss
+// (the local `.py-24` duplicate is gone).
+.hero-fill {
   min-height: 100vh;
-}
-
-// Vertical rhythm follows the shared section token — the three duplicated
-// breakpoint blocks that used to live here are gone.
-.py-24 {
-  padding-top: var(--section-pad);
-  padding-bottom: var(--section-pad);
 }
 
 // Size comes from the micro-cap tier; only the rhythm is local.

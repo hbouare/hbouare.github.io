@@ -1,5 +1,5 @@
 <template>
-  <section id="contact" class="section-contact" style="border-bottom: none">
+  <section id="contact" class="section-contact">
     <v-container class="px-6 px-md-10" fluid>
       <v-row>
         <!-- Left: title + description + social icons -->
@@ -39,7 +39,7 @@
         <!-- Right: contact form -->
         <v-col cols="12" md="7">
           <UiRevealBlock :delay="200">
-            <div class="contact-form-wrap hairline-interactive">
+            <div class="contact-form-wrap hairline-interactive pa-6 pa-sm-10">
               <v-form ref="formRef" @submit.prevent="submitForm">
                 <v-text-field
                   v-model="form.name"
@@ -235,14 +235,11 @@ const sendEmail = async () => {
 }
 
 // Form panel — hairline surface; hover comes from .hairline-interactive.
+// Padding is set with Vuetify utilities in the template (pa-6 pa-sm-10), so
+// the responsive step no longer needs a media query here.
 .contact-form-wrap {
   background: rgb(var(--v-theme-surface));
   border: 1px solid rgb(var(--v-theme-border));
-  padding: 2.5rem;
-
-  @media (max-width: 599px) {
-    padding: 1.5rem;
-  }
 }
 
 .confirm-dialog {

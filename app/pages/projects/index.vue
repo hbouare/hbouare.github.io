@@ -13,25 +13,31 @@
     </p>
 
     <!-- Skeleton loaders -->
-    <div v-if="!projects" class="proj-grid ga-4 ga-md-6 mt-14">
-      <div v-for="n in 4" :key="n" class="proj-skeleton">
-        <v-skeleton-loader type="article" />
-      </div>
-    </div>
+    <v-row v-if="!projects" class="mt-14">
+      <v-col v-for="n in 4" :key="n" cols="12" md="6">
+        <v-skeleton-loader type="article" class="pa-4" />
+      </v-col>
+    </v-row>
 
-    <!-- Teasers — each links to its full case study. -->
-    <div v-else class="proj-grid ga-4 ga-md-6 mt-14">
-      <UiRevealBlock
+    <!-- Teasers — each links to its full case study. One column below md, two
+         at md and up — the Vuetify grid owns the responsive switch, so there
+         is no media query here. `d-flex` on the col + `h-100` on the reveal
+         wrapper lets the card stretch to equal heights per row. -->
+    <v-row v-else class="mt-14">
+      <v-col
         v-for="(proj, i) in projects"
         :key="proj.slug"
-        :delay="i * 100"
+        cols="12"
+        md="6"
+        class="d-flex"
       >
-        <NuxtLink
-          :to="localePath(`/projects/${proj.slug}`)"
-          class="proj-card hairline-interactive text-decoration-none"
-        >
+        <UiRevealBlock :delay="i * 100" class="h-100 w-100">
+          <NuxtLink
+            :to="localePath(`/projects/${proj.slug}`)"
+            class="proj-card hairline-interactive text-decoration-none"
+          >
           <div class="proj-accent-bar" />
-          <div class="proj-card-inner">
+          <div class="proj-card-inner pa-6 py-sm-8 px-sm-10">
             <div class="d-flex align-center ga-3 mb-3">
               <span class="proj-num type-micro-cap">
                 {{ String(i + 1).padStart(3, "0") }}
@@ -63,9 +69,10 @@
               </p>
             </div>
           </div>
-        </NuxtLink>
-      </UiRevealBlock>
-    </div>
+          </NuxtLink>
+        </UiRevealBlock>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -91,21 +98,10 @@ const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, ()
   max-width: 640px;
 }
 
-// 2-column grid. Gap set with Vuetify's responsive `ga-*` utilities on the
-// element. One column below md, two at md and up.
-.proj-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  @media (min-width: 960px) {
-    grid-template-columns: 1fr 1fr;
-  }
-  :deep(.reveal-block) {
-    height: 100%;
-  }
-}
-
 // Teaser card — the whole card is the link. Hairline + hover come from
-// .hairline-interactive.
+// .hairline-interactive. The 1→2 column responsive switch and equal-height
+// stretch are handled by the Vuetify grid in the template (v-row / v-col +
+// d-flex), so there is no grid CSS or media query here any more.
 .proj-card {
   display: block;
   position: relative;
@@ -135,14 +131,12 @@ const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, ()
   transition: width 0.3s ease;
 }
 
+// Padding comes from Vuetify utilities in the template (pa-6 py-sm-8
+// px-sm-10), so the responsive step no longer needs a media query.
 .proj-card-inner {
-  padding: 2rem 2.5rem;
   display: flex;
   flex-direction: column;
   height: 100%;
-  @media (max-width: 599px) {
-    padding: 1.5rem;
-  }
 }
 
 .proj-num {
@@ -170,8 +164,5 @@ const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, ()
 }
 .proj-arrow {
   transition: transform 0.3s ease;
-}
-.proj-skeleton {
-  padding: 1rem;
 }
 </style>
