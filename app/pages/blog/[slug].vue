@@ -100,12 +100,7 @@ if (post.value) {
   })
 }
 
-const formatDate = (d: string) =>
-  new Date(d).toLocaleDateString(locale.value === "fr" ? "fr-FR" : "en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
+const { formatDate } = useFormatDate()
 
 // Table of contents
 const { headings, activeId } = useTableOfContents(contentRef)

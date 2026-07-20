@@ -53,7 +53,7 @@ useMotion(root, ({ motion }) => {
   loop = gsap.to(el, {
     xPercent: -50,
     duration: 30,
-    ease: "none",
+    ease: EASE.none,
     repeat: -1,
   })
 

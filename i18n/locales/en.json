@@ -5,7 +5,6 @@
     "projects": "Projects",
     "blog": "Blog",
     "contact": "Contact",
-    "hire": "Hire me",
     "scroll_top": "Back to top",
     "menu": "Open menu"
   },
@@ -97,11 +96,5 @@
   "theme": {
     "toggle_dark": "Dark mode",
     "toggle_light": "Light mode"
-  },
-  "skills": {
-    "backend": "Backend",
-    "frontend": "Frontend",
-    "devops": "DevSecOps",
-    "data": "Data"
   }
 }

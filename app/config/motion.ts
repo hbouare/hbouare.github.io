@@ -29,8 +29,6 @@ export const EASE = {
 export const STAGGER = {
   /** Between lines of a masked heading. */
   line: 0.08,
-  /** Between sibling cards in a grid. */
-  card: 0.09,
   /** Between hero beats. */
   beat: 0.12,
 } as const

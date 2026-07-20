@@ -186,11 +186,29 @@ test.describe("routes", () => {
 
 test.describe("accessibility", () => {
   // Both icon-only toggles shipped with no accessible name at all.
-  test("icon-only controls have accessible names", async ({ page }) => {
+  test("theme toggle has an accessible name", async ({ page }) => {
     await page.goto("/")
-    for (const sel of ["button.theme-toggle", "button.menu-toggle"]) {
-      const label = await page.locator(sel).first().getAttribute("aria-label")
-      expect(label, `${sel} needs an aria-label`).toBeTruthy()
+    const label = await page
+      .locator("button.theme-toggle")
+      .first()
+      .getAttribute("aria-label")
+    expect(label, "theme-toggle needs an aria-label").toBeTruthy()
+  })
+
+  // The menu button is rendered only below the md breakpoint (v-if=smAndDown),
+  // so it exists on the mobile project but not on desktop.
+  test("menu button has an accessible name where it renders", async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto("/")
+    const menu = page.locator("button.menu-toggle")
+    if (isMobile) {
+      await expect(menu).toBeVisible()
+      expect(await menu.getAttribute("aria-label")).toBeTruthy()
+      expect(await menu.getAttribute("aria-expanded")).toBe("false")
+    } else {
+      await expect(menu).toHaveCount(0)
     }
   })
 })

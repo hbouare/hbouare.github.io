@@ -84,9 +84,17 @@
         />
       </button>
 
-      <!-- Mobile menu -->
+      <!--
+        Mobile menu — rendered only below md, gated by v-if like the drawer.
+        Vuetify's display utilities (d-md-none) CANNOT hide it: `.nav-icon-btn`
+        is unlayered scoped CSS with `display: inline-flex`, and unlayered
+        author CSS beats Vuetify's layered utilities, so d-md-none is inert
+        here. v-if sidesteps the cascade entirely and keeps this consistent
+        with the drawer's smAndDown gate.
+      -->
       <button
-        class="nav-icon-btn nav-icon-btn--square menu-toggle d-flex d-md-none ml-1"
+        v-if="smAndDown"
+        class="nav-icon-btn nav-icon-btn--square menu-toggle ml-1"
         :aria-label="$t('nav.menu')"
         :aria-expanded="mobileMenu"
         @click="mobileMenu = !mobileMenu"

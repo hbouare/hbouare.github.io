@@ -93,7 +93,11 @@
       "Bash(rm -rf .nuxt node_modules/.cache)",
       "Bash(node -e \"console.log\\('vite', require\\('vite/package.json'\\).version\\)\")",
       "Bash(node -e \"console.log\\('rolldown-vite', require\\('rolldown-vite/package.json'\\).version\\)\")",
-      "Bash(rm -rf .nuxt .data node_modules/.cache)"
+      "Bash(rm -rf .nuxt .data node_modules/.cache)",
+      "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const el=document.querySelector\\('.menu-toggle'\\); const out=[]; for\\(const s of document.styleSheets\\){let rules; try{rules=s.cssRules}catch\\(e\\){continue} for\\(const r of rules||[]\\){ if\\(r.selectorText && /d-flex|d-md-none|nav-icon-btn|menu-toggle/.test\\(r.selectorText\\) && r.style && r.style.display\\){ out.push\\(r.selectorText+' {display:'+r.style.display+\\(r.style.getPropertyPriority\\('display'\\)?' !important':''\\)+'}'\\); } if\\(r.cssRules\\){ for\\(const rr of r.cssRules\\){ if\\(rr.selectorText && /d-md-none|d-flex/.test\\(rr.selectorText\\) && rr.style && rr.style.display\\){ out.push\\('@layer '+\\(r.name||''\\)+' '+rr.selectorText+' {display:'+rr.style.display+\\(rr.style.getPropertyPriority\\('display'\\)?' !important':''\\)+'}'\\); } } } } } return out.join\\('\\\\n'\\);}\\)\\(\\)\")",
+      "Bash(playwright-cli --raw eval \"document.querySelector\\('.menu-toggle'\\).className\")",
+      "Bash(playwright-cli --raw eval ' *)",
+      "Bash(playwright-cli --raw eval \"\\(\\(\\)=>{const d=document.querySelector\\('.v-navigation-drawer'\\); return d?getComputedStyle\\(d\\).transform:'absent';}\\)\\(\\)\")"
     ],
     "deny": [
       "Bash(**/.env)",
