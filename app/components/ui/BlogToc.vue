@@ -1,6 +1,6 @@
 <!-- app/components/ui/BlogToc.vue -->
 <template>
-  <nav v-if="headings.length" class="blog-toc" aria-label="Table of contents">
+  <nav v-if="headings.length" class="blog-toc" :aria-label="$t('blog.toc')">
     <p class="toc-title type-micro-cap">{{ $t('blog.toc') }}</p>
     <ul class="toc-list">
       <li

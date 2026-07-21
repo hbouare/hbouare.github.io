@@ -7,17 +7,15 @@ tags: ["Python", "Pydantic", "Typage", "FastAPI"]
 excerpt: "Pas une comparaison théorique — mais les règles de décision concrètes selon le contexte : validation d'entrée API, modèles internes, configuration, sérialisation. Avec les trade-offs réels sur les performances et la maintenabilité."
 ---
 
-# Dataclasses, Pydantic, TypedDict : lequel choisir et pourquoi
-
-C'est une question que chaque équipe Python se pose tôt ou tard. Les réponses qu'on trouve en ligne sont souvent du type "Pydantic pour les APIs, dataclasses pour le reste" — ce qui est un début, mais ne couvre pas les cas limites où ce choix a un impact réel. Voici les règles de décision que j'applique en pratique.
+C'est une question que chaque équipe Python se pose tôt ou tard. Les réponses qu'on trouve en ligne sont souvent du type "Pydantic pour les API, dataclasses pour le reste" — ce qui est un début, mais ne couvre pas les cas limites où ce choix a un impact réel. Voici les règles de décision que j'applique en pratique.
 
 ## Comprendre ce que chacun fait réellement
 
 Avant les règles, un rappel sur ce que chaque outil résout :
 
-**TypedDict** est une annotation de type pure. Il ne fait rien à l'exécution — il informe juste le type checker (mypy, pyright) sur la forme d'un dictionnaire. Aucun overhead, aucune validation.
+**TypedDict** est une annotation de type pure. Il ne fait rien à l'exécution — il informe juste le type checker (mypy, pyright) sur la forme d'un dictionnaire. Aucun coût à l'exécution, aucune validation.
 
-**Dataclass** est un générateur de classes Python standard. Elle crée automatiquement `__init__`, `__repr__`, `__eq__` à partir des annotations. Pas de validation des types à l'exécution.
+**Dataclass** génère des classes Python standard : `__init__`, `__repr__` et `__eq__` sont créés automatiquement à partir des annotations. Pas de validation des types à l'exécution.
 
 **Pydantic BaseModel** est un système de validation complet. Il convertit et valide les données à l'exécution, lève des erreurs détaillées, sérialise/désérialise JSON, et génère des schémas JSON Schema.
 
@@ -43,7 +41,7 @@ def process_certificate(cert: GrxCertificate) -> float:
 
 TypedDict est idéal pour typer des dictionnaires qui viennent de l'extérieur (réponses JSON, résultats de requêtes SQL, configs YAML) sans les transformer en objets. L'overhead à l'exécution est nul — c'est purement statique.
 
-La limite : TypedDict ne valide rien à l'exécution. Si l'API renvoie un `volume` sous forme de string, ton code plante plus loin, pas à la désérialisation.
+La limite : TypedDict ne valide rien à l'exécution. Si l'API renvoie un `volume` sous forme de chaîne de caractères, ton code plante plus loin, pas à la désérialisation.
 
 ## Règle 2 : Dataclass pour les modèles internes sans validation
 
@@ -66,7 +64,7 @@ class CertificateAggregate:
 
 Les dataclasses sont parfaites pour les objets que tu construis toi-même dans ton code métier — résultats d'agrégation, objets intermédiaires de traitement, value objects du domaine. Elles sont plus légères que Pydantic et plus explicites que des dictionnaires.
 
-`@dataclass(frozen=True)` les rend immutables — utile pour les value objects :
+`@dataclass(frozen=True)` les rend immuables — utile pour les value objects :
 
 ```python
 @dataclass(frozen=True)
@@ -125,7 +123,7 @@ class Settings(BaseSettings):
 settings = Settings()  # Lève une erreur claire si DATABASE_URL est absente
 ```
 
-`pydantic-settings` est particulièrement utile — il lit les variables d'environnement, les cast dans les bons types, et lève des erreurs explicites au démarrage si une variable obligatoire est manquante.
+`pydantic-settings` est particulièrement utile — il lit les variables d'environnement, les convertit dans les bons types, et lève des erreurs explicites au démarrage si une variable obligatoire est manquante.
 
 ## Les performances : quand ça compte vraiment
 
@@ -137,7 +135,7 @@ Pydantic v2 (réécrit en Rust) est considérablement plus rapide que v1, mais r
 | Dataclass   | 1.2x                    | `__post_init__` | `dataclasses.asdict()` |
 | Pydantic v2 | 3-5x                    | Complète        | `.model_dump_json()`   |
 
-Sur un endpoint FastAPI qui traite 1000 requêtes/seconde avec des modèles simples, la différence Pydantic vs dataclass est négligeable. Elle devient visible sur des pipelines de traitement qui instancient des millions d'objets — ETL, traitement de fichiers volumineux.
+Sur un endpoint FastAPI qui traite 1 000 requêtes/seconde avec des modèles simples, la différence Pydantic vs dataclass est négligeable. Elle devient visible sur des pipelines de traitement qui instancient des millions d'objets — ETL, traitement de fichiers volumineux.
 
 La règle pratique : n'optimise pas prématurément. Pydantic aux frontières, dataclasses en interne — cette séparation donne de bonnes performances par défaut sans micro-optimisation.
 

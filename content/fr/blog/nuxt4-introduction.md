@@ -4,16 +4,14 @@ title: "Nuxt 4 : ce que ça change concrètement pour les développeurs"
 date: "2024-12-10"
 readTime: 7
 tags: ["Nuxt", "Vue.js", "Frontend", "SSR"]
-excerpt: "Nuxt 4 n'est pas juste un bump de version. Nouvelle structure de projet, app/ directory, compatibilité Nitro affinée — voici ce que ça donne sur le terrain."
+excerpt: "Nuxt 4 n'est pas une simple montée de version. Nouvelle structure de projet, répertoire app/, compatibilité Nitro affinée — voici ce que ça donne sur le terrain."
 ---
-
-# Nuxt 4 : ce que ça change concrètement
 
 Si tu travailles avec Vue.js et que tu n'as pas encore regardé Nuxt 4, c'est le bon moment. Ce n'est pas une révolution, mais les changements structurels sont suffisamment significatifs pour mériter un tour d'horizon avant de démarrer un nouveau projet.
 
-## C'est quoi Nuxt, rapidement
+## Nuxt en deux mots
 
-Nuxt est un meta-framework construit sur Vue.js. Il gère pour toi le routing, le rendu côté serveur (SSR), la génération statique (SSG), le fetching de données, et bien d'autres choses. En gros : tu codes des composants Vue, Nuxt s'occupe du reste.
+Nuxt est un méta-framework construit sur Vue.js. Il gère pour toi le routage, le rendu côté serveur (SSR), la génération statique (SSG), la récupération de données, et bien d'autres choses. En gros : tu codes des composants Vue, Nuxt s'occupe du reste.
 
 La version 3 a introduit la Composition API de Vue 3, Nitro comme moteur serveur, et une architecture basée sur les auto-imports. Nuxt 4 affine tout ça — et introduit quelques changements de fond.
 
@@ -48,7 +46,7 @@ En Nuxt 4, tout le code applicatif est regroupé sous un répertoire `app/` :
 └── nuxt.config.ts
 ```
 
-Ce n'est pas qu'esthétique. La séparation nette entre le code applicatif (`app/`) et le code serveur (`server/`) clarifie les responsabilités, surtout sur des projets qui grossissent ou qui impliquent plusieurs devs.
+Ce n'est pas qu'esthétique. La séparation nette entre le code applicatif (`app/`) et le code serveur (`server/`) clarifie les responsabilités, surtout sur des projets qui grossissent ou qui impliquent plusieurs développeurs.
 
 > Pour activer ce comportement dès Nuxt 3.x, tu pouvais déjà le tester via `future.compatibilityVersion: 4` dans `nuxt.config.ts`. En Nuxt 4, c'est le comportement par défaut.
 
@@ -56,7 +54,7 @@ Ce n'est pas qu'esthétique. La séparation nette entre le code applicatif (`app
 
 Rien de révolutionnaire ici, mais Nuxt 4 renforce les comportements attendus autour de la réactivité et des clés de cache.
 
-En Nuxt 3, il arrivait qu'`useAsyncData` ne se re-déclenche pas correctement quand une dépendance réactive changeait. En Nuxt 4, la gestion des `watch` internes est plus prévisible :
+En Nuxt 3, il arrivait qu'`useAsyncData` ne se redéclenche pas correctement quand une dépendance réactive changeait. En Nuxt 4, la gestion des `watch` internes est plus prévisible :
 
 ```ts
 // Réactif à `route.params.id` sans configuration supplémentaire
@@ -133,4 +131,4 @@ export default defineNuxtConfig({
 
 Nuxt 4 consolide ce que Nuxt 3 a introduit. Les changements sont incrémentaux mais cohérents : meilleure séparation app/serveur, réactivité plus fiable, Nitro plus mature. Si tu pars sur un nouveau projet Vue.js avec du SSR, c'est le point de départ raisonnable aujourd'hui.
 
-La migration depuis Nuxt 3 est progressive — le flag `compatibilityVersion: 4` permet de tester les nouveaux comportements sans tout casser d'un coup. Sur mon portfolio personnel (Nuxt 3 → Nuxt 4), la migration a pris une après-midi, principalement pour réorganiser les fichiers dans `app/` et ajuster quelques imports.
+La migration depuis Nuxt 3 est progressive — le flag `compatibilityVersion: 4` permet de tester les nouveaux comportements sans tout casser d'un coup. Sur mon portfolio personnel (Nuxt 3 → Nuxt 4), la migration a pris un après-midi, principalement pour réorganiser les fichiers dans `app/` et ajuster quelques imports.

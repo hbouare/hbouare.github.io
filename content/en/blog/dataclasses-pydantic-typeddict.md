@@ -7,13 +7,11 @@ tags: ["Python", "Pydantic", "Typing", "FastAPI"]
 excerpt: "Not a theoretical comparison — but the concrete decision rules that apply in practice: API input validation, internal models, configuration, serialisation. With the real trade-offs on performance and maintainability."
 ---
 
-# Dataclasses, Pydantic, TypedDict: Which to Choose and Why
-
-This is a question every Python team eventually confronts. The answers found online tend toward the superficial: "Pydantic for APIs, dataclasses for everything else" — which is a starting point, but fails to address the situations where the choice actually matters. Here are the decision rules applied in practice.
+This is a question every Python team eventually confronts. The answers you find online tend to be some version of "Pydantic for APIs, dataclasses for everything else" — a reasonable starting point, but it says nothing about the cases where the choice actually matters. Here are the decision rules I apply in practice.
 
 ## Understanding What Each Tool Actually Does
 
-Before the rules, a clear-headed reminder of what each tool is for:
+Before the rules, a quick reminder of what each tool is for:
 
 **TypedDict** is a pure type annotation. It does nothing at runtime — it informs the type checker (mypy, pyright) about the shape of a dictionary. Zero overhead, zero validation.
 
@@ -79,7 +77,7 @@ class DateRange:
             raise ValueError(f"start ({self.start}) must be before end ({self.end})")
 ```
 
-`__post_init__` allows adding simple invariant validation without Pydantic — sufficient for most domain-level constraints.
+`__post_init__` lets you add validation without Pydantic — enough for simple invariants.
 
 ## Rule 3: Pydantic for Everything That Touches System Boundaries
 

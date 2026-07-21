@@ -19,4 +19,4 @@ tags:
   ]
 ---
 
-Au sein de l’équipe AI DReAM, j’ai développé des applications web intégrant des modèles d’intelligence artificielle pour l’analyse et le suivi de pathologies complexes, en particulier le glioblastome, un cancer du cerveau parmi les plus agressifs. L’enjeu : exploiter les données médicales pour aider cliniciens et chercheurs à étudier et suivre la maladie.
+Au sein de l’équipe AI DReAM, j’ai développé des applications web intégrant des modèles d’intelligence artificielle pour l’analyse et le suivi de pathologies complexes, en particulier le glioblastome, un cancer du cerveau parmi les plus agressifs. L’enjeu : exploiter les données médicales pour aider les cliniciens et les chercheurs à étudier et à suivre la maladie.

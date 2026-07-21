@@ -69,7 +69,7 @@ export const publications: Publication[] = [
     },
     en: {
       summary:
-        "When a seismic wave travels through the ground, how do stresses and displacements distribute around a tunnel of arbitrary shape, dug into ground made of several layers? This work develops a semi-analytical method able to handle arbitrary geometries — not just circles — in a multilayered medium. It provides an accurate, fast computational tool, essential for designing underground structures that can withstand earthquakes.",
+        "When a seismic wave travels through the ground, how do stresses and displacements distribute around a tunnel of arbitrary shape cut through several distinct layers? This work develops a semi-analytical method able to handle arbitrary geometries — not just circles — in a multilayered medium. It provides an accurate, fast computational tool, essential for designing underground structures that can withstand earthquakes.",
       themes: ["Elastodynamics", "Wave propagation", "Earthquake engineering", "Underground structures"],
       skills: [
         "Mathematical modelling",
@@ -147,7 +147,7 @@ export const publications: Publication[] = [
     },
     en: {
       summary:
-        "What happens, moment by moment, when a wave reaches a tunnel buried in ground whose properties vary from point to point? Beyond the idealised harmonic regime, this work models the transient response — the real reaction over time — of a tunnel in a heterogeneous medium, closer to the conditions met in the field.",
+        "What happens, moment by moment, when a wave reaches a tunnel buried in ground whose properties vary from point to point? Beyond the idealised harmonic regime, this work models the transient response — the real reaction over time — of a tunnel in a heterogeneous medium, closer to the conditions found in the field.",
       themes: ["Transient regime", "Heterogeneous media", "Wave propagation"],
       skills: ["Time-domain analysis", "Numerical modelling", "Heterogeneous media"],
     },

@@ -21,4 +21,4 @@ tags:
   ]
 ---
 
-Within the DevCo team, I build applications and tools that process energy data. I work directly with the business teams to frame their needs, then design the pipelines that make the data their processes depend on reliable.
+Within the DevCo team, I build applications and tools that process energy data. I work directly with the business teams to frame their needs, then design the pipelines that make the data behind those processes reliable.

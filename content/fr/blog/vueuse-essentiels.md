@@ -7,9 +7,7 @@ tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
 excerpt: "Pas la liste exhaustive de la doc — mais les composables VueUse que tu vas utiliser réellement sur des projets Vue.js et Nuxt professionnels, avec des cas d'usage concrets et les pièges à éviter."
 ---
 
-# VueUse en production : les composables qui changent vraiment le quotidien
-
-VueUse compte plus de 200 composables. La documentation les liste tous, ce qui ne t'aide pas à savoir lesquels valent vraiment le coup d'apprendre. Voici ceux qui reviennent systématiquement sur des projets professionnels, avec les situations concrètes où ils font gagner du temps.
+VueUse compte plus de 200 composables. La documentation les liste tous, ce qui ne t'aide pas à savoir lesquels méritent vraiment d'être appris. Voici ceux qui reviennent systématiquement sur des projets professionnels, avec les situations concrètes où ils font gagner du temps.
 
 ## Installation
 
@@ -209,7 +207,7 @@ const { copy, copied, isSupported } = useClipboard()
 </template>
 ```
 
-`copied` revient automatiquement à `false` après 1.5s (configurable). `isSupported` vérifie si l'API Clipboard est disponible dans le navigateur — utile pour les fallbacks.
+`copied` revient automatiquement à `false` après 1,5 s (configurable). `isSupported` vérifie si l'API Clipboard est disponible dans le navigateur — utile pour les solutions de repli.
 
 ## `useMediaQuery` : responsive sans CSS
 
@@ -278,7 +276,7 @@ async def certificate_events(request: Request):
 
 ## `useVModel` : simplifier les composants formulaire
 
-Pour un composant qui wrape un input et doit supporter `v-model` :
+Pour un composant qui encapsule un champ de saisie et doit supporter `v-model` :
 
 ```typescript
 import { useVModel } from "@vueuse/core"
@@ -308,4 +306,4 @@ Sans `useVModel`, il faut gérer manuellement la prop et l'emit — deux lignes 
 
 ## Ce qu'il faut retenir
 
-VueUse vaut surtout pour trois catégories de composables : ceux qui éliminent du boilerplate récurrent (`useAsyncState`, `useVModel`), ceux qui wrappent des APIs navigateur verbeuses (`useIntersectionObserver`, `useEventListener`, `useClipboard`), et ceux qui gèrent des problèmes de performance (`useDebounceFn`, `useThrottleFn`). Le reste est utile situationnellement — mais ces dix-là reviennent sur pratiquement tous les projets Vue.js professionnels.
+VueUse vaut surtout pour trois catégories de composables : ceux qui éliminent du boilerplate récurrent (`useAsyncState`, `useVModel`), ceux qui encapsulent des API navigateur verbeuses (`useIntersectionObserver`, `useEventListener`, `useClipboard`), et ceux qui gèrent des problèmes de performance (`useDebounceFn`, `useThrottleFn`). Le reste est utile selon les cas — mais ces dix-là reviennent sur pratiquement tous les projets Vue.js professionnels.

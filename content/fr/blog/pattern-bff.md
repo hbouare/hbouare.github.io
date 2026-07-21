@@ -1,13 +1,11 @@
 ---
 slug: pattern-bff
-title: "BFF Pattern avec FastAPI : mettre un backend devant ton frontend"
+title: "Le pattern BFF avec FastAPI : un backend devant ton frontend"
 date: "2025-02-13"
 readTime: 9
 tags: ["FastAPI", "Vue.js", "Azure B2C", "Architecture", "OAuth2"]
-excerpt: "Le pattern Backend-for-Frontend consiste à intercaler un serveur entre le navigateur et les APIs métier. Appliqué à Vue.js + Azure B2C, il résout élégamment la gestion des tokens OAuth2 tout en renforçant la sécurité — au prix d'une complexité assumée."
+excerpt: "Le pattern Backend-for-Frontend consiste à intercaler un serveur entre le navigateur et les API métier. Appliqué à Vue.js + Azure B2C, il résout élégamment la gestion des tokens OAuth2 tout en renforçant la sécurité — au prix d'une complexité assumée."
 ---
-
-# BFF Pattern avec FastAPI : mettre un backend devant ton frontend
 
 Le pattern Backend-for-Frontend (BFF) n'est pas nouveau — Netflix, SoundCloud et d'autres l'ont popularisé il y a plus d'une décennie. Pourtant, il reste sous-utilisé dans les architectures Vue.js + FastAPI, où la tendance est de gérer les tokens OAuth2 directement côté client. Voici pourquoi ce choix est risqué, et comment le BFF le résout.
 
@@ -19,7 +17,7 @@ Dans une SPA Vue.js classique avec Azure B2C, le flux OAuth2 aboutit à un `acce
 - **sessionStorage** — mêmes problèmes, disparaît à la fermeture de l'onglet
 - **Cookie HttpOnly** — meilleure option côté client, mais le refresh token doit toujours être géré
 
-Le vrai problème : le `client_secret` Azure B2C ne peut pas être embarqué dans une SPA. L'échange de code OAuth2 (`authorization_code` → `access_token`) doit se faire côté serveur. Sans BFF, soit on sacrifie la sécurité, soit on complexifie le frontend avec du PKCE et des workarounds.
+Le vrai problème : le `client_secret` Azure B2C ne peut pas être embarqué dans une SPA. L'échange de code OAuth2 (`authorization_code` → `access_token`) doit se faire côté serveur. Sans BFF, soit on sacrifie la sécurité, soit on complexifie le frontend avec du PKCE et des contournements.
 
 ## Architecture BFF
 
@@ -37,7 +35,7 @@ Navigateur (Vue.js)
                 └─── APIs métier (avec access_token en Bearer)
 ```
 
-Le navigateur ne voit jamais de token OAuth2. Il n'échange qu'un cookie de session opaque avec le BFF. C'est le BFF qui détient les tokens et les injecte dans les requêtes vers les APIs métier.
+Le navigateur ne voit jamais de token OAuth2. Il n'échange qu'un cookie de session opaque avec le BFF. C'est le BFF qui détient les tokens et les injecte dans les requêtes vers les API métier.
 
 ## Implémentation FastAPI
 
@@ -128,7 +126,7 @@ async def oauth_callback(
     return RedirectResponse(url="/")
 ```
 
-### Proxy vers les APIs métier
+### Proxy vers les API métier
 
 ```python
 @router.get("/api/{path:path}")
@@ -156,7 +154,7 @@ async def proxy(request: Request, path: str):
     )
 ```
 
-## Verrou distribué pour le refresh de token
+## Verrou distribué pour le rafraîchissement du token
 
 En environnement multi-pods, plusieurs workers peuvent tenter de rafraîchir le même token simultanément. Un verrou Redis évite les doublons :
 
@@ -197,4 +195,4 @@ async def refresh(self, session: dict) -> dict:
 | Surface d'attaque XSS     | Tokens accessibles          | Cookie opaque uniquement    |
 | Complexité                | Frontend complexe           | Backend supplémentaire      |
 
-Le BFF n'est pas la solution universelle. Sur une application publique sans données sensibles, PKCE côté client est suffisant et plus simple à opérer. Mais dès que l'on gère des tokens avec des droits élevés, des scopes sensibles, ou des intégrations multi-APIs, le BFF est l'architecture la plus défendable.
+Le BFF n'est pas la solution universelle. Sur une application publique sans données sensibles, PKCE côté client est suffisant et plus simple à opérer. Mais dès que l'on gère des tokens avec des droits élevés, des scopes sensibles, ou des intégrations multi-API, le BFF est l'architecture la plus défendable.

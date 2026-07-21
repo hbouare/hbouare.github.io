@@ -7,13 +7,11 @@ tags: ["Playwright", "Python", "Scraping", "Automatisation"]
 excerpt: "Playwright n'est pas réservé aux tests. Sur des portails métier sans API, c'est l'outil le plus robuste pour automatiser l'authentification, la navigation et l'extraction de données — voici comment l'utiliser en production."
 ---
 
-# Playwright comme outil de scraping métier : au-delà des tests E2E
-
 La plupart des articles sur Playwright parlent de tests E2E. C'est son usage le plus visible, mais pas le seul. Quand un portail métier n'expose pas d'API — ou que celle-ci est incomplète, mal documentée, ou réservée à des partenaires — Playwright devient un outil d'automatisation de premier ordre. Voici comment l'utiliser sérieusement, hors contexte de test.
 
 ## Le cas concret : un portail sans API exploitable
 
-Certains portails métier exposent une interface web riche mais une API limitée ou absente. L'extraction de données, les exports, la soumission de formulaires — tout passe par le navigateur. BeautifulSoup et requests s'arrêtent là : ils ne gèrent pas JavaScript, les SPAs, ni les flux d'authentification complexes (MFA, redirections OAuth2).
+Certains portails métier exposent une interface web riche mais une API limitée ou absente. L'extraction de données, les exports, la soumission de formulaires — tout passe par le navigateur. BeautifulSoup et requests s'arrêtent là : ils ne gèrent pas JavaScript, les SPA, ni les flux d'authentification complexes (MFA, redirections OAuth2).
 
 Playwright gère tout ça nativement.
 
@@ -57,11 +55,11 @@ class MetierScraper:
         await self._playwright.stop()
 ```
 
-Le context manager garantit la fermeture propre du navigateur même en cas d'exception — indispensable en production.
+Le gestionnaire de contexte garantit la fermeture propre du navigateur même en cas d'exception — indispensable en production.
 
 ## Authentification robuste
 
-L'authentification est la partie la plus fragile d'un scraper. Les portails changent leur UI, ajoutent des étapes de sécurité, ou introduisent des délais. Quelques principes pour la rendre solide :
+L'authentification est la partie la plus fragile d'un scraper. Les portails changent leur interface, ajoutent des étapes de sécurité, ou introduisent des délais. Quelques principes pour la rendre solide :
 
 ```python
 async def login(self) -> bool:
@@ -128,9 +126,9 @@ async def extract_table_data(self) -> list[dict]:
     return results
 ```
 
-La stratégie 1 (interception réseau) est préférable quand elle est disponible : les données JSON brutes sont plus propres et moins sensibles aux changements de mise en page. La stratégie 2 (extraction DOM) est le fallback universel.
+La stratégie 1 (interception réseau) est préférable quand elle est disponible : les données JSON brutes sont plus propres et moins sensibles aux changements de mise en page. La stratégie 2 (extraction DOM) est la solution de repli universelle.
 
-## Gestion des exports fichiers
+## Gestion des exports de fichiers
 
 Beaucoup de portails proposent des exports Excel ou CSV via un bouton de téléchargement. Playwright gère ça nativement :
 

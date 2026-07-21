@@ -18,4 +18,4 @@ tags:
   ]
 ---
 
-I contributed to a web application for analysing activity across BHP’s mining sites, a global mining group operating in many countries. The work focused on centralising operational data from the different sites and making it genuinely usable.
+I contributed to a web application for analysing activity across the mining sites of BHP, a global mining group operating in many countries. My work focused on centralising their operational data and making it genuinely usable.

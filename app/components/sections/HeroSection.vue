@@ -83,7 +83,7 @@
     <!-- Scroll indicator -->
     <div class="scroll-hint type-micro-cap text-muted hero-beat" aria-hidden="true">
       <span class="scroll-line" />
-      Scroll
+      {{ $t("hero.scroll") }}
     </div>
   </section>
 </template>

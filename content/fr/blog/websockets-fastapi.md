@@ -4,12 +4,10 @@ title: "WebSockets : état partagé, authentification et déconnexions"
 date: "2025-03-13"
 readTime: 10
 tags: ["FastAPI", "WebSockets", "Python", "Temps réel"]
-excerpt: "Les tutos WebSocket FastAPI s'arrêtent tous au chat basique. Les vrais problèmes commencent après : authentifier une connexion, gérer un ConnectionManager multi-clients, broadcaster des événements, et nettoyer les connexions mortes en environnement multi-pods."
+excerpt: "Les tutos WebSocket FastAPI s'arrêtent tous au chat basique. Les vrais problèmes commencent après : authentifier une connexion, gérer un ConnectionManager multi-clients, diffuser des événements, et nettoyer les connexions mortes en environnement multi-pods."
 ---
 
-# WebSockets avec FastAPI : état partagé, authentification et déconnexions propres
-
-Le tutoriel officiel FastAPI sur les WebSockets tient en vingt lignes. C'est suffisant pour comprendre l'API, pas pour construire quelque chose de fiable. Voici ce que les exemples ne montrent pas : authentification, gestion d'état distribuée, broadcasting, et nettoyage des connexions mortes.
+Le tutoriel officiel FastAPI sur les WebSockets tient en vingt lignes. C'est suffisant pour comprendre l'API, pas pour construire quelque chose de fiable. Voici ce que les exemples ne montrent pas : authentification, gestion d'état distribuée, diffusion, et nettoyage des connexions mortes.
 
 ## Le problème avec l'exemple basique
 
@@ -23,7 +21,7 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.send_text(f"Message: {data}")
 ```
 
-Ce code a plusieurs problèmes en production : aucune authentification, aucune gestion des déconnexions inattendues, pas de broadcasting vers d'autres clients, et un état qui ne survit pas à un redémarrage du pod.
+Ce code a plusieurs problèmes en production : aucune authentification, aucune gestion des déconnexions inattendues, aucune diffusion vers d'autres clients, et un état qui ne survit pas à un redémarrage du pod.
 
 ## ConnectionManager : gérer plusieurs clients
 
@@ -91,15 +89,15 @@ class ConnectionManager:
 manager = ConnectionManager()
 ```
 
-Le `asyncio.Lock()` protège les modifications du dictionnaire — en Python, les opérations sur les dicts ne sont pas thread-safe dans un contexte async avec des coroutines concurrentes. Un user peut avoir plusieurs connexions simultanées (plusieurs onglets), ce que la structure `dict[str, list[WebSocket]]` gère nativement.
+Le `asyncio.Lock()` protège les modifications du dictionnaire — en Python, les opérations sur les dictionnaires ne sont pas thread-safe dans un contexte async avec des coroutines concurrentes. Un utilisateur peut avoir plusieurs connexions simultanées (plusieurs onglets), ce que la structure `dict[str, list[WebSocket]]` gère nativement.
 
 ## Authentification d'une connexion WebSocket
 
-C'est là que la plupart des implémentations butent. Les WebSockets ne supportent pas les headers HTTP personnalisés depuis le navigateur — impossible d'envoyer un `Authorization: Bearer ...` dans la handshake initiale via l'API browser standard.
+C'est là que la plupart des implémentations butent. Les WebSockets ne supportent pas les headers HTTP personnalisés depuis le navigateur — impossible d'envoyer un `Authorization: Bearer ...` dans le handshake initial via l'API browser standard.
 
 Deux approches viables :
 
-### Approche 1 : token dans le query parameter
+### Approche 1 : token dans le paramètre de requête
 
 ```python
 from fastapi import WebSocket, WebSocketException, status, Depends, Query
@@ -160,7 +158,7 @@ export function useWebSocket() {
 
 ### Approche 2 : cookie de session (plus sécurisée)
 
-Si tu utilises le BFF pattern avec des cookies HttpOnly, la connexion WebSocket envoie automatiquement les cookies du domaine — c'est le comportement natif du navigateur :
+Si tu utilises le pattern BFF avec des cookies HttpOnly, la connexion WebSocket envoie automatiquement les cookies du domaine — c'est le comportement natif du navigateur :
 
 ```python
 @app.websocket("/ws/notifications")
@@ -226,7 +224,7 @@ async def notifications_ws(
 
 Le pattern `try/finally` autour de la boucle principale garantit que `disconnect` est toujours appelé, quelle que soit la raison de la fermeture.
 
-## Broadcaster des événements depuis n'importe où dans l'app
+## Diffuser des événements depuis n'importe où dans l'application
 
 Le cas d'usage réel : un traitement backend se termine et doit notifier les clients connectés en temps réel.
 
@@ -265,7 +263,7 @@ def get_ws_manager() -> ConnectionManager:
 
 ## Le problème multi-pods : état distribué avec Redis Pub/Sub
 
-Le `ConnectionManager` tel qu'il est décrit ci-dessus a une limite critique : il est en mémoire. Sur un déploiement multi-pods OpenShift avec 3 replicas, chaque pod a son propre manager. Un événement traité par le pod A ne sera pas broadcasté aux clients connectés sur le pod B ou C.
+Le `ConnectionManager` tel qu'il est décrit ci-dessus a une limite critique : il est en mémoire. Sur un déploiement multi-pods OpenShift avec 3 replicas, chaque pod a son propre manager. Un événement traité par le pod A ne sera pas diffusé aux clients connectés sur le pod B ou C.
 
 La solution : Redis Pub/Sub comme bus d'événements inter-pods.
 
@@ -332,4 +330,4 @@ Avec cette architecture, un service sur le pod A appelle `publish_to_user()` —
 
 ## Ce qu'il faut retenir
 
-Les WebSockets en production nécessitent de résoudre quatre problèmes distincts : l'authentification (cookie ou query param selon l'architecture), la gestion des connexions mortes (ping/timeout + try/finally), le broadcasting vers plusieurs clients d'un même user (liste de WebSockets par user_id), et la distribution multi-pods (Redis Pub/Sub). Chacun de ces problèmes est trivial pris séparément — c'est leur combinaison qui fait la solidité d'une implémentation production.
+Les WebSockets en production nécessitent de résoudre quatre problèmes distincts : l'authentification (cookie ou paramètre de requête selon l'architecture), la gestion des connexions mortes (ping/timeout + try/finally), la diffusion vers plusieurs clients d'un même utilisateur (liste de WebSockets par user_id), et la distribution multi-pods (Redis Pub/Sub). Chacun de ces problèmes est trivial pris séparément — c'est leur combinaison qui fait la solidité d'une implémentation production.

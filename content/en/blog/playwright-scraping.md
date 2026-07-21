@@ -7,9 +7,7 @@ tags: ["Playwright", "Python", "Scraping", "Automation"]
 excerpt: "Playwright is not just for tests. When a business portal has no usable API, it is the most robust tool available for automating authentication, navigation, and data extraction — here is how to use it seriously in production."
 ---
 
-# Playwright as a Business Scraping Tool: Beyond E2E Testing
-
-The overwhelming majority of Playwright articles discuss end-to-end testing. That is its most visible use case, but far from its only one. When a business portal exposes no API — or one that is incomplete, poorly documented, or restricted to select partners — Playwright becomes a first-class automation tool. Here is how to use it seriously, outside a testing context.
+Most Playwright articles are about end-to-end testing. That is its most visible use case, but far from its only one. When a business portal exposes no API — or one that is incomplete, poorly documented, or restricted to select partners — Playwright becomes a first-class automation tool. Here is how to use it seriously, outside a testing context.
 
 ## The Concrete Problem: A Portal With No Usable API
 
@@ -222,4 +220,4 @@ spec:
 | Docker support       | Simple         | Complex  | Reasonable |
 | Modern API           | No             | No       | Yes        |
 
-For simple static sites, `requests` and `BeautifulSoup` remain faster to set up and lighter to operate. However, as soon as complex authentication, dynamic JavaScript, or user interactions are involved — Playwright is the most robust open-source option available today.
+For simple static sites, `requests` and `BeautifulSoup` remain faster to set up. However, as soon as complex authentication, dynamic JavaScript, or user interactions are involved — Playwright is the most robust open-source option available today.

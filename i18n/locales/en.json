@@ -14,12 +14,13 @@
     "title_1": "From raw",
     "title_em": "data",
     "title_3": "to production",
-    "subtitle": "Software engineer and PhD in mechanics. I build applications that put data to work — from data modelling to production — and stay close to the people who use them every day.",
+    "subtitle": "Software engineer and PhD in mechanics. I build applications that put data to work, from data modelling through to production, and I stay close to the people who use them every day.",
     "cta_projects": "See my projects",
     "cta_contact": "Contact me",
-    "cta_cv": "Download CV",
+    "cta_cv": "Download my CV",
+    "scroll": "Scroll",
     "intl_label": "International experience",
-    "stat_years": "Years of exp.",
+    "stat_years": "Years of experience",
     "stat_countries": "Countries",
     "stat_projects": "Projects shipped",
     "country_france": "🇫🇷 France",
@@ -30,15 +31,15 @@
     "section": "01 — About",
     "title_1": "Versatile",
     "title_em": "developer",
-    "title_3": "& world explorer",
+    "title_3": "& curious about the world",
     "p1": "I’ve worked on projects in France, the United Kingdom and Algeria. Different teams, cultures and ways of working taught me to read the context before proposing anything, and to adapt rather than apply a ready-made recipe.",
     "p2": "To me, good software is measured by the time it saves the people who use it, not by how sophisticated it is under the hood.",
     "p3": "That’s what drives my technical choices: I’d rather ship the solution a team can keep alive after I’m gone than the one that looks most impressive today."
   },
   "experience": {
     "section": "02 — Experience",
-    "title_1": "Where I've",
-    "title_em": "built things"
+    "title_1": "Where I’ve",
+    "title_em": "built"
   },
   "projects": {
     "section": "03 — Projects",
@@ -55,7 +56,7 @@
     "not_found": "Project not found."
   },
   "blog": {
-    "section": "04 — Blog",
+    "section": "05 — Blog",
     "title_1": "Thoughts &",
     "title_em": "articles",
     "read_more": "Read article",
@@ -66,42 +67,36 @@
     "toc": "Table of contents",
     "copied": "Copied!",
     "copy_code": "Copy",
-    "not_found": "Post not found."
-  },
-  "travel": {
-    "section": "05 — International",
-    "title_1": "A career",
-    "title_em": "without borders",
-    "desc": "Working across different cultures has taught me to communicate with precision, adapt quickly, and design universal solutions in very different contexts."
+    "not_found": "Article not found."
   },
   "contact": {
     "section": "06 — Contact",
-    "title_1": "Let's work",
+    "title_1": "Let’s work",
     "title_em": "together.",
-    "desc": "Open to freelance opportunities and technical collaborations. Please feel free to contact me to discuss further.",
+    "desc": "Open to freelance work and technical collaborations. Tell me about your project in a few lines.",
     "form_name": "Name",
-    "form_email": "Email",
+    "form_email": "Email address",
     "form_message": "Message",
     "form_send": "Send message",
-    "form_success": "Message sent successfully!",
+    "form_success": "Thanks, your message has been sent!",
     "form_name_required": "Name is required",
     "form_email_required": "Email address is required",
-    "form_email_invalid": "Email address is not valid",
+    "form_email_invalid": "This email address is not valid",
     "form_message_required": "Message cannot be empty",
     "form_error": "Something went wrong. Please try again.",
-    "confirm_title": "Confirm sending",
+    "confirm_title": "Confirm your message",
     "confirm_text": "Do you want to send this message?",
     "confirm_cancel": "Cancel",
     "confirm_send": "Send",
-    "socials": "Find me on"
+    "socials": "Find me"
   },
   "footer": {
     "available": "Available for new projects",
     "rights": "All rights reserved"
   },
   "theme": {
-    "toggle_dark": "Dark mode",
-    "toggle_light": "Light mode"
+    "toggle_dark": "Switch to dark mode",
+    "toggle_light": "Switch to light mode"
   },
   "case": {
     "context": "Context",
@@ -117,14 +112,14 @@
     "open_title": "Source code"
   },
   "research": {
-    "section": "Research",
+    "section": "04 — Research",
     "title_1": "PhD in",
     "title_em": "mechanics, algorithms",
     "title_3": "& numerical modelling",
-    "meta_desc": "Peer-reviewed scientific publications — mechanics, wave propagation and numerical modelling applied to underground structures.",
+    "meta_desc": "Peer-reviewed scientific publications: mechanics, wave propagation and numerical modelling applied to underground structures.",
     "lead": "Before software engineering, there was research.",
-    "intro_1": "My doctorate tackled a demanding engineering problem: predicting how underground structures — tunnels, cavities — respond to mechanical and seismic waves. A concrete stake for the safety and design of infrastructure.",
-    "intro_2": "This work combines continuum mechanics, wave propagation, mathematical modelling and numerical methods. It taught me to break a complex problem down, model it rigorously, solve it, then confront my results with measurement — reflexes I now apply, every day, in software engineering.",
+    "intro_1": "My doctorate tackled a demanding engineering problem: predicting how underground structures (tunnels, cavities) respond to mechanical and seismic waves. It bears directly on how such infrastructure is designed and kept safe.",
+    "intro_2": "This work combines continuum mechanics, wave propagation, mathematical modelling and numerical methods. It taught me to break a complex problem down, model it rigorously, solve it, then test my results against measurements: habits I still rely on every day in software engineering.",
     "stat_degree": "PhD in mechanics",
     "stat_pubs": "5 peer-reviewed publications",
     "stat_venues": "International journals & conferences",
@@ -132,7 +127,7 @@
     "pubs_title_1": "Published",
     "pubs_title_em": "work",
     "themes_label": "Research themes",
-    "skills_label": "Skills mobilised",
+    "skills_label": "Skills applied",
     "view_publication": "View publication",
     "type_journal": "Journal",
     "type_conference": "Conference",
@@ -140,22 +135,22 @@
     "impact_label": "Impact",
     "impact_title_1": "From research",
     "impact_title_em": "to engineering",
-    "impact_lead": "Research is not a parenthesis in my path: it is the foundation of the way I work.",
+    "impact_lead": "Research was not a detour in my career: it is the foundation of how I work.",
     "impact_1_t": "Complex problem solving",
     "impact_1_d": "Break down an ill-posed problem, frame it, then solve it methodically.",
     "impact_2_t": "Modelling",
-    "impact_2_d": "Turn a real problem into a workable model without betraying its physics.",
+    "impact_2_d": "Turn a real problem into a workable model without losing the underlying physics.",
     "impact_3_t": "Algorithmic analysis",
-    "impact_3_d": "Reason in cost, accuracy and convergence before writing a single line.",
+    "impact_3_d": "Think in terms of cost, accuracy and convergence before writing a single line.",
     "impact_4_t": "Scientific rigour",
     "impact_4_d": "Explicit assumptions, reproducible results, verifiable conclusions.",
     "impact_5_t": "Data handling",
-    "impact_5_d": "Work with large volumes and extract the useful signal from them.",
+    "impact_5_d": "Work with large volumes of data and extract the signal that matters.",
     "impact_6_t": "Experimental validation",
-    "impact_6_d": "Systematically confront the model with measurement — and doubt both.",
+    "impact_6_d": "Systematically test the model against measurements, and distrust both.",
     "impact_7_t": "Scientific communication",
-    "impact_7_d": "Make a complex idea clear for a non-specialist audience.",
+    "impact_7_d": "Make a complex idea clear to a non-specialist audience.",
     "impact_8_t": "Long-term project management",
-    "impact_8_d": "Carry demanding, self-directed work over several years, all the way through."
+    "impact_8_d": "Sustain demanding, self-directed work over several years and see it through."
   }
 }

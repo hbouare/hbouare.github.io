@@ -7,9 +7,7 @@ tags: ["TypeScript", "Vue.js", "API", "Frontend"]
 excerpt: "Pas un cours sur TypeScript — mais comment structurer des interfaces qui collent à une API externe réelle, avec des types utilitaires, des génériques sur les composables Vue, et les décisions concrètes qu'on prend sur du code de production."
 ---
 
-# TypeScript strict en pratique : interfaces hiérarchiques sur une vraie API
-
-La plupart des tutoriels TypeScript montrent des exemples triviaux : `interface User { name: string; age: number }`. En production, la réalité est plus complexe. Les APIs externes renvoient des structures imbriquées, des champs optionnels selon le contexte, des unions de types selon l'état. Voici comment structurer tout ça proprement, à partir d'un cas réel.
+La plupart des tutoriels TypeScript montrent des exemples triviaux : `interface User { name: string; age: number }`. En production, la réalité est plus complexe. Les API externes renvoient des structures imbriquées, des champs optionnels selon le contexte, des unions de types selon l'état. Voici comment structurer tout ça proprement, à partir d'un cas réel.
 
 ## Le point de départ : une API avec une structure hiérarchique
 
@@ -184,7 +182,7 @@ const {
 )
 ```
 
-TypeScript infère automatiquement le type de `data` comme `Ref<CertificatesResponse | null>` — pas de casting manuel, pas d'`as any`.
+TypeScript infère automatiquement le type de `data` comme `Ref<CertificatesResponse | null>` — pas de conversion manuelle, pas d'`as any`.
 
 ## Typer les props Vue avec les interfaces API
 
@@ -211,7 +209,7 @@ const emit = defineEmits<{
 
 ## Guards de type pour les réponses d'API
 
-Les APIs réelles ne sont pas toujours conformes à leur contrat. Un guard de type permet de valider à runtime sans sacrifier le typage statique :
+Les API réelles ne sont pas toujours conformes à leur contrat. Un guard de type permet de valider à l'exécution sans sacrifier le typage statique :
 
 ```typescript
 function isCertificate(value: unknown): value is Certificate {

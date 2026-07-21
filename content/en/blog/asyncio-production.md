@@ -7,8 +7,6 @@ tags: ["Python", "asyncio", "FastAPI", "Concurrency"]
 excerpt: "gather, TaskGroup, exception handling in concurrent tasks, clean shutdown — what asyncio tutorials never address, and what it looks like in a real FastAPI application running in production."
 ---
 
-# asyncio in Production: The Pitfalls Tutorials Never Cover
-
 asyncio tutorials almost invariably stop at the same point: `await asyncio.gather(task1(), task2())`, a handful of coroutine examples, and nothing further. Production is more demanding. Silent exceptions, tasks that never complete, shutdowns that hang — here are the real problems and how to address them.
 
 ## The Problem with `asyncio.gather` and Exceptions
@@ -35,7 +33,7 @@ asyncio.run(main())
 # task_ok() was silently cancelled
 ```
 
-`gather` raises the first exception and cancels the remaining tasks without any warning. If `task_ok()` was writing to a database, the result is partially committed.
+`gather` raises the first exception and cancels the remaining tasks without any warning. If `task_ok()` was midway through a database write, the result is left partially committed.
 
 The solution: `return_exceptions=True` collects all exceptions without interrupting sibling tasks:
 

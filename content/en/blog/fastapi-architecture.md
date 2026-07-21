@@ -7,9 +7,7 @@ tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
 excerpt: "Not the FastAPI hello world — but how to organise a real project with routers, a service layer, repositories, dependency injection, and tests that remain maintainable six months down the line."
 ---
 
-# Structuring a FastAPI Project That Lasts: Architecture, Layers, and Dependencies
-
-Most FastAPI tutorials put everything in `main.py`. That works for a demonstration, not for an application maintained by a team over several years. Here is the architecture applied in practice on projects built to last, along with the reasoning behind each decision.
+Most FastAPI tutorials put everything in `main.py`. That works for a demonstration, not for an application maintained by a team over several years. Here is the architecture I use on projects built to last, and the reasoning behind each decision.
 
 ## Project Structure
 
@@ -260,7 +258,7 @@ Service tests are fast, deterministic, and require no database. `AsyncMock` repl
 
 ## What This Architecture Delivers
 
-Layered separation is not gratuitous complexity. It addresses concrete problems on a project that must remain maintainable over time:
+Layered separation is not gratuitous complexity. It solves concrete problems on a project that has to stay maintainable:
 
 - **Testability** — services test without a database, routers with an HTTP test client
 - **Readability** — a new developer knows exactly where to look: business logic in `services/`, data access in `repositories/`, HTTP concerns in `routers/`

@@ -7,8 +7,6 @@ tags: ["Python", "asyncio", "FastAPI", "Concurrence"]
 excerpt: "gather, TaskGroup, gestion des exceptions dans les tâches concurrentes, shutdown propre — ce que les tutoriels asyncio ne couvrent jamais, et ce que ça donne sur une vraie application FastAPI en production."
 ---
 
-# asyncio en production : les pièges que les tutos ne montrent pas
-
 Les tutoriels asyncio s'arrêtent presque toujours au même endroit : `await asyncio.gather(task1(), task2())`, quelques exemples de coroutines, et c'est tout. En production, la réalité est plus nuancée. Les exceptions silencieuses, les tâches qui ne se terminent jamais, les shutdowns qui bloquent — voici les problèmes réels et comment les résoudre.
 
 ## Le problème avec `asyncio.gather` et les exceptions
@@ -35,7 +33,7 @@ asyncio.run(main())
 # task_ok() a été annulé silencieusement
 ```
 
-`gather` lève la première exception et annule les autres tâches sans avertissement. Si `task_ok()` écrivait dans une base de données, le résultat est partiellement appliqué.
+`gather` lève la première exception et annule les autres tâches sans avertissement. Si `task_ok()` écrivait dans une base de données, le résultat se retrouve partiellement appliqué.
 
 La solution : `return_exceptions=True` pour collecter toutes les exceptions sans interrompre les autres tâches :
 
@@ -73,7 +71,7 @@ async def main():
         results.append(t1.result())
 ```
 
-`TaskGroup` utilise la syntaxe `except*` (ExceptionGroup) — toutes les exceptions sont collectées, et le groupe attend que toutes les tâches soient terminées ou annulées avant de propager. Plus de tâches fantômes.
+`TaskGroup` utilise la syntaxe `except*` (ExceptionGroup) — toutes les exceptions sont collectées, et le groupe attend que toutes les tâches soient terminées ou annulées avant de les propager. Plus de tâches fantômes.
 
 ## Les tâches en arrière-plan dans FastAPI
 
@@ -156,11 +154,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 ```
 
-Le `lifespan` context manager remplace les dépréciés `@app.on_event("startup")` et `@app.on_event("shutdown")`. Le `yield` sépare les phases de démarrage et d'arrêt.
+Le gestionnaire de contexte `lifespan` remplace `@app.on_event("startup")` et `@app.on_event("shutdown")`, désormais dépréciés. Le `yield` sépare les phases de démarrage et d'arrêt.
 
 ## Éviter le blocage de la boucle d'événements
 
-asyncio est monothreadé. Un appel synchrone bloquant dans une coroutine bloque toute l'application :
+asyncio s’exécute sur un seul thread. Un appel synchrone bloquant dans une coroutine bloque toute l'application :
 
 ```python
 import asyncio
@@ -219,7 +217,7 @@ logging.basicConfig(level=logging.DEBUG)
 asyncio.run(main(), debug=True)
 ```
 
-En mode debug, asyncio logue les coroutines non attendues, les tâches qui prennent plus de 100ms (signe d'un blocage de la boucle), et les ressources non fermées proprement.
+En mode debug, asyncio signale les coroutines non attendues, les tâches qui prennent plus de 100 ms (signe d'un blocage de la boucle), et les ressources non fermées proprement.
 
 ## Ce qu'il faut retenir
 

@@ -1,15 +1,13 @@
 ---
 slug: fastapi-architecture
-title: "Mettre en place une architecture FastAPI scalable et durable"
+title: "Mettre en place une architecture FastAPI évolutive et durable"
 date: "2025-03-01"
 readTime: 10
 tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
 excerpt: "Pas le hello world FastAPI — mais comment organiser un projet réel avec des routers, une couche service, des repositories, de l'injection de dépendances, et des tests qui restent maintenables à six mois."
 ---
 
-# Structurer un projet FastAPI qui dure : architecture, couches et dépendances
-
-La plupart des tutoriels FastAPI mettent tout dans `main.py`. Ça marche pour un exemple, pas pour une application maintenue par une équipe sur plusieurs années. Voici l'architecture que j'applique sur les projets qui durent, avec les raisons derrière chaque décision.
+La plupart des tutoriels FastAPI mettent tout dans `main.py`. Ça marche pour un exemple, pas pour une application maintenue par une équipe sur plusieurs années. Voici l'architecture que j'applique sur les projets qui durent, avec les raisons de chaque décision.
 
 ## La structure de projet
 
@@ -268,4 +266,4 @@ La séparation en couches n'est pas de la complexité gratuite. Elle répond à 
 - **Évolutivité** — remplacer PostgreSQL par une autre base de données ne touche que `repositories/`
 - **Séparation des responsabilités** — un bug HTTP reste dans le router, un bug métier reste dans le service
 
-Le coût : plus de fichiers, plus de couches à traverser pour une feature simple. Sur un projet d'une semaine jetée, c'est surdimensionné. Sur un projet maintenu par une équipe pendant des mois, c'est la différence entre un code qu'on comprend encore à six mois et un spaghetti qu'on a peur de toucher.
+Le coût : plus de fichiers, plus de couches à traverser pour une fonctionnalité simple. Sur un projet jetable d'une semaine, c'est surdimensionné. Sur un projet maintenu par une équipe pendant des mois, c'est la différence entre un code qu'on comprend encore à six mois et un code spaghetti qu'on a peur de toucher.
