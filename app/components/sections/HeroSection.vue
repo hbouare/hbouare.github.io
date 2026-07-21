@@ -63,7 +63,7 @@
                 was painting the label in the surface colour — invisible
                 against the canvas.
               -->
-              <v-card class="stat-box hairline-interactive pa-5" variant="outlined">
+              <v-card class="stat-box hairline-interactive pa-5" variant="text">
                 <div class="stat-number">
                   <span>{{ statsStarted ? animatedValues[index] : 0 }}</span>
                   <span v-if="stat.suffix" class="stat-suffix">{{
