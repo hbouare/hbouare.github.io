@@ -58,7 +58,8 @@ export default defineNuxtConfig({
             "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack avec une expérience internationale.",
         },
         { property: "og:type", content: "website" },
-        { property: "og:image", content: "/og-image.svg" },
+        { property: "og:image", content: "https://hamedbouare.me/og-image.png" },
+        { property: "og:image:type", content: "image/png" },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
@@ -71,10 +72,14 @@ export default defineNuxtConfig({
           content:
             "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack.",
         },
-        { name: "twitter:image", content: "/og-image.svg" },
+        { name: "twitter:image", content: "https://hamedbouare.me/og-image.png" },
       ],
       link: [
+        // SVG (theme-adaptive ink) is preferred by modern browsers; the ICO is
+        // the raster fallback (Google Search, legacy), apple-touch-icon for iOS.
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+        { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",
