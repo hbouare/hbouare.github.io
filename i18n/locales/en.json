@@ -24,15 +24,14 @@
     "stat_countries": "Countries",
     "stat_projects": "Projects shipped",
     "country_france": "🇫🇷 France",
-    "country_uk": "🇬🇧 United Kingdom",
-    "country_algeria": "🇩🇿 Algeria"
+    "country_uk": "🇬🇧 United Kingdom"
   },
   "about": {
     "section": "01 — About",
     "title_1": "Versatile",
     "title_em": "developer",
     "title_3": "& curious about the world",
-    "p1": "I’ve worked on projects in France, the United Kingdom and Algeria. Different teams, cultures and ways of working taught me to read the context before proposing anything, and to adapt rather than apply a ready-made recipe.",
+    "p1": "I’ve worked on projects in France and the United Kingdom. Different teams, cultures and ways of working taught me to read the context before proposing anything, and to adapt rather than apply a ready-made recipe.",
     "p2": "To me, good software is measured by the time it saves the people who use it, not by how sophisticated it is under the hood.",
     "p3": "That’s what drives my technical choices: I’d rather ship the solution a team can keep alive after I’m gone than the one that looks most impressive today."
   },

@@ -24,15 +24,14 @@
     "stat_countries": "Pays",
     "stat_projects": "Projets livrés",
     "country_france": "🇫🇷 France",
-    "country_uk": "🇬🇧 Royaume-Uni",
-    "country_algeria": "🇩🇿 Algérie"
+    "country_uk": "🇬🇧 Royaume-Uni"
   },
   "about": {
     "section": "01 — À propos",
     "title_1": "Développeur",
     "title_em": "polyvalent",
     "title_3": "& curieux du monde",
-    "p1": "J’ai mené des projets en France, au Royaume-Uni et en Algérie. Travailler avec des équipes et des cultures différentes m’a appris à écouter le contexte avant de proposer, et à m’adapter plutôt qu’à appliquer une recette toute faite.",
+    "p1": "J’ai mené des projets en France et au Royaume-Uni. Travailler avec des équipes et des cultures différentes m’a appris à écouter le contexte avant de proposer, et à m’adapter plutôt qu’à appliquer une recette toute faite.",
     "p2": "Pour moi, un bon logiciel se mesure au temps qu’il fait gagner à ceux qui s’en servent, pas à sa sophistication technique.",
     "p3": "C’est ce qui oriente mes choix techniques : je préfère la solution qu’une équipe pourra faire vivre après moi à la plus impressionnante sur le moment."
   },

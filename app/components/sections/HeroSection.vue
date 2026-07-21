@@ -100,12 +100,11 @@ const { t, locale } = useI18n()
 const countries = computed(() => [
   t("hero.country_france"),
   t("hero.country_uk"),
-  t("hero.country_algeria"),
 ])
 
 const stats = [
   { value: "8+", key: "stat_years", numeric: 8, suffix: "+" },
-  { value: "3", key: "stat_countries", numeric: 3 },
+  { value: "2", key: "stat_countries", numeric: 2 },
   { value: "20+", key: "stat_projects", numeric: 20, suffix: "+" },
 ]
 
