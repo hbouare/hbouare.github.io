@@ -1,11 +1,13 @@
 <!-- app/pages/projects/[slug].vue -->
 <!--
-  Project case study. The narrative lives in structured frontmatter fields
-  (hook / intro / challenge / solution / highlights / impact) so this page
-  controls the hierarchy precisely — an editorial "label rail + content"
-  layout rather than a wall of prose. Reuses the design-system primitives
-  and tokens; icons are deliberately avoided to stay coherent with the
-  monochrome, hairline identity (the eyebrow + rule IS the system's marker).
+  Project case study. Structured frontmatter (intro / challenge / solution /
+  objectives / highlights / impact / architecture / deliverables) is grouped
+  into three progressive reading tiers — Overview (everyone) → Features & value
+  (everyone) → Under the hood (developers) — plus a Resources block. Rendering
+  is DATA-DRIVEN (`tiers` below): the sections are one loop, not eight copied
+  blocks, so order/grouping live in one place and every project renders only
+  the fields it actually has. Reuses the design-system primitives and tokens;
+  icons stay minimal to keep the monochrome, hairline identity.
 -->
 <template>
   <v-container class="case px-6 px-md-10 section-v-pad" fluid>
@@ -17,7 +19,7 @@
         </NuxtLink>
       </UiRevealBlock>
 
-      <!-- Hero -->
+      <!-- Hero: context · title · hook · role · technologies -->
       <header class="case-hero">
         <UiEyebrow class="mb-4">{{ project.context }}</UiEyebrow>
         <UiDisplayTitle tag="h1" level="xl">{{ project.title }}</UiDisplayTitle>
@@ -26,94 +28,63 @@
         </p>
         <div class="case-meta mt-8">
           <p v-if="project.role" class="type-micro-cap">{{ project.role }}</p>
-          <div class="d-flex flex-wrap ga-1 mt-3">
-            <v-chip v-for="tag in project.tags" :key="tag" size="x-small">
-              {{ tag }}
-            </v-chip>
+          <div v-if="project.tags?.length" class="case-tech mt-4">
+            <UiEyebrow tone="muted" :rule="false" class="mb-2">{{ $t("case.tech") }}</UiEyebrow>
+            <div class="d-flex flex-wrap ga-1">
+              <v-chip v-for="tag in project.tags" :key="tag" size="x-small">
+                {{ tag }}
+              </v-chip>
+            </div>
           </div>
         </div>
       </header>
 
-      <!-- Narrative sections: label rail | content -->
-      <UiRevealBlock v-if="project.intro">
-        <section class="case-section">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.context") }}</UiEyebrow>
-          <p class="case-prose type-body-lg">{{ project.intro }}</p>
-        </section>
-      </UiRevealBlock>
-
-      <UiRevealBlock v-if="project.objectives?.length">
-        <section class="case-section">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.objectives") }}</UiEyebrow>
-          <ul class="case-list">
-            <li v-for="o in project.objectives" :key="o" class="type-body-md">{{ o }}</li>
-          </ul>
-        </section>
-      </UiRevealBlock>
-
-      <UiRevealBlock v-if="project.challenge">
-        <section class="case-section">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.challenge") }}</UiEyebrow>
-          <p class="case-prose type-body-lg">{{ project.challenge }}</p>
-        </section>
-      </UiRevealBlock>
-
-      <UiRevealBlock v-if="project.solution">
-        <section class="case-section">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.solution") }}</UiEyebrow>
-          <p class="case-prose type-body-lg">{{ project.solution }}</p>
-        </section>
-      </UiRevealBlock>
-
-      <UiRevealBlock v-if="project.architecture">
-        <section class="case-section">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.architecture") }}</UiEyebrow>
-          <p class="case-prose type-body-lg">{{ project.architecture }}</p>
-        </section>
-      </UiRevealBlock>
-
-      <UiRevealBlock v-if="project.highlights?.length">
-        <section class="case-section">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.highlights") }}</UiEyebrow>
-          <ul class="case-list">
-            <li v-for="h in project.highlights" :key="h" class="type-body-md">{{ h }}</li>
-          </ul>
-        </section>
-      </UiRevealBlock>
-
-      <UiRevealBlock v-if="project.deliverables?.length">
-        <section class="case-section">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.deliverables") }}</UiEyebrow>
-          <ul class="case-list">
-            <li v-for="d in project.deliverables" :key="d" class="type-body-md">{{ d }}</li>
-          </ul>
-        </section>
-      </UiRevealBlock>
-
-      <UiRevealBlock v-if="project.impact?.length">
-        <section class="case-section">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.impact") }}</UiEyebrow>
-          <div class="case-impact section-surface">
-            <ul>
-              <li v-for="line in project.impact" :key="line" class="type-body-lg">
-                {{ line }}
-              </li>
-            </ul>
+      <!-- Progressive tiers, rendered from the `tiers` config -->
+      <template v-for="tier in tiers" :key="tier.id">
+        <UiRevealBlock v-if="tier.heading">
+          <div class="case-tier">
+            <UiDisplayTitle tag="h2" level="lg">{{ tier.heading }}</UiDisplayTitle>
+            <p v-if="tier.note" class="case-tier-note type-micro-cap text-muted mt-2">
+              {{ tier.note }}
+            </p>
           </div>
-        </section>
-      </UiRevealBlock>
+        </UiRevealBlock>
 
-      <!-- Private-project note — a professional invitation to reach out. -->
+        <UiRevealBlock v-for="sec in tier.sections" :key="sec.label">
+          <section class="case-section">
+            <UiEyebrow :rule="false" class="case-label">{{ sec.label }}</UiEyebrow>
+
+            <p v-if="sec.kind === 'prose'" class="case-prose type-body-lg">
+              {{ sec.text }}
+            </p>
+
+            <ul v-else-if="sec.kind === 'list'" class="case-list">
+              <li v-for="item in sec.items" :key="item" class="type-body-md">{{ item }}</li>
+            </ul>
+
+            <div v-else class="case-impact section-surface">
+              <ul>
+                <li v-for="item in sec.items" :key="item" class="type-body-lg">{{ item }}</li>
+              </ul>
+            </div>
+          </section>
+        </UiRevealBlock>
+      </template>
+
+      <!-- Resources: repo / demo / docs when public, otherwise a way to reach out -->
       <UiRevealBlock>
         <aside class="case-encart section-surface pa-6 py-sm-8 px-sm-9">
           <template v-if="project.access === 'public'">
-            <UiEyebrow :rule="false" class="mb-3">{{ $t("case.open_title") }}</UiEyebrow>
+            <UiEyebrow :rule="false" class="mb-3">{{ $t("case.resources") }}</UiEyebrow>
             <div class="d-flex flex-wrap ga-3">
               <v-btn v-if="project.github" :href="project.github" target="_blank" rel="noopener" size="large">
                 GitHub<v-icon end size="small" icon="mdi-arrow-top-right" />
               </v-btn>
               <v-btn v-if="project.demo" :href="project.demo" target="_blank" rel="noopener" variant="text" size="large">
                 Demo<v-icon end size="small" icon="mdi-arrow-top-right" />
+              </v-btn>
+              <v-btn v-if="project.docs" :href="project.docs" target="_blank" rel="noopener" variant="text" size="large">
+                Documentation<v-icon end size="small" icon="mdi-arrow-top-right" />
               </v-btn>
             </div>
           </template>
@@ -154,6 +125,81 @@ const { data: project } = await useAsyncData(
       .first(),
 )
 
+// ── Progressive reading tiers ─────────────────────────────────────────────
+// The narrative fields are grouped into three tiers (overview → value →
+// technical). Each entry maps a frontmatter field to a label + render kind.
+// `tiers` resolves this against the current project so the template is a plain
+// loop: absent fields are dropped, and a tier with no content disappears.
+type SectionKind = "prose" | "list" | "impact"
+interface ResolvedSection {
+  label: string
+  kind: SectionKind
+  text?: string
+  items?: string[]
+}
+interface ResolvedTier {
+  id: string
+  heading: string | null
+  note?: string
+  sections: ResolvedSection[]
+}
+
+const tierDefs: {
+  id: string
+  heading: () => string | null
+  note?: () => string
+  fields: { field: string; label: () => string; kind: SectionKind }[]
+}[] = [
+  {
+    id: "overview",
+    heading: () => null,
+    fields: [
+      { field: "intro", label: () => t("case.context"), kind: "prose" },
+      { field: "challenge", label: () => t("case.challenge"), kind: "prose" },
+      { field: "solution", label: () => t("case.solution"), kind: "prose" },
+    ],
+  },
+  {
+    id: "value",
+    heading: () => t("case.section_features"),
+    fields: [
+      { field: "objectives", label: () => t("case.objectives"), kind: "list" },
+      { field: "highlights", label: () => t("case.highlights"), kind: "list" },
+      { field: "impact", label: () => t("case.impact"), kind: "impact" },
+    ],
+  },
+  {
+    id: "technical",
+    heading: () => t("case.section_technical"),
+    note: () => t("case.for_devs"),
+    fields: [
+      { field: "architecture", label: () => t("case.architecture"), kind: "prose" },
+      { field: "deliverables", label: () => t("case.deliverables"), kind: "list" },
+    ],
+  },
+]
+
+const tiers = computed<ResolvedTier[]>(() => {
+  const p = project.value as Record<string, unknown> | null
+  if (!p) return []
+  return tierDefs
+    .map((tier) => {
+      const sections = tier.fields.flatMap<ResolvedSection>((f) => {
+        const value = p[f.field]
+        if (f.kind === "prose") {
+          return typeof value === "string" && value
+            ? [{ label: f.label(), kind: f.kind, text: value }]
+            : []
+        }
+        return Array.isArray(value) && value.length
+          ? [{ label: f.label(), kind: f.kind, items: value as string[] }]
+          : []
+      })
+      return { id: tier.id, heading: tier.heading(), note: tier.note?.(), sections }
+    })
+    .filter((tier) => tier.sections.length > 0)
+})
+
 if (project.value) {
   useSeoMeta({
     title: project.value.title,
@@ -189,6 +235,19 @@ if (project.value) {
 }
 .case-meta .type-micro-cap {
   color: rgb(var(--v-theme-on-background));
+}
+
+// ── Tier divider — marks where each reading tier begins (the "for
+// developers" cue lives on the technical tier). ──────────────────────────
+.case-tier {
+  padding-top: 3rem;
+
+  @media (max-width: 767px) {
+    padding-top: 2rem;
+  }
+}
+.case-tier-note {
+  letter-spacing: 0.96px;
 }
 
 // ── Section: label rail | content ───────────────────────────────────────
@@ -284,7 +343,7 @@ if (project.value) {
   }
 }
 
-// Private-project encart — a distinct, professional invitation to reach out.
+// Resources / private-project encart.
 // Padding comes from Vuetify utilities in the template (pa-6 py-sm-8 px-sm-9),
 // so the responsive step no longer needs a media query.
 .case-encart {

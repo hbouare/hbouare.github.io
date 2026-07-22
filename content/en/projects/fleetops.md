@@ -1,33 +1,34 @@
 ---
 slug: "fleetops"
 order: 1
-title: "Vehicle Fleet Management System"
+title: "FleetOps — Vehicle Fleet Management"
 featured: true
 context: "Client engagement — transport & services"
 role: "Full-stack design & development"
-hook: "A whole vehicle fleet steered from one screen — no more scattered spreadsheets."
-intro: "Built for transport and service companies, the tool had to replace a fragmented fleet-tracking routine with genuinely centralised operations."
+hook: "Steer an entire vehicle fleet from a single screen, and never let a deadline slip."
+intro: "A fleet-management application built to replace fragmented tracking — spreadsheets, emails, manual reminders — with centralised operations where every deadline is detected automatically."
 objectives:
-  - "Centralise day-to-day fleet operations in a single tool"
-  - "Anticipate maintenance and compliance deadlines"
-  - "Give managers visibility over operating costs"
-challenge: "Mileage, servicing, insurance and regulatory documents lived in separate files: no overview, no way to anticipate deadlines, and a compliance risk with every missed date."
-solution: "A platform centralising all vehicle and driver data, backed by a scheduling module that automatically raises alerts as inspections, insurance renewals and regulatory deadlines approach."
-architecture: "A Python API exposes fleet data to a dedicated Vue.js frontend for viewing and data entry. Persistence relies on PostgreSQL (vehicles, drivers, deadlines, costs) and alert computation runs server-side. Everything is containerised with Docker and shipped through a GitLab CI/CD pipeline."
+  - "Centralise vehicles, drivers, documents and servicing in a single tool"
+  - "Automatically detect maintenance and compliance deadlines"
+  - "Give managers visibility over fleet status and operating costs"
+challenge: "Mileage, servicing, insurance and regulatory documents usually live in separate files. No overview, no anticipation: one missed deadline means a compliance breach, sometimes a vehicle off the road."
+solution: "A platform that brings all fleet data together and watches three sources of deadlines: driver licences, documents (insurance, regulatory inspection) and servicing — triggered by date or by mileage. Each approaching deadline becomes a ranked alert (warning or critical) that a manager can acknowledge and then resolve."
+architecture: "FastAPI backend (Python 3.12) with SQLAlchemy 2.0 on PostgreSQL and Alembic migrations, API versioned under /api/v1. Vue 3 + Vuetify frontend in TypeScript (Vite, Pinia). Security: JWT in an httpOnly cookie, Argon2 hashing, and RBAC (admin / manager) always enforced server-side. A defining choice: rather than recomputing deadlines on every read, alerts are materialised in a dedicated table and rebuilt by an explicit recalculation — which keeps the lists fast, filterable and paginated, at the cost of triggering that recalculation to stay current. Liveness/readiness probes, production start-up guards, and a one-command Docker Compose run, under GitLab CI."
 highlights:
-  - "Automatic maintenance and compliance alerts"
-  - "Mileage, servicing and fuel-consumption tracking"
-  - "Dashboard of fleet status and operating costs"
+  - "Alerts across three domains: licences, regulatory documents and servicing (by date or by mileage)"
+  - "Warning / critical severity, with manager acknowledge then resolve"
+  - "Admin / manager roles enforced server-side, JWT httpOnly cookie and Argon2 hashing"
+  - "Paginated, filterable lists (search, status, sort) and cost tracking"
 deliverables:
-  - "Complete web application (frontend and backend)"
-  - "Fleet, driver and document management"
-  - "Deadline scheduling and alerting module"
-  - "Containerised deployment and CI/CD pipeline"
+  - "Complete web application (FastAPI API + Vue 3/Vuetify interface)"
+  - "Versioned data model (Alembic migrations) and a demo dataset"
+  - "Multi-source alert engine with recalculation and lifecycle"
+  - "Docker Compose deployment and CI pipeline (lint, tests, e2e, dependency audit)"
 impact:
-  - "Fleet data, previously scattered across spreadsheets, centralised in one place"
-  - "Maintenance and compliance deadlines tracked automatically instead of by hand"
-  - "Visibility over fleet operating costs"
-tags: ["Python","Vue.js","PostgreSQL","Docker","GitLab CI"]
-access: "private"
+  - "Unified fleet tracking: vehicles, drivers, documents and servicing in one place"
+  - "Deadlines detected automatically across three sources, by date and by mileage"
+  - "Tooled quality: backend tests (pytest and coverage), front unit and e2e, migration checks — all in CI"
+tags: ["FastAPI","Vue 3","TypeScript","PostgreSQL","SQLAlchemy","Docker","GitLab CI"]
+access: "public"
+github: "https://github.com/hamedbouare9/gestion-de-flottes"
 ---
-

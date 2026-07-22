@@ -101,14 +101,18 @@
     "context": "Context",
     "challenge": "The challenge",
     "solution": "The solution",
+    "objectives": "Objectives",
     "highlights": "Key features",
     "impact": "Results",
-    "objectives": "Objectives",
     "architecture": "Architecture",
     "deliverables": "Deliverables",
+    "tech": "Technologies",
+    "section_features": "Features & value",
+    "section_technical": "Under the hood",
+    "for_devs": "The technical detail, for developers",
+    "resources": "Resources",
     "private_title": "Private project",
-    "private_note": "Delivered under a client engagement — the source code is private. Detailed architecture, a demo, documentation or repository access can be provided on request.",
-    "open_title": "Source code"
+    "private_note": "Delivered under a client engagement — the source code is private. Detailed architecture, a demo, documentation or repository access can be provided on request."
   },
   "research": {
     "section": "04 — Research",

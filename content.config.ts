@@ -45,6 +45,7 @@ const projectSchema = z.object({
   access:   z.enum(['private', 'public']).default('private'),
   github:   z.string().optional(),
   demo:     z.string().optional(),
+  docs:     z.string().optional(),         // documentation link, shown when present
 })
 
 const blogSchema = z.object({
