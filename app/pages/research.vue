@@ -13,8 +13,10 @@
   type badge is the only differentiator, never a hue.
 -->
 <template>
-  <v-container class="research px-6 px-md-10 section-v-pad" fluid>
-    <div class="research-inner">
+  <div class="research-page">
+    <UiWaveField />
+    <v-container class="research px-6 px-md-10 section-v-pad position-relative" fluid>
+      <div class="research-inner">
       <!-- ── Act I — Introduction ─────────────────────────────────────── -->
       <UiSectionHeader
         :label="$t('research.section')"
@@ -140,7 +142,8 @@
         </dl>
       </UiRevealBlock>
     </div>
-  </v-container>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -182,6 +185,13 @@ useJsonLd({
 </script>
 
 <style scoped lang="scss">
+// Positioned wrapper so the fixed ambient wave field (z-index 0) sits behind
+// the page content, which stacks above it via the container's position-relative.
+.research-page {
+  position: relative;
+  min-height: 100vh;
+}
+
 .research-inner {
   max-width: 920px;
   margin: 0 auto;
