@@ -16,7 +16,8 @@
       "Bash(curl:*)",
       "Bash(tree:*)",
       "Bash(cat:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(yarn test:e2e)"
     ]
   }
 }
