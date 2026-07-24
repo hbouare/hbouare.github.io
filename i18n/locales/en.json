@@ -14,7 +14,7 @@
     "title_1": "From raw",
     "title_em": "data",
     "title_3": "to production",
-    "subtitle": "Software engineer and PhD in mechanics. I build applications that put data to work, from modelling through to production, staying close to the people who use them every day.",
+    "subtitle": "Software engineer and PhD in mechanics, I build applications that turn data into practical tools. From modelling through to production, every solution is designed to be reliable, durable and to meet the real needs of the people who rely on it day to day.",
     "cta_projects": "See my projects",
     "cta_contact": "Contact me",
     "cta_cv": "Download my CV",
@@ -28,12 +28,12 @@
   },
   "about": {
     "section": "01 — About",
-    "title_1": "Versatile",
-    "title_em": "developer",
-    "title_3": "& curious about the world",
-    "p1": "I’ve worked on projects in France and the United Kingdom. Different teams, cultures and ways of working taught me to read the context before proposing anything, and to adapt rather than apply a ready-made recipe.",
-    "p2": "To me, good software is measured by the time it saves the people who use it, not by how sophisticated it is under the hood.",
-    "p3": "That’s what drives my technical choices: I’d rather ship the solution a team can keep alive after I’m gone than the one that looks most impressive today."
+    "title_1": "Built to",
+    "title_em": "last,",
+    "title_3": "not to impress",
+    "p1": "I’ve designed and shipped applications in both France and the United Kingdom, within teams that differed widely in their working methods, their industries and their cultures. Those experiences taught me that no two projects are alike. Before proposing a solution, taking the time to understand the context, the goals and the constraints has become second nature.",
+    "p2": "To me, the value of software isn’t measured by its technical complexity but by its usefulness. Good software is, above all, a tool that simplifies work, saves time and meets its users’ needs for the long term.",
+    "p3": "That conviction runs through every technical choice I make. I favour solutions that are simple, robust and built to evolve — designed to be understood, maintained and extended by a whole team, without depending on whoever first designed them. An architecture doesn’t need to be spectacular to succeed: it succeeds when it stays reliable, readable and useful, even years after it goes into production."
   },
   "experience": {
     "section": "02 — Experience",

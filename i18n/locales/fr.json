@@ -14,7 +14,7 @@
     "title_1": "Des données",
     "title_em": "brutes",
     "title_3": "à la production",
-    "subtitle": "Ingénieur logiciel et docteur en mécanique. Je conçois des applications qui exploitent la donnée, de la modélisation à la mise en production, au plus près des personnes qui s’en servent au quotidien.",
+    "subtitle": "Ingénieur logiciel et docteur en mécanique, je conçois des applications qui transforment les données en outils concrets. De la modélisation à la mise en production, chaque solution est pensée pour être fiable, durable et répondre aux besoins de celles et ceux qui l’utilisent au quotidien.",
     "cta_projects": "Voir mes projets",
     "cta_contact": "Me contacter",
     "cta_cv": "Télécharger mon CV",
@@ -28,12 +28,12 @@
   },
   "about": {
     "section": "01 — À propos",
-    "title_1": "Développeur",
-    "title_em": "polyvalent",
-    "title_3": "& curieux du monde",
-    "p1": "J’ai mené des projets en France et au Royaume-Uni. Travailler avec des équipes et des cultures différentes m’a appris à écouter le contexte avant de proposer, et à m’adapter plutôt qu’à appliquer une recette toute faite.",
-    "p2": "Pour moi, un bon logiciel se mesure au temps qu’il fait gagner à ceux qui s’en servent, pas à sa sophistication technique.",
-    "p3": "C’est ce qui oriente mes choix techniques : je préfère la solution qu’une équipe pourra faire vivre après moi à la plus impressionnante sur le moment."
+    "title_1": "Construire pour",
+    "title_em": "durer,",
+    "title_3": "pas pour impressionner",
+    "p1": "J’ai conçu et livré des applications en France comme au Royaume-Uni, au sein d’équipes aux méthodes de travail, aux métiers et aux cultures très différentes. Ces expériences m’ont appris qu’aucun projet ne se ressemble. Avant de proposer une solution, prendre le temps de comprendre le contexte, les objectifs et les contraintes est devenu une évidence.",
+    "p2": "Pour moi, la valeur d’un logiciel ne se mesure pas à sa complexité technique, mais à son utilité. Un bon logiciel est avant tout un outil qui simplifie le travail, fait gagner du temps et répond durablement aux besoins de ses utilisateurs.",
+    "p3": "Cette vision se retrouve dans chacun de mes choix techniques. Je privilégie des solutions simples, robustes et évolutives, pensées pour être comprises, maintenues et enrichies par toute une équipe, sans dépendre de la personne qui les a conçues. Une architecture n’a pas besoin d’être spectaculaire pour être réussie : elle l’est lorsqu’elle reste fiable, lisible et utile, même plusieurs années après sa mise en production."
   },
   "experience": {
     "section": "02 — Parcours",
