@@ -1,7 +1,7 @@
 ---
 slug: "fleetops"
 order: 1
-title: "FleetOps — Gestion de flotte automobile"
+title: "Gestion de flotte automobile"
 featured: true
 context: "Projet personnel — transport & services"
 hook: "Piloter tout un parc de véhicules depuis un seul écran, et ne plus laisser passer une échéance."

@@ -1,7 +1,7 @@
 ---
 slug: "finboard"
 order: 2
-title: "Pilotis — foundations of a financial-tracking SaaS"
+title: "Foundations of a financial-tracking SaaS"
 featured: false
 context: "Personal project — SMB, finance"
 hook: "The foundations of a financial-tracking SaaS for SMBs: a solid technical base, laid before the features."

@@ -1,7 +1,7 @@
 ---
 slug: "fleetops"
 order: 1
-title: "FleetOps — Vehicle Fleet Management"
+title: "Vehicle Fleet Management"
 featured: true
 context: "Personal project — transport & services"
 hook: "Steer an entire vehicle fleet from a single screen, and never let a deadline slip."

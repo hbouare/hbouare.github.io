@@ -40,9 +40,6 @@
               {{ tag }}
             </v-chip>
           </div>
-          <p v-if="isFilled(project.status)" class="case-status type-micro-cap">
-            {{ project.status }}
-          </p>
         </div>
       </UiRevealBlock>
 

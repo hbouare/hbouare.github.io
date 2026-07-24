@@ -1,7 +1,7 @@
 ---
 slug: "finboard"
 order: 2
-title: "Pilotis — socle d’un SaaS de suivi financier"
+title: "Socle d’un SaaS de suivi financier"
 featured: false
 context: "Projet personnel — PME, secteur financier"
 hook: "Les fondations d’un SaaS de suivi financier pour PME : une base technique carrée, posée avant les fonctionnalités."
