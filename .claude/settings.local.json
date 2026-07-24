@@ -17,7 +17,11 @@
       "Bash(tree:*)",
       "Bash(cat:*)",
       "Bash(node:*)",
-      "Bash(yarn test:e2e)"
+      "Bash(yarn test:e2e)",
+      "Bash(node -e \"const fr=require\\('./i18n/locales/fr.json'\\),en=require\\('./i18n/locales/en.json'\\);const flat=\\(o,p=''\\)=>Object.entries\\(o\\).flatMap\\(\\([k,v]\\)=>typeof v==='object'&&v?flat\\(v,p+k+'.'\\):[p+k]\\);console.log\\('i18n parity fr/en:',flat\\(fr\\).length,'/',flat\\(en\\).length\\)\")",
+      "Bash(node \"C:\\\\Users\\\\hamed\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-hamed-Desktop-IEA-own-hbouare-github-io\\\\438e9822-418e-4fbc-b995-27bbe5a5b0da\\\\scratchpad\\\\prune.mjs\" --apply)",
+      "Bash(node -e \"console.log\\('fleetops FR still CRLF:', require\\('fs'\\).readFileSync\\('content/fr/projects/fleetops.md','utf8'\\).includes\\('\\\\r\\\\n'\\)\\)\")",
+      "Bash(node -e \"const fr=require\\('./i18n/locales/fr.json'\\),en=require\\('./i18n/locales/en.json'\\);const flat=\\(o,p=''\\)=>Object.entries\\(o\\).flatMap\\(\\([k,v]\\)=>typeof v==='object'&&v?flat\\(v,p+k+'.'\\):[p+k]\\);console.log\\('fr/en:',flat\\(fr\\).length,'/',flat\\(en\\).length\\)\")"
     ]
   }
 }

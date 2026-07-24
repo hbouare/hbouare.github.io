@@ -34,13 +34,21 @@
         :hook="project.hook"
       />
 
-      <CaseFacts v-if="facts.length" :facts="facts" />
-
-      <CaseOutcomes
-        v-if="project.impact?.length"
-        :heading="$t('case.impact')"
-        :items="project.impact"
-      />
+      <!-- Hero meta: the stack (what a technical reader scans first) and how
+           the project runs, hoisted directly under the hook instead of buried
+           at the foot. Replaces the old role/team/status facts strip. -->
+      <UiRevealBlock v-if="project.tags?.length || isFilled(project.status)">
+        <div class="case-meta">
+          <div v-if="project.tags?.length" class="case-tech d-flex flex-wrap ga-2">
+            <v-chip v-for="tag in project.tags" :key="tag" size="small">
+              {{ tag }}
+            </v-chip>
+          </div>
+          <p v-if="isFilled(project.status)" class="case-status type-micro-cap">
+            {{ project.status }}
+          </p>
+        </div>
+      </UiRevealBlock>
 
       <!-- ── 2 & 3. Narrative, then the technical annex ─────────────────── -->
       <section v-for="tier in tiers" :key="tier.id" class="case-tier">
@@ -60,8 +68,8 @@
           :key="sec.label"
           :delay="i * 80"
         >
-          <div class="case-section">
-            <UiEyebrow :rule="false" class="case-label">{{ sec.label }}</UiEyebrow>
+          <div class="case-section" :class="{ 'case-section--full': !sec.label }">
+            <UiEyebrow v-if="sec.label" :rule="false" class="case-label">{{ sec.label }}</UiEyebrow>
 
             <div class="case-section-body">
               <p v-if="sec.kind === 'prose'" class="case-prose type-body-lg">
@@ -74,8 +82,6 @@
                 </li>
               </ul>
 
-              <CasePlan v-else-if="sec.kind === 'plan'" :layers="sec.layers!" />
-
               <CaseDecisions
                 v-else
                 :decisions="sec.decisions!"
@@ -85,20 +91,6 @@
           </div>
         </UiRevealBlock>
       </section>
-
-      <!-- Technologies: the raw stack, kept as chips at the foot of the
-           technical tier rather than in the hero, where it competed with the
-           hook for the first glance. -->
-      <UiRevealBlock v-if="project.tags?.length">
-        <div class="case-section case-tech">
-          <UiEyebrow :rule="false" class="case-label">{{ $t("case.tech") }}</UiEyebrow>
-          <div class="case-section-body d-flex flex-wrap ga-2">
-            <v-chip v-for="tag in project.tags" :key="tag" size="small">
-              {{ tag }}
-            </v-chip>
-          </div>
-        </div>
-      </UiRevealBlock>
 
       <!-- ── The way forward ───────────────────────────────────────────── -->
       <UiRevealBlock>
@@ -153,29 +145,13 @@ const nextProject = computed(() => {
   return all[(i + 1) % all.length] ?? null
 })
 
-// ── Facts strip ───────────────────────────────────────────────────────────
 // A value still carrying its `TODO` placeholder counts as unfilled and is
-// dropped, so an un-authored fact leaves the source with a visible reminder
-// but never reaches the built page as a fabricated one.
+// dropped (used for the hero-meta status line), so an un-authored value leaves
+// the source with a visible reminder but never ships as a fabricated fact.
 const isFilled = (v: unknown): v is string =>
   typeof v === "string" &&
   v.trim() !== "" &&
   !v.trim().toUpperCase().startsWith("TODO")
-
-const facts = computed(() => {
-  const p = project.value
-  if (!p) return []
-  return (
-    [
-      ["case.role", p.role],
-      ["case.period", p.period],
-      ["case.team", p.team],
-      ["case.status", p.status],
-    ] as const
-  )
-    .filter(([, value]) => isFilled(value))
-    .map(([key, value]) => ({ label: t(key), value: value as string }))
-})
 
 const decisionLabels = computed(() => ({
   problem: t("case.decision_problem"),
@@ -188,16 +164,14 @@ const decisionLabels = computed(() => ({
 // resolves this against the current project, so the template is a plain
 // loop: absent fields are dropped, and a tier with no content disappears
 // entirely rather than rendering an empty heading.
-type StackLayer = { layer: string; detail: string }
 type Decision = { problem: string; choice: string; consequence: string }
-type SectionKind = "prose" | "list" | "plan" | "decisions"
+type SectionKind = "prose" | "list" | "decisions"
 
 interface ResolvedSection {
   label: string
   kind: SectionKind
   text?: string
   items?: string[]
-  layers?: StackLayer[]
   decisions?: Decision[]
 }
 interface ResolvedTier {
@@ -213,34 +187,32 @@ const tierDefs: {
   note?: () => string
   fields: { field: string; label: () => string; kind: SectionKind }[]
 }[] = [
+  // Overview: what the project is (context), how it answers the need
+  // (solution) and what it actually does (key features). The old split into
+  // problem/challenge/objectives + response/highlights restated the same
+  // three or four ideas six ways; this is the deduplicated core. `impact`
+  // ("Résultats") is dropped: on a solo demo it only re-describes the features
+  // as outcomes, which reads as inflated to the audience most likely to check.
   {
-    id: "problem",
-    heading: () => t("case.section_problem"),
+    id: "overview",
+    heading: () => t("case.section_overview"),
     fields: [
-      { field: "intro", label: () => t("case.context"), kind: "prose" },
-      { field: "challenge", label: () => t("case.challenge"), kind: "prose" },
-      { field: "objectives", label: () => t("case.objectives"), kind: "list" },
-    ],
-  },
-  {
-    id: "response",
-    heading: () => t("case.section_response"),
-    fields: [
-      { field: "solution", label: () => t("case.solution"), kind: "prose" },
+      // No eyebrow: this is the overview paragraph itself, printed directly
+      // under the "Aperçu" heading. `solution` is folded into it in content.
+      { field: "intro", label: () => "", kind: "prose" },
       { field: "highlights", label: () => t("case.highlights"), kind: "list" },
     ],
   },
+  // Under the hood: the architecture narrative and the ONE trade-off that
+  // shows engineering judgement (`decisions`, problem → choice → what it
+  // costs) — the strongest senior signal, previously dropped from the page.
   {
     id: "technical",
     heading: () => t("case.section_technical"),
     note: () => t("case.for_devs"),
-    // The technical tier is intentionally kept to the architecture narrative.
-    // The plan diagram (`stack`), the decisions table (`decisions`) and the
-    // deliverables list were removed from the page on request. Their content
-    // still lives in frontmatter and their render kinds ("plan"/"decisions")
-    // are still supported below, so re-adding a field here restores them.
     fields: [
       { field: "architecture", label: () => t("case.architecture"), kind: "prose" },
+      { field: "decisions", label: () => t("case.decisions"), kind: "decisions" },
     ],
   },
 ]
@@ -256,7 +228,6 @@ const resolveSection = (
   }
   if (!Array.isArray(value) || !value.length) return []
   if (kind === "list") return [{ label, kind, items: value as string[] }]
-  if (kind === "plan") return [{ label, kind, layers: value as StackLayer[] }]
   return [{ label, kind, decisions: value as Decision[] }]
 }
 
@@ -381,6 +352,11 @@ if (project.value) {
   padding-top: 0.35rem; // optically align the eyebrow with the first line
   color: rgb(var(--v-theme-muted));
 }
+// An unlabelled section (the overview paragraph) spans the full content width
+// instead of leaving an empty label rail beside it.
+.case-section--full {
+  grid-template-columns: 1fr;
+}
 .case-section-body {
   min-width: 0; // lets long unbroken strings wrap instead of widening the grid
 }
@@ -421,7 +397,18 @@ if (project.value) {
   }
 }
 
-.case-tech {
+// Hero meta band — stack + run status, hoisted directly under the hook. The
+// stack is what a technical reader scans first, so it leads; the status is a
+// quiet caption. Lighter than the old facts strip: one hairline below, not a
+// bordered box.
+.case-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
   padding-bottom: var(--space-huge);
+  border-bottom: 1px solid rgb(var(--v-theme-border));
+}
+.case-status {
+  color: rgb(var(--v-theme-muted));
 }
 </style>
