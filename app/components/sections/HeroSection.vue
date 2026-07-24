@@ -10,8 +10,7 @@
           <UiDisplayTitle ref="titleEl" tag="h1" level="xxl" class="hero-title">
             {{ $t("hero.title_1") }}<br />
             <span class="text-muted">{{ $t("hero.title_em") }}</span
-            ><br />
-            {{ $t("hero.title_3") }}
+            ><template v-if="$t('hero.title_3')"><br />{{ $t("hero.title_3") }}</template>
           </UiDisplayTitle>
           <p class="hero-subtitle type-body-lg text-muted hero-beat">
             {{ $t("hero.subtitle") }}
