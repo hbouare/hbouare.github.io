@@ -229,9 +229,13 @@ const sendEmail = async () => {
 <style scoped lang="scss">
 // Vertical rhythm follows the shared section token — the two duplicated
 // breakpoint blocks that used to live here are gone.
+//
+// Positioned (no opaque fill): on /contact an ambient tree field sits behind
+// the page, so the section must stack above it and stay transparent — the body
+// already paints the page colour, and a fill here would hide the trees.
 .section-contact {
+  position: relative;
   padding: var(--section-pad) 0;
-  background: rgb(var(--v-theme-background));
 }
 
 // Form panel — hairline surface; hover comes from .hairline-interactive.
