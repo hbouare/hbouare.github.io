@@ -4,22 +4,20 @@ title: "Playwright comme outil de scraping métier : au-delà des tests E2E"
 date: "2024-01-03"
 readTime: 9
 tags: ["Playwright", "Python", "Scraping", "Automatisation"]
-excerpt: "Playwright n'est pas réservé aux tests. Sur des portails métier sans API, c'est l'outil le plus robuste pour automatiser l'authentification, la navigation et l'extraction de données — voici comment l'utiliser en production."
+excerpt: "Playwright n’est pas réservé aux tests. Sur des portails métier sans API, c’est l’outil le plus robuste pour automatiser l’authentification, la navigation et l’extraction de données — voici comment l’utiliser en production."
 ---
 
-# Playwright comme outil de scraping métier : au-delà des tests E2E
-
-La plupart des articles sur Playwright parlent de tests E2E. C'est son usage le plus visible, mais pas le seul. Quand un portail métier n'expose pas d'API — ou que celle-ci est incomplète, mal documentée, ou réservée à des partenaires — Playwright devient un outil d'automatisation de premier ordre. Voici comment l'utiliser sérieusement, hors contexte de test.
+La plupart des articles sur Playwright parlent de tests E2E. C’est son usage le plus visible, mais pas le seul. Quand un portail métier n’expose pas d’API — ou que celle-ci est incomplète, mal documentée, ou réservée à des partenaires — Playwright devient un outil d’automatisation de premier ordre. Voici comment l’utiliser sérieusement, hors contexte de test.
 
 ## Le cas concret : un portail sans API exploitable
 
-Certains portails métier exposent une interface web riche mais une API limitée ou absente. L'extraction de données, les exports, la soumission de formulaires — tout passe par le navigateur. BeautifulSoup et requests s'arrêtent là : ils ne gèrent pas JavaScript, les SPAs, ni les flux d'authentification complexes (MFA, redirections OAuth2).
+Certains portails métier exposent une interface web riche mais une API limitée ou absente. L’extraction de données, les exports, la soumission de formulaires — tout passe par le navigateur. BeautifulSoup et requests s’arrêtent là : ils ne gèrent pas JavaScript, les SPA, ni les flux d’authentification complexes (MFA, redirections OAuth2).
 
 Playwright gère tout ça nativement.
 
 ## Architecture du scraper
 
-L'objectif est un scraper qui s'authentifie de façon fiable, navigue et extrait des données structurées, est relançable sans intervention humaine, et s'exécute en environnement conteneurisé.
+L’objectif est un scraper qui s’authentifie de façon fiable, navigue et extrait des données structurées, est relançable sans intervention humaine, et s’exécute en environnement conteneurisé.
 
 ```python
 from playwright.async_api import async_playwright, Browser, Page
@@ -57,11 +55,11 @@ class MetierScraper:
         await self._playwright.stop()
 ```
 
-Le context manager garantit la fermeture propre du navigateur même en cas d'exception — indispensable en production.
+Le gestionnaire de contexte garantit la fermeture propre du navigateur même en cas d’exception — indispensable en production.
 
 ## Authentification robuste
 
-L'authentification est la partie la plus fragile d'un scraper. Les portails changent leur UI, ajoutent des étapes de sécurité, ou introduisent des délais. Quelques principes pour la rendre solide :
+L’authentification est la partie la plus fragile d’un scraper. Les portails changent leur interface, ajoutent des étapes de sécurité, ou introduisent des délais. Quelques principes pour la rendre solide :
 
 ```python
 async def login(self) -> bool:
@@ -87,11 +85,11 @@ async def login(self) -> bool:
     return True
 ```
 
-L'interception de réponse réseau (`expect_response`) est plus fiable qu'attendre un sélecteur CSS après le clic — elle détecte les erreurs d'authentification sans dépendre de la mise en forme du message d'erreur affiché.
+L’interception de réponse réseau (`expect_response`) est plus fiable qu’attendre un sélecteur CSS après le clic — elle détecte les erreurs d’authentification sans dépendre de la mise en forme du message d’erreur affiché.
 
 ## Extraction de données structurées
 
-Une fois authentifié, l'extraction doit être déterministe. Playwright permet de combiner navigation DOM et interception réseau selon ce qui est le plus stable :
+Une fois authentifié, l’extraction doit être déterministe. Playwright permet de combiner navigation DOM et interception réseau selon ce qui est le plus stable :
 
 ```python
 async def extract_certificates(self, period: str) -> list[dict]:
@@ -128,9 +126,9 @@ async def extract_table_data(self) -> list[dict]:
     return results
 ```
 
-La stratégie 1 (interception réseau) est préférable quand elle est disponible : les données JSON brutes sont plus propres et moins sensibles aux changements de mise en page. La stratégie 2 (extraction DOM) est le fallback universel.
+La stratégie 1 (interception réseau) est préférable quand elle est disponible : les données JSON brutes sont plus propres et moins sensibles aux changements de mise en page. La stratégie 2 (extraction DOM) est la solution de repli universelle.
 
-## Gestion des exports fichiers
+## Gestion des exports de fichiers
 
 Beaucoup de portails proposent des exports Excel ou CSV via un bouton de téléchargement. Playwright gère ça nativement :
 
@@ -176,7 +174,7 @@ USER 1001
 CMD ["python", "scraper.py"]
 ```
 
-Sur OpenShift, `--no-sandbox` est obligatoire : les conteneurs ne disposent pas des privilèges nécessaires au sandbox Chromium. Ce n'est pas un risque dans ce contexte — le sandbox protège contre du contenu web malveillant, ce qui ne s'applique pas à un scraper ciblant un portail interne connu.
+Sur OpenShift, `--no-sandbox` est obligatoire : les conteneurs ne disposent pas des privilèges nécessaires au sandbox Chromium. Ce n’est pas un risque dans ce contexte — le sandbox protège contre du contenu web malveillant, ce qui ne s’applique pas à un scraper ciblant un portail interne connu.
 
 ## Orchestration avec un CronJob Kubernetes
 
@@ -209,7 +207,7 @@ spec:
           restartPolicy: OnFailure
 ```
 
-`concurrencyPolicy: Forbid` est critique : si une exécution prend plus longtemps que prévu, on ne veut pas deux scrapers qui s'authentifient simultanément avec le même compte.
+`concurrencyPolicy: Forbid` est critique : si une exécution prend plus longtemps que prévu, on ne veut pas deux scrapers qui s’authentifient simultanément avec le même compte.
 
 ## Ce que Playwright apporte par rapport aux alternatives
 
@@ -222,4 +220,4 @@ spec:
 | Support Docker      | Simple         | Complexe | Raisonnable |
 | API moderne         | Non            | Non      | Oui         |
 
-Sur des sites statiques simples, `requests` + `BeautifulSoup` reste plus rapide à mettre en place. Mais dès qu'il y a de l'authentification complexe, du JavaScript dynamique, ou des interactions utilisateur à reproduire — Playwright est le choix le plus solide disponible en open-source aujourd'hui.
+Sur des sites statiques simples, `requests` + `BeautifulSoup` reste plus rapide à mettre en place. Mais dès qu’il y a de l’authentification complexe, du JavaScript dynamique, ou des interactions utilisateur à reproduire — Playwright est le choix le plus solide disponible en open-source aujourd’hui.

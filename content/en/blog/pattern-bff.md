@@ -7,9 +7,7 @@ tags: ["FastAPI", "Vue.js", "Azure B2C", "Architecture", "OAuth2"]
 excerpt: "The Backend-for-Frontend pattern places a dedicated server between the browser and your downstream APIs. Applied to a Vue.js and Azure B2C stack, it resolves OAuth2 token management cleanly and substantially reduces the client-side attack surface — at the cost of an additional service to operate."
 ---
 
-# The BFF Pattern with FastAPI: Putting a Backend in Front of Your Frontend
-
-The Backend-for-Frontend (BFF) pattern is not new — Netflix, SoundCloud, and others popularised it over a decade ago. Yet it remains underused in Vue.js and FastAPI architectures, where the prevailing tendency is to handle OAuth2 tokens directly in the browser. Here is why that is a risky trade-off, and how the BFF pattern addresses it.
+The Backend-for-Frontend (BFF) pattern is not new — Netflix, SoundCloud, and others popularised it over a decade ago. Yet it remains underused in Vue.js and FastAPI architectures, where the prevailing tendency is to handle OAuth2 tokens directly in the browser. Here is why that is risky, and how the BFF pattern solves it.
 
 ## The Problem with Client-Side Tokens
 
@@ -19,7 +17,7 @@ In a standard Vue.js single-page application with Azure B2C, the OAuth2 flow ter
 - **sessionStorage** — same vulnerabilities; discarded when the tab is closed
 - **HttpOnly cookie** — the most defensible client-side option, yet token refresh still requires server-side coordination
 
-The deeper issue is structural: the Azure B2C `client_secret` cannot be embedded in a single-page application. The OAuth2 code exchange (`authorization_code` → `access_token`) must happen server-side. Without a BFF, teams either compromise on security or burden the frontend with PKCE and elaborate workarounds.
+The real problem: the Azure B2C `client_secret` cannot be embedded in a single-page application. The OAuth2 code exchange (`authorization_code` → `access_token`) must happen server-side. Without a BFF, you either compromise on security or burden the frontend with PKCE and workarounds.
 
 ## Architecture Overview
 
@@ -200,4 +198,4 @@ async def refresh(self, session: dict) -> dict:
 | XSS attack surface       | Tokens accessible           | Opaque session cookie only         |
 | Operational complexity   | Simpler                     | Additional service to operate      |
 
-The BFF pattern is not a universal prescription. For public-facing applications with low-sensitivity data, client-side PKCE is simpler and perfectly adequate. However, for applications managing tokens with elevated privileges, sensitive scopes, or multi-API integrations — the BFF is the most architecturally sound approach available.
+The BFF pattern is not a universal answer. For a public application without sensitive data, client-side PKCE is simpler and perfectly adequate. But as soon as you handle tokens with elevated privileges, sensitive scopes, or multi-API integrations, the BFF is the most defensible architecture.

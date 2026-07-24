@@ -1,12 +1,21 @@
 <!-- app/components/ui/RevealBlock.vue -->
 <!--
-  Scroll reveal. Public API is unchanged (`:delay` in ms) — the 32 existing
-  call sites keep working; only the engine moved from IntersectionObserver
-  + CSS transition to GSAP ScrollTrigger.
+  Scroll reveal. Public API is unchanged (`:delay` in ms) — every existing
+  call site keeps working.
 
-  Why GSAP was worth it here: `batch` lets siblings that enter the viewport
-  together stagger *against each other*, which the per-element observer
-  could not express.
+  GSAP owns the tween; an IntersectionObserver owns the trigger.
+
+  ScrollTrigger was used for both, and it lost a race that matters: it caches
+  each trigger's start/end in scroll pixels when it is created, so a large
+  programmatic jump landing before its first update can leave a `once`
+  trigger un-fired forever. The block then sits at its CSS resting
+  `opacity: 0` — present in the DOM, indexed by crawlers, invisible to the
+  visitor, with an empty console. An observer has no cached geometry and
+  reports the CURRENT intersection state on its first callback after
+  `observe()`, so hydration and scrolling can arrive in either order.
+
+  Nothing is lost by the swap: this component creates one trigger per element
+  and never used ScrollTrigger.batch.
 
   SSR note: the resting state (`opacity: 0`) stays in CSS rather than being
   set by GSAP. The markup is still in the served HTML for crawlers, and if
@@ -20,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { DURATION, EASE, DISTANCE, SCROLL_START } from "~/config/motion"
+import { DURATION, EASE, DISTANCE, SCROLL_START_MARGIN } from "~/config/motion"
 
 const props = withDefaults(defineProps<{ delay?: number }>(), { delay: 0 })
 
@@ -29,7 +38,19 @@ const shown = ref(false)
 
 const { gsap } = useGsap()
 
+// The observer is not a GSAP object, so useMotion's revert does not reach it.
+// Disconnected on unmount and again at the top of every build run, since the
+// callback re-runs when a media condition changes.
+let observer: IntersectionObserver | null = null
+const stopObserving = () => {
+  observer?.disconnect()
+  observer = null
+}
+onUnmounted(stopObserving)
+
 useMotion(root, ({ motion }) => {
+  stopObserving()
+
   const el = root.value
   if (!el) return
 
@@ -40,24 +61,38 @@ useMotion(root, ({ motion }) => {
     return
   }
 
-  gsap.fromTo(
-    el,
-    { autoAlpha: 0, y: DISTANCE.base },
-    {
-      autoAlpha: 1,
-      y: 0,
-      duration: DURATION.base,
-      ease: EASE.out,
-      delay: props.delay / 1000,
-      scrollTrigger: { trigger: el, start: SCROLL_START, once: true },
-      // Hand the element back to CSS once revealed so nothing keeps an
-      // inline transform that could interfere with layout or hover states.
-      onComplete: () => {
-        shown.value = true
-        gsap.set(el, { clearProps: "transform,opacity,visibility" })
+  let started = false
+  const reveal = () => {
+    if (started) return
+    started = true
+    gsap.fromTo(
+      el,
+      { autoAlpha: 0, y: DISTANCE.base },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: DURATION.base,
+        ease: EASE.out,
+        delay: props.delay / 1000,
+        // Hand the element back to CSS once revealed so nothing keeps an
+        // inline transform that could interfere with layout or hover states.
+        onComplete: () => {
+          shown.value = true
+          gsap.set(el, { clearProps: "transform,opacity,visibility" })
+        },
       },
+    )
+  }
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return
+      stopObserving()
+      reveal()
     },
+    { rootMargin: SCROLL_START_MARGIN },
   )
+  observer.observe(el)
 })
 </script>
 

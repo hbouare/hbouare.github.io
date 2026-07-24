@@ -8,14 +8,14 @@ location: "Paris, France"
 flag: "🇫🇷"
 tags:
   [
-    "Nodes.js",
+    "Node.js",
     "Vue.js",
-    "Mongodb",
-    "Postgresql",
-    "Gitlab CD/CD",
+    "MongoDB",
+    "PostgreSQL",
+    "GitLab CI/CD",
     "Docker",
     "Jira",
   ]
 ---
 
-BHP Group is a global mining company specializing in the extraction of resources such as iron ore, diamonds, uranium, coal, oil, and bauxite, with operations across multiple countries. Contributed to the improvement of a web application designed to analyze activities across mining sites by facilitating the centralization and exploitation of operational data.
+I contributed to a web application for analysing activity across the mining sites of BHP, a global mining group operating in many countries. My work focused on centralising their operational data and making it genuinely usable.

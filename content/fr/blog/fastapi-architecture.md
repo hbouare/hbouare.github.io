@@ -1,15 +1,13 @@
 ---
 slug: fastapi-architecture
-title: "Mettre en place une architecture FastAPI scalable et durable"
+title: "Mettre en place une architecture FastAPI évolutive et durable"
 date: "2025-03-01"
 readTime: 10
 tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
-excerpt: "Pas le hello world FastAPI — mais comment organiser un projet réel avec des routers, une couche service, des repositories, de l'injection de dépendances, et des tests qui restent maintenables à six mois."
+excerpt: "Pas le hello world FastAPI — mais comment organiser un projet réel avec des routers, une couche service, des repositories, de l’injection de dépendances, et des tests qui restent maintenables à six mois."
 ---
 
-# Structurer un projet FastAPI qui dure : architecture, couches et dépendances
-
-La plupart des tutoriels FastAPI mettent tout dans `main.py`. Ça marche pour un exemple, pas pour une application maintenue par une équipe sur plusieurs années. Voici l'architecture que j'applique sur les projets qui durent, avec les raisons derrière chaque décision.
+La plupart des tutoriels FastAPI mettent tout dans `main.py`. Ça marche pour un exemple, pas pour une application maintenue par une équipe sur plusieurs années. Voici l’architecture que j’applique sur les projets qui durent, avec les raisons de chaque décision.
 
 ## La structure de projet
 
@@ -116,7 +114,7 @@ class CertificateService:
         return certificate
 ```
 
-La couche service est testable sans base de données ni HTTP — il suffit de mocker le repository. C'est là que réside la valeur de cette séparation.
+La couche service est testable sans base de données ni HTTP — il suffit de mocker le repository. C’est là que réside la valeur de cette séparation.
 
 ## La couche repository : accès aux données
 
@@ -166,9 +164,9 @@ class CertificateRepository:
         )
 ```
 
-Le repository est la seule couche qui connaît SQLAlchemy. Le reste du code travaille avec des objets domaine (`Certificate` dataclass) — pas avec des modèles ORM. Ce découplage permet de changer l'ORM ou la base de données sans toucher à la logique métier.
+Le repository est la seule couche qui connaît SQLAlchemy. Le reste du code travaille avec des objets domaine (`Certificate` dataclass) — pas avec des modèles ORM. Ce découplage permet de changer l’ORM ou la base de données sans toucher à la logique métier.
 
-## L'injection de dépendances
+## L’injection de dépendances
 
 ```python
 # app/api/dependencies.py
@@ -191,7 +189,7 @@ async def get_current_user(request: Request) -> str:
     return session_data["user_id"]
 ```
 
-FastAPI résout les dépendances automatiquement et gère leur cycle de vie. `get_db_session` crée une session par requête et la ferme proprement après — même en cas d'exception.
+FastAPI résout les dépendances automatiquement et gère leur cycle de vie. `get_db_session` crée une session par requête et la ferme proprement après — même en cas d’exception.
 
 ## Les exceptions métier
 
@@ -257,15 +255,15 @@ async def test_create_certificate_success(service, mock_repo):
     mock_repo.create.assert_called_once()
 ```
 
-Les tests de service sont rapides, déterministes, et ne nécessitent pas de base de données. L'`AsyncMock` remplace le repository — on teste la logique, pas l'infrastructure.
+Les tests de service sont rapides, déterministes, et ne nécessitent pas de base de données. L'`AsyncMock` remplace le repository — on teste la logique, pas l’infrastructure.
 
 ## Ce que cette architecture apporte
 
-La séparation en couches n'est pas de la complexité gratuite. Elle répond à des problèmes concrets sur un projet qui dure :
+La séparation en couches n’est pas de la complexité gratuite. Elle répond à des problèmes concrets sur un projet qui dure :
 
 - **Testabilité** — les services se testent sans base de données, les routers avec un client HTTP
 - **Lisibilité** — un nouveau développeur sait où chercher : logique métier dans `services/`, accès aux données dans `repositories/`, HTTP dans `routers/`
 - **Évolutivité** — remplacer PostgreSQL par une autre base de données ne touche que `repositories/`
 - **Séparation des responsabilités** — un bug HTTP reste dans le router, un bug métier reste dans le service
 
-Le coût : plus de fichiers, plus de couches à traverser pour une feature simple. Sur un projet d'une semaine jetée, c'est surdimensionné. Sur un projet maintenu par une équipe pendant des mois, c'est la différence entre un code qu'on comprend encore à six mois et un spaghetti qu'on a peur de toucher.
+Le coût : plus de fichiers, plus de couches à traverser pour une fonctionnalité simple. Sur un projet jetable d’une semaine, c’est surdimensionné. Sur un projet maintenu par une équipe pendant des mois, c’est la différence entre un code qu’on comprend encore à six mois et un code spaghetti qu’on a peur de toucher.

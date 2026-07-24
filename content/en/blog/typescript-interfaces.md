@@ -7,8 +7,6 @@ tags: ["TypeScript", "Vue.js", "API", "Frontend"]
 excerpt: "Not a TypeScript tutorial — but how to structure interfaces that accurately model a real external API, using utility types, generics on Vue composables, and the concrete decisions that actually matter in production code."
 ---
 
-# TypeScript in Practice: Hierarchical Interfaces on a Real API
-
 Most TypeScript tutorials demonstrate trivial examples: `interface User { name: string; age: number }`. Production code is considerably more involved. External APIs return nested structures, conditionally optional fields, and type unions that vary by state. Here is how to model all of that cleanly, starting from a real-world case.
 
 ## The Starting Point: An API With a Hierarchical Structure
@@ -103,7 +101,7 @@ export interface CertificatesResponse {
 
 ## Utility Types for Each Use Case
 
-The API always returns the complete structure, but the application rarely needs all of it at once. TypeScript's utility types allow deriving purpose-built types from the canonical interfaces without duplicating definitions:
+The API always returns the complete structure, but the application rarely needs all of it at once. TypeScript’s utility types allow deriving purpose-built types from the canonical interfaces without duplicating definitions:
 
 ```typescript
 // For list display — metadata is not needed

@@ -41,3 +41,21 @@ export const DISTANCE = {
 
 /** ScrollTrigger start position shared by every scroll-driven reveal. */
 export const SCROLL_START = "top 85%"
+
+/**
+ * SCROLL_START expressed as an IntersectionObserver rootMargin, for reveals
+ * that must fire once and never un-fire.
+ *
+ * Bottom `-15%` is the 85% threshold: an element counts as entered when its
+ * top crosses 85% of the viewport height.
+ *
+ * The huge top margin is the load-bearing part. An element that ends up
+ * ABOVE the viewport — a jump to the bottom of the page, a restored scroll
+ * position, an in-page anchor — never intersects a normal root box and never
+ * produces a callback, because it crosses no threshold on the way. Extending
+ * the root box upwards makes "already scrolled past" count as entered, which
+ * is what a once-only reveal means. Without it the block stays at its CSS
+ * resting `opacity: 0`: content that is in the DOM, indexed by crawlers,
+ * invisible to the visitor, with an empty console.
+ */
+export const SCROLL_START_MARGIN = "100000px 0px -15% 0px"

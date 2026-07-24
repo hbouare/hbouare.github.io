@@ -7,8 +7,6 @@ tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
 excerpt: "Not the exhaustive list from the docs — but the VueUse composables you will actually reach for on professional Vue.js and Nuxt projects, with concrete use cases and the pitfalls worth knowing about."
 ---
 
-# VueUse in Production: The Composables That Actually Make a Difference
-
 VueUse ships over 200 composables. The documentation lists all of them, which does not help you determine which ones are genuinely worth learning. Here are the ones that appear consistently on professional projects, along with the concrete situations where they save meaningful time.
 
 ## Installation
@@ -305,4 +303,4 @@ Without `useVModel`, you must manually manage the prop and the emit — two extr
 
 ## Key Takeaways
 
-VueUse is most valuable across three categories: composables that eliminate recurring boilerplate (`useAsyncState`, `useVModel`), composables that wrap verbose browser APIs (`useIntersectionObserver`, `useEventListener`, `useClipboard`), and composables that address performance concerns (`useDebounceFn`, `useThrottleFn`). The rest is situationally useful — but these ten appear on virtually every professional Vue.js project.
+VueUse is most valuable across three categories: composables that eliminate recurring boilerplate (`useAsyncState`, `useVModel`), composables that wrap verbose browser APIs (`useIntersectionObserver`, `useEventListener`, `useClipboard`), and composables that address performance concerns (`useDebounceFn`, `useThrottleFn`). The rest is useful case by case — but these ten appear on virtually every professional Vue.js project.

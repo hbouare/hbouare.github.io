@@ -2,22 +2,23 @@
 id: edf
 order: 1
 role: "Data Engineer & Développeur Full-Stack"
-company: "EDF "
+company: "EDF"
 period: "Juin 2024 — Présent"
+employment: "Temps plein"
 location: "Saint-Denis, France"
 flag: "🇫🇷"
 tags:
   [
     "Python",
     "Vue.js",
-    "Typescript",
+    "TypeScript",
     "OpenShift",
     "Airflow",
     "Redis",
-    "Gitlab CD/CD",
+    "GitLab CI/CD",
     "PostgreSQL",
     "Playwright",
   ]
 ---
 
-Contribution au développement d’applications et d’outils dédiés au traitement et à l’exploitation de données énergétiques au sein de l’équipe DevCo. Travail en collaboration étroite avec les équipes métiers afin d’identifier leurs besoins et de concevoir des solutions techniques adaptées, permettant d’améliorer l’analyse, la transformation et la fiabilité des données utilisées dans leurs processus.
+Au sein de l’équipe DevCo, je développe des applications et des outils de traitement de données énergétiques. Je travaille directement avec les équipes métier pour cadrer leurs besoins, puis concevoir les traitements qui fiabilisent les données dont dépendent leurs processus.

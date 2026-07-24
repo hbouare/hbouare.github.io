@@ -139,7 +139,7 @@ test.describe("contrast", () => {
 
 test.describe("layout", () => {
   test("no horizontal overflow", async ({ page }) => {
-    for (const path of ["/", "/projects", "/blog", "/contact"]) {
+    for (const path of ["/", "/projects", "/research", "/blog", "/contact"]) {
       await page.goto(path)
       const overflows = await page.evaluate(
         () =>
@@ -169,11 +169,13 @@ test.describe("routes", () => {
   const paths = [
     "/",
     "/projects",
+    "/research",
     "/blog",
     "/contact",
     "/blog/nuxt4-introduction",
     "/en",
     "/en/blog",
+    "/en/research",
   ]
   for (const path of paths) {
     test(`${path} renders`, async ({ page }) => {
@@ -182,6 +184,39 @@ test.describe("routes", () => {
       await expect(page.locator(".v-application")).toBeVisible()
     })
   }
+})
+
+test.describe("research", () => {
+  // The publications page must render every real paper as a card that links
+  // out to the original publication — the page's whole credibility rests on
+  // those links resolving to external sources.
+  test("every publication card links out to its source", async ({ page }) => {
+    await page.goto("/research")
+    const cards = page.locator(".pub-card")
+    const count = await cards.count()
+    expect(count).toBe(5)
+
+    for (let i = 0; i < count; i++) {
+      const link = cards.nth(i).locator("a.pub-link")
+      await expect(link).toHaveAttribute("href", /^https?:\/\//)
+      await expect(link).toHaveAttribute("target", "_blank")
+    }
+  })
+
+  // The impact section is Act III — it ties the research back to engineering
+  // and must render its full set of items, revealed on scroll.
+  test("impact section reveals its items", async ({ page }) => {
+    await page.goto("/research")
+    // behavior:"instant" overrides the site-wide `scroll-behavior: smooth`
+    // (main.scss): a smooth scrollTo can be dropped under parallel-worker load
+    // and leave scrollY at 0, so the below-fold items never enter view.
+    await page.evaluate(() =>
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
+    )
+    const items = page.locator(".impact-item")
+    await expect(items.first()).toBeVisible({ timeout: 8_000 })
+    expect(await items.count()).toBe(8)
+  })
 })
 
 test.describe("accessibility", () => {
@@ -210,5 +245,44 @@ test.describe("accessibility", () => {
     } else {
       await expect(menu).toHaveCount(0)
     }
+  })
+})
+
+test.describe("projects", () => {
+  // Each index card is a teaser that links to its full case study.
+  test("every project teaser links to its case study", async ({ page }) => {
+    await page.goto("/projects")
+    const cards = page.locator(".proj-card")
+    const count = await cards.count()
+    expect(count).toBeGreaterThan(0)
+
+    for (let i = 0; i < count; i++) {
+      const href = await cards.nth(i).getAttribute("href")
+      expect(href, `card ${i} links to a case study`).toMatch(
+        /\/projects\/[a-z]+$/,
+      )
+    }
+  })
+
+  // The case study must render its narrative and still offer a way forward
+  // (request access → contact, or a public link) rather than dead-ending.
+  test("case study renders and routes to contact", async ({ page }) => {
+    const res = await page.goto("/projects/fleetops")
+    expect(res?.status()).toBe(200)
+    // The hook is above the fold; the results block sits just below it and the
+    // access CTA at the foot reveals on scroll, so drive to the bottom.
+    // behavior:"instant" overrides the site-wide `scroll-behavior: smooth`
+    // (main.scss), which can otherwise drop a programmatic scrollTo under load.
+    await expect(page.locator(".case-hook")).toBeVisible()
+    await page.evaluate(() =>
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
+    )
+    await expect(page.locator(".case-impact")).toBeVisible({ timeout: 8_000 })
+
+    const contactCta = page.locator('.case-encart a[href$="/contact"]')
+    const publicLink = page.locator('.case-encart a[href^="http"]')
+    const hasWayForward =
+      (await contactCta.count()) > 0 || (await publicLink.count()) > 0
+    expect(hasWayForward, "case study must offer a way forward").toBe(true)
   })
 })

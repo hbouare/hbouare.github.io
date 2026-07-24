@@ -165,6 +165,7 @@ const route = useRoute()
 const navItems = [
   { key: "about", to: "/", exact: true },
   { key: "projects", to: "/projects" },
+  { key: "research", to: "/research" },
   { key: "blog", to: "/blog" },
   { key: "contact", to: "/contact" },
 ]

@@ -1,6 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- HB Monogram - no background, neutral gold tone -->
-  <g transform="translate(10, 16)" stroke="#b08840" stroke-width="2.6" stroke-linecap="round" fill="none">
+  <!--
+    HB monogram — monochrome ink, matching the design system's load-bearing
+    rule: no accent colour, `primary` IS the ink. The stroke follows the
+    browser/OS theme (black on light UA, white on dark UA) exactly like the
+    in-page logo (rgb(var(--v-theme-primary))). Shape and geometry unchanged;
+    only the colour differs from the old gold (#b08840).
+  -->
+  <style>
+    svg { color: #000000; }
+    @media (prefers-color-scheme: dark) {
+      svg { color: #ffffff; }
+    }
+  </style>
+  <g transform="translate(10, 16)" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none">
     <!-- H -->
     <path d="M0 0 L0 32 M0 16 L16 16 M16 0 L16 32"/>
     <!-- B -->

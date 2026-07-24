@@ -7,8 +7,6 @@ tags: ["FastAPI", "WebSockets", "Python", "Real-time"]
 excerpt: "FastAPI WebSocket tutorials all stop at the basic chat example. The real problems start after: authenticating a connection, managing a multi-client ConnectionManager, broadcasting events, and cleaning up dead connections in a multi-pod environment."
 ---
 
-# WebSockets with FastAPI: Shared State, Authentication, and Clean Disconnections
-
 The official FastAPI WebSocket tutorial fits in twenty lines. That is sufficient to understand the API, not to build something reliable. Here is what the examples do not show: authentication, distributed state management, broadcasting, and dead connection cleanup.
 
 ## The Problem with the Basic Example
@@ -159,7 +157,7 @@ export function useWebSocket() {
 
 ### Approach 2: Session Cookie (More Secure)
 
-If you are using the BFF pattern with HttpOnly cookies, the WebSocket connection automatically sends the domain cookies — this is the browser's native behaviour:
+If you are using the BFF pattern with HttpOnly cookies, the WebSocket connection automatically sends the domain cookies — this is the browser’s native behaviour:
 
 ```python
 @app.websocket("/ws/notifications")
