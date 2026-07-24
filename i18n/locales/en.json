@@ -42,12 +42,12 @@
   },
   "projects": {
     "section": "03 — Projects",
-    "title_1": "What I've",
+    "title_1": "What I’ve",
     "title_em": "shipped",
     "featured": "Featured",
     "view_all": "View all projects",
     "meta_desc": "Projects and achievements in full-stack development, data engineering and DevOps.",
-    "privacy_note": "The source code for these projects is not public. On request, I can provide read access to the repository or a detailed technical walkthrough of the architecture and its choices.",
+    "privacy_note": "The source code for these projects is not public. On request, I can provide read access to the repository, or a detailed walkthrough of the architecture and its design choices.",
     "status_private": "Private",
     "request_access": "Request access",
     "view_case": "View case study",
@@ -121,7 +121,7 @@
     "decision_choice": "The choice",
     "decision_consequence": "What it costs",
     "access_title": "Source access",
-    "access_note": "The code for this project is not public. I provide read access to the repository, or a guided technical walkthrough of the architecture and its trade-offs, on request.",
+    "access_note": "The code for this project is not public. On request, I provide read access to the repository, or a detailed walkthrough of the architecture and its design choices.",
     "access_cta": "Request repository access",
     "next_project": "Next project"
   },

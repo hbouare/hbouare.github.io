@@ -148,7 +148,7 @@ async def download_export(self, output_path: str) -> str:
 
 ## Running in Docker and OpenShift
 
-Playwright in a container requires Chromium's system dependencies:
+Playwright in a container requires Chromium’s system dependencies:
 
 ```dockerfile
 FROM python:3.12-slim
@@ -174,7 +174,7 @@ USER 1001
 CMD ["python", "scraper.py"]
 ```
 
-On OpenShift, `--no-sandbox` is mandatory: containers do not have the privileges required by Chromium's sandbox. This is not a security concern in this context — the sandbox protects against malicious web content, which does not apply to a scraper targeting a known internal portal.
+On OpenShift, `--no-sandbox` is mandatory: containers do not have the privileges required by Chromium’s sandbox. This is not a security concern in this context — the sandbox protects against malicious web content, which does not apply to a scraper targeting a known internal portal.
 
 ## Orchestrating with a Kubernetes CronJob
 

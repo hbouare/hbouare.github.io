@@ -6,7 +6,7 @@ featured: false
 context: "Projet personnel — PME, secteur financier"
 hook: "Les fondations d’un SaaS de suivi financier pour PME : une base technique carrée, posée avant les fonctionnalités."
 
-# Faits affichés sous le titre. `period` est volontairement absent : l'historique
+# Faits affichés sous le titre. `period` est volontairement absent : l’historique
 # du dépôt est un instantané, il ne reflète pas la durée réelle de développement.
 role: "Conception & développement full-stack"
 team: "Solo"

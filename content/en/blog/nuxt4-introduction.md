@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
 })
 ```
 
-Nitro compiles this into a portable bundle you can deploy on Node.js, edge workers (Cloudflare, Vercel), or as a static build. In Nuxt 4, Nitro's maturity shows: type inference is sharper, and helpers like `getRouterParam`, `readBody` and `getCookie` are more reliable.
+Nitro compiles this into a portable bundle you can deploy on Node.js, edge workers (Cloudflare, Vercel), or as a static build. In Nuxt 4, Nitro’s maturity shows: type inference is sharper, and helpers like `getRouterParam`, `readBody` and `getCookie` are more reliable.
 
 ## Auto-Imported Composables
 

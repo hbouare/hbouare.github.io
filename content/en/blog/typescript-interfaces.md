@@ -101,7 +101,7 @@ export interface CertificatesResponse {
 
 ## Utility Types for Each Use Case
 
-The API always returns the complete structure, but the application rarely needs all of it at once. TypeScript's utility types allow deriving purpose-built types from the canonical interfaces without duplicating definitions:
+The API always returns the complete structure, but the application rarely needs all of it at once. TypeScript’s utility types allow deriving purpose-built types from the canonical interfaces without duplicating definitions:
 
 ```typescript
 // For list display — metadata is not needed

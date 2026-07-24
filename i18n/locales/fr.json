@@ -42,12 +42,12 @@
   },
   "projects": {
     "section": "03 — Projets",
-    "title_1": "Ce que j'ai",
+    "title_1": "Ce que j’ai",
     "title_em": "bâti",
     "featured": "Projet phare",
     "view_all": "Voir tous les projets",
     "meta_desc": "Projets et réalisations en développement full-stack, data engineering et DevOps.",
-    "privacy_note": "Le code source de ces projets n’est pas public. Sur demande, je fournis un accès en lecture au dépôt ou une présentation technique détaillée de l’architecture et des choix.",
+    "privacy_note": "Le code source de ces projets n’est pas public. Sur demande, je fournis un accès en lecture au dépôt, ou une présentation détaillée de l’architecture et des choix techniques.",
     "status_private": "Privé",
     "request_access": "Demander l’accès",
     "view_case": "Voir l’étude de cas",
@@ -121,8 +121,8 @@
     "decision_choice": "Le choix",
     "decision_consequence": "Ce que ça coûte",
     "access_title": "Accès au code",
-    "access_note": "Le code de ce projet n'est pas public. Je fournis un accès en lecture au dépôt, ou une revue technique guidée de l'architecture et des arbitrages, sur demande.",
-    "access_cta": "Demander l'accès au dépôt",
+    "access_note": "Le code de ce projet n’est pas public. Sur demande, je fournis un accès en lecture au dépôt, ou une présentation détaillée de l’architecture et des choix techniques.",
+    "access_cta": "Demander l’accès au dépôt",
     "next_project": "Projet suivant"
   },
   "research": {

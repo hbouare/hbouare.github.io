@@ -211,7 +211,7 @@ class DuplicateCertificate(DomainException):
     pass
 ```
 
-Business exceptions do not depend on FastAPI — they express what can go wrong in the domain. Translating them into HTTP status codes is the router's responsibility.
+Business exceptions do not depend on FastAPI — they express what can go wrong in the domain. Translating them into HTTP status codes is the router’s responsibility.
 
 ## Testing Services Without Infrastructure
 

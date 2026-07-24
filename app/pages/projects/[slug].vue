@@ -234,11 +234,13 @@ const tierDefs: {
     id: "technical",
     heading: () => t("case.section_technical"),
     note: () => t("case.for_devs"),
+    // The technical tier is intentionally kept to the architecture narrative.
+    // The plan diagram (`stack`), the decisions table (`decisions`) and the
+    // deliverables list were removed from the page on request. Their content
+    // still lives in frontmatter and their render kinds ("plan"/"decisions")
+    // are still supported below, so re-adding a field here restores them.
     fields: [
       { field: "architecture", label: () => t("case.architecture"), kind: "prose" },
-      { field: "stack", label: () => t("case.plan"), kind: "plan" },
-      { field: "decisions", label: () => t("case.decisions"), kind: "decisions" },
-      { field: "deliverables", label: () => t("case.deliverables"), kind: "list" },
     ],
   },
 ]

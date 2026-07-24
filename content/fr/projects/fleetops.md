@@ -6,7 +6,7 @@ featured: true
 context: "Projet personnel — transport & services"
 hook: "Piloter tout un parc de véhicules depuis un seul écran, et ne plus laisser passer une échéance."
 
-# Faits affichés sous le titre. `period` est volontairement absent : l'historique
+# Faits affichés sous le titre. `period` est volontairement absent : l’historique
 # du dépôt est un instantané, il ne reflète pas la durée réelle de développement.
 role: "Conception & développement full-stack"
 team: "Solo"

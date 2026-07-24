@@ -32,7 +32,7 @@ stack:
     detail: "Docker Compose · GitLab CI (lint → typecheck → test → build) · pre-commit"
 
 decisions:
-  - problem: "Protecting secrets even if the database leaks means encrypting everything. But a zero-knowledge model, where only the client's machine can decrypt, makes server-side search and account recovery impossible — two things people expect from a password manager day to day."
+  - problem: "Protecting secrets even if the database leaks means encrypting everything. But a zero-knowledge model, where only the client’s machine can decrypt, makes server-side search and account recovery impossible — two things people expect from a password manager day to day."
     choice: "Server-side AES-256-GCM envelope encryption, with a versioned master key (for rotation) never exposed to the client, rather than client-side zero-knowledge."
     consequence: "Server-side search, recovery and key rotation stay possible — at the cost of a wider trust surface: unlike a zero-knowledge model, the server can technically reach the secrets in clear at processing time."
 

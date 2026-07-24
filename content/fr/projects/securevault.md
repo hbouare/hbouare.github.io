@@ -6,7 +6,7 @@ featured: false
 context: "Projet personnel / R&D sécurité"
 hook: "Un coffre à mots de passe où même une fuite de base ne révèle rien."
 
-# Faits affichés sous le titre. `period` est volontairement absent : l'historique
+# Faits affichés sous le titre. `period` est volontairement absent : l’historique
 # du dépôt est un instantané, il ne reflète pas la durée réelle de développement.
 role: "Conception & développement full-stack"
 team: "Solo"

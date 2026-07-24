@@ -6,7 +6,7 @@ featured: false
 context: "Projet personnel — plateforme grand public"
 hook: "Des tirages au sort en ligne dont l’équité se prouve, au lieu de se promettre."
 
-# Faits affichés sous le titre. `period` est volontairement absent : l'historique
+# Faits affichés sous le titre. `period` est volontairement absent : l’historique
 # du dépôt est un instantané, il ne reflète pas la durée réelle de développement.
 role: "Conception & développement full-stack"
 team: "Solo"

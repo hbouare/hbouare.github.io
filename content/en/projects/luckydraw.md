@@ -32,7 +32,7 @@ stack:
     detail: "Docker Compose · Travis CI (lint, typecheck, test, build per package) · Husky / lint-staged · Jest + Vitest + Playwright"
 
 decisions:
-  - problem: "An online draw must be both unpredictable beforehand and verifiable afterwards: nobody may anticipate the result, yet anyone must be able to prove it was not rigged. Plain server-side randomness is a black box — the player has to take the organiser's word for it."
+  - problem: "An online draw must be both unpredictable beforehand and verifiable afterwards: nobody may anticipate the result, yet anyone must be able to prove it was not rigged. Plain server-side randomness is a black box — the player has to take the organiser’s word for it."
     choice: "A provably-fair commit-reveal scheme: a cryptographic server seed is committed by its published hash before the draw, the selection is deterministic (HMAC-SHA256), and the seed is revealed afterwards."
     consequence: "Every participant can replay and verify the draw themselves, without trusting the organiser — at the cost of a strict protocol: the seed must be committed first, archived, then revealed without fail for every draw."
   - problem: "Handling ticket prices and prize pools as floating-point numbers always ends up producing rounding drift — unacceptable on money."

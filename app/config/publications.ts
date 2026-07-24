@@ -28,13 +28,13 @@ export interface PublicationCopy {
 export interface Publication {
   /** Stable key for v-for / anchors. */
   key: string
-  /** The paper's real title, as published (not translated). */
+  /** The paper’s real title, as published (not translated). */
   title: string
   /** Journal or conference name. */
   venue: string
   /** ISO date, used for ordering and <time>. */
   date: string
-  /** Display year, shown as the card's rail marker. */
+  /** Display year, shown as the card’s rail marker. */
   year: number
   type: PublicationType
   /** Link to the original publication. */
@@ -58,8 +58,8 @@ export const publications: Publication[] = [
     url: "https://doi.org/10.1016/j.soildyn.2022.107158",
     fr: {
       summary:
-        "Lorsqu'une onde sismique traverse le sol, comment se répartissent les contraintes et les déplacements autour d'un tunnel de forme quelconque, creusé dans un terrain composé de plusieurs couches ? Ce travail développe une méthode semi-analytique capable de traiter des géométries arbitraires — pas seulement des cercles — dans un milieu multicouche. Il fournit un outil de calcul précis et rapide, essentiel pour dimensionner des ouvrages souterrains capables de résister aux séismes.",
-      themes: ["Élastodynamique", "Propagation d'ondes", "Génie parasismique", "Ouvrages souterrains"],
+        "Lorsqu’une onde sismique traverse le sol, comment se répartissent les contraintes et les déplacements autour d’un tunnel de forme quelconque, creusé dans un terrain composé de plusieurs couches ? Ce travail développe une méthode semi-analytique capable de traiter des géométries arbitraires — pas seulement des cercles — dans un milieu multicouche. Il fournit un outil de calcul précis et rapide, essentiel pour dimensionner des ouvrages souterrains capables de résister aux séismes.",
+      themes: ["Élastodynamique", "Propagation d’ondes", "Génie parasismique", "Ouvrages souterrains"],
       skills: [
         "Modélisation mathématique",
         "Méthodes semi-analytiques",
@@ -81,7 +81,7 @@ export const publications: Publication[] = [
   },
   {
     key: "these-2021",
-    title: "Réponse dynamique d'un tunnel enterré soumis à des ondes mécaniques",
+    title: "Réponse dynamique d’un tunnel enterré soumis à des ondes mécaniques",
     venue: "Thèse de doctorat",
     date: "2021-09-01",
     year: 2021,
@@ -89,7 +89,7 @@ export const publications: Publication[] = [
     url: "https://theses.hal.science/tel-03467875v1",
     fr: {
       summary:
-        "Ma thèse de doctorat, qui rassemble et prolonge l'ensemble de ces travaux. Objectif : comprendre et prédire la manière dont un tunnel enterré réagit au passage d'ondes mécaniques — séismes, vibrations. Elle construit les modèles mathématiques et les méthodes de calcul qui permettent d'évaluer les contraintes et déplacements induits, avec des applications directes au dimensionnement et à la sûreté des ouvrages souterrains.",
+        "Ma thèse de doctorat, qui rassemble et prolonge l’ensemble de ces travaux. Objectif : comprendre et prédire la manière dont un tunnel enterré réagit au passage d’ondes mécaniques — séismes, vibrations. Elle construit les modèles mathématiques et les méthodes de calcul qui permettent d’évaluer les contraintes et déplacements induits, avec des applications directes au dimensionnement et à la sûreté des ouvrages souterrains.",
       themes: ["Modélisation numérique", "Mécanique des milieux continus", "Interaction sol-structure", "Dynamique"],
       skills: [
         "Recherche doctorale",
@@ -112,7 +112,7 @@ export const publications: Publication[] = [
   },
   {
     key: "cfm-2019",
-    title: "Réponse dynamique d'une cavité circulaire double dans un milieu rocheux infini",
+    title: "Réponse dynamique d’une cavité circulaire double dans un milieu rocheux infini",
     venue: "Congrès Français de Mécanique",
     date: "2019-08-31",
     year: 2019,
@@ -120,8 +120,8 @@ export const publications: Publication[] = [
     url: "https://cfm2019.sciencesconf.org/254442/H_BOUARE_CFM_2019.pdf",
     fr: {
       summary:
-        "Deux cavités circulaires voisines, creusées dans un massif rocheux, ne réagissent pas indépendamment au passage d'ondes : chacune perturbe le champ ressenti par l'autre. Ce travail analyse leur réponse dynamique couplée et quantifie cette influence mutuelle — un point clé pour comprendre le comportement de galeries ou tunnels rapprochés.",
-      themes: ["Élastodynamique", "Diffraction d'ondes", "Cavités souterraines"],
+        "Deux cavités circulaires voisines, creusées dans un massif rocheux, ne réagissent pas indépendamment au passage d’ondes : chacune perturbe le champ ressenti par l’autre. Ce travail analyse leur réponse dynamique couplée et quantifie cette influence mutuelle — un point clé pour comprendre le comportement de galeries ou tunnels rapprochés.",
+      themes: ["Élastodynamique", "Diffraction d’ondes", "Cavités souterraines"],
       skills: ["Modélisation analytique", "Analyse dynamique", "Interprétation physique"],
     },
     en: {
@@ -141,8 +141,8 @@ export const publications: Publication[] = [
     url: "https://research.amanote.com/publication/eYoG0HMBKQvf0Bhi9fnQ/transient-response-of-a-tunnel-embedded-in-a-heterogeneous-elastic-full-space",
     fr: {
       summary:
-        "Que se passe-t-il, instant après instant, lorsqu'une onde atteint un tunnel enfoui dans un sol dont les propriétés varient d'un point à l'autre ? Au-delà du régime harmonique idéalisé, ce travail modélise la réponse transitoire — la réaction réelle dans le temps — d'un tunnel dans un milieu hétérogène, plus proche des conditions rencontrées sur le terrain.",
-      themes: ["Régime transitoire", "Milieux hétérogènes", "Propagation d'ondes"],
+        "Que se passe-t-il, instant après instant, lorsqu’une onde atteint un tunnel enfoui dans un sol dont les propriétés varient d’un point à l’autre ? Au-delà du régime harmonique idéalisé, ce travail modélise la réponse transitoire — la réaction réelle dans le temps — d’un tunnel dans un milieu hétérogène, plus proche des conditions rencontrées sur le terrain.",
+      themes: ["Régime transitoire", "Milieux hétérogènes", "Propagation d’ondes"],
       skills: ["Analyse dans le domaine temporel", "Modélisation numérique", "Milieux hétérogènes"],
     },
     en: {
@@ -163,7 +163,7 @@ export const publications: Publication[] = [
     url: "https://www.e3s-conferences.org/articles/e3sconf/abs/2019/14/e3sconf_i-dust2018_06001/e3sconf_i-dust2018_06001.html",
     fr: {
       summary:
-        "Avant de modéliser la propagation des ondes, il faut connaître le milieu qui les porte. Ce travail caractérise mécaniquement le sous-sol du LSBB (Laboratoire Souterrain à Bas Bruit), en combinant modélisation et mesures pour décrire un environnement géologique complexe. Il pose les bases physiques réalistes sur lesquelles s'appuient les modèles de réponse dynamique.",
+        "Avant de modéliser la propagation des ondes, il faut connaître le milieu qui les porte. Ce travail caractérise mécaniquement le sous-sol du LSBB (Laboratoire Souterrain à Bas Bruit), en combinant modélisation et mesures pour décrire un environnement géologique complexe. Il pose les bases physiques réalistes sur lesquelles s’appuient les modèles de réponse dynamique.",
       themes: ["Caractérisation mécanique", "Géophysique", "LSBB"],
       skills: ["Modélisation & mesure", "Validation expérimentale", "Analyse de données"],
     },

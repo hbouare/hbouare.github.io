@@ -4,20 +4,20 @@ title: "Nuxt 4 : ce que ça change concrètement pour les développeurs"
 date: "2024-12-10"
 readTime: 7
 tags: ["Nuxt", "Vue.js", "Frontend", "SSR"]
-excerpt: "Nuxt 4 n'est pas une simple montée de version. Nouvelle structure de projet, répertoire app/, compatibilité Nitro affinée — voici ce que ça donne sur le terrain."
+excerpt: "Nuxt 4 n’est pas une simple montée de version. Nouvelle structure de projet, répertoire app/, compatibilité Nitro affinée — voici ce que ça donne sur le terrain."
 ---
 
-Si tu travailles avec Vue.js et que tu n'as pas encore regardé Nuxt 4, c'est le bon moment. Ce n'est pas une révolution, mais les changements structurels sont suffisamment significatifs pour mériter un tour d'horizon avant de démarrer un nouveau projet.
+Pour qui travaille avec Vue.js sans avoir encore regardé Nuxt 4, c’est le bon moment. Ce n’est pas une révolution, mais les changements structurels sont suffisamment significatifs pour mériter un tour d’horizon avant de démarrer un nouveau projet.
 
 ## Nuxt en deux mots
 
-Nuxt est un méta-framework construit sur Vue.js. Il gère pour toi le routage, le rendu côté serveur (SSR), la génération statique (SSG), la récupération de données, et bien d'autres choses. En gros : tu codes des composants Vue, Nuxt s'occupe du reste.
+Nuxt est un méta-framework construit sur Vue.js. Il gère le routage, le rendu côté serveur (SSR), la génération statique (SSG), la récupération de données, et bien d’autres choses. En gros : on code des composants Vue, Nuxt s’occupe du reste.
 
 La version 3 a introduit la Composition API de Vue 3, Nitro comme moteur serveur, et une architecture basée sur les auto-imports. Nuxt 4 affine tout ça — et introduit quelques changements de fond.
 
 ## Le changement principal : le répertoire `app/`
 
-En Nuxt 3, la structure d'un projet ressemble à ça :
+En Nuxt 3, la structure d’un projet ressemble à ça :
 
 ```
 ├── components/
@@ -46,9 +46,9 @@ En Nuxt 4, tout le code applicatif est regroupé sous un répertoire `app/` :
 └── nuxt.config.ts
 ```
 
-Ce n'est pas qu'esthétique. La séparation nette entre le code applicatif (`app/`) et le code serveur (`server/`) clarifie les responsabilités, surtout sur des projets qui grossissent ou qui impliquent plusieurs développeurs.
+Ce n’est pas qu’esthétique. La séparation nette entre le code applicatif (`app/`) et le code serveur (`server/`) clarifie les responsabilités, surtout sur des projets qui grossissent ou qui impliquent plusieurs développeurs.
 
-> Pour activer ce comportement dès Nuxt 3.x, tu pouvais déjà le tester via `future.compatibilityVersion: 4` dans `nuxt.config.ts`. En Nuxt 4, c'est le comportement par défaut.
+> Pour activer ce comportement dès Nuxt 3.x, on pouvait déjà le tester via `future.compatibilityVersion: 4` dans `nuxt.config.ts`. En Nuxt 4, c’est le comportement par défaut.
 
 ## Les data fetchers : `useAsyncData` et `useFetch`
 
@@ -63,7 +63,7 @@ const { data } = await useAsyncData(`product-${route.params.id}`, () =>
 )
 ```
 
-La règle : la clé doit être unique et refléter les paramètres dynamiques. Si la clé est statique alors que les données varient, tu auras des problèmes de cache — c'est valable en Nuxt 3 aussi, mais Nuxt 4 rend ce point plus visible.
+La règle : la clé doit être unique et refléter les paramètres dynamiques. Si la clé est statique alors que les données varient, des problèmes de cache apparaissent — c’est valable en Nuxt 3 aussi, mais Nuxt 4 rend ce point plus visible.
 
 ## Nitro et les routes serveur
 
@@ -83,7 +83,7 @@ Nitro compile ça en un bundle portable, déployable sur Node.js, edge workers (
 
 ## Les composables auto-importés
 
-Nuxt auto-importe les composables placés dans `app/composables/`. Pas de `import` à écrire, ils sont disponibles partout dans l'app :
+Nuxt auto-importe les composables placés dans `app/composables/`. Pas de `import` à écrire, ils sont disponibles partout dans l’app :
 
 ```ts
 // app/composables/useApi.ts
@@ -97,11 +97,11 @@ const api = useApi()
 const data = await api("/products")
 ```
 
-C'est pratique, mais attention : sur les gros projets, ça peut rendre le code moins lisible si les conventions ne sont pas respectées. Une règle simple : un fichier par composable, nommé explicitement.
+C’est pratique, mais attention : sur les gros projets, ça peut rendre le code moins lisible si les conventions ne sont pas respectées. Une règle simple : un fichier par composable, nommé explicitement.
 
 ## Nuxt Content v3
 
-Si tu utilises Nuxt pour un blog ou de la documentation, Nuxt Content v3 (compatible Nuxt 4) change la donne. Le parsing MDC (Markdown avec composants Vue) est plus rapide, et l'API de requête des contenus est typée :
+Pour un blog ou de la documentation, Nuxt Content v3 (compatible Nuxt 4) change la donne. Le parsing MDC (Markdown avec composants Vue) est plus rapide, et l’API de requête des contenus est typée :
 
 ```ts
 const { data } = await useAsyncData("articles", () =>
@@ -127,8 +127,8 @@ export default defineNuxtConfig({
 })
 ```
 
-## Ce qu'il faut retenir
+## Ce qu’il faut retenir
 
-Nuxt 4 consolide ce que Nuxt 3 a introduit. Les changements sont incrémentaux mais cohérents : meilleure séparation app/serveur, réactivité plus fiable, Nitro plus mature. Si tu pars sur un nouveau projet Vue.js avec du SSR, c'est le point de départ raisonnable aujourd'hui.
+Nuxt 4 consolide ce que Nuxt 3 a introduit. Les changements sont incrémentaux mais cohérents : meilleure séparation app/serveur, réactivité plus fiable, Nitro plus mature. Pour un nouveau projet Vue.js avec du SSR, c’est le point de départ raisonnable aujourd’hui.
 
-La migration depuis Nuxt 3 est progressive — le flag `compatibilityVersion: 4` permet de tester les nouveaux comportements sans tout casser d'un coup. Sur mon portfolio personnel (Nuxt 3 → Nuxt 4), la migration a pris un après-midi, principalement pour réorganiser les fichiers dans `app/` et ajuster quelques imports.
+La migration depuis Nuxt 3 est progressive — le flag `compatibilityVersion: 4` permet de tester les nouveaux comportements sans tout casser d’un coup. Sur mon portfolio personnel (Nuxt 3 → Nuxt 4), la migration a pris un après-midi, principalement pour réorganiser les fichiers dans `app/` et ajuster quelques imports.

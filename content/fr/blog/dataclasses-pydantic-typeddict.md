@@ -4,24 +4,24 @@ title: "Dataclasses, Pydantic, TypedDict : lequel choisir et pourquoi"
 date: "2025-01-06"
 readTime: 7
 tags: ["Python", "Pydantic", "Typage", "FastAPI"]
-excerpt: "Pas une comparaison théorique — mais les règles de décision concrètes selon le contexte : validation d'entrée API, modèles internes, configuration, sérialisation. Avec les trade-offs réels sur les performances et la maintenabilité."
+excerpt: "Pas une comparaison théorique — mais les règles de décision concrètes selon le contexte : validation d’entrée API, modèles internes, configuration, sérialisation. Avec les trade-offs réels sur les performances et la maintenabilité."
 ---
 
-C'est une question que chaque équipe Python se pose tôt ou tard. Les réponses qu'on trouve en ligne sont souvent du type "Pydantic pour les API, dataclasses pour le reste" — ce qui est un début, mais ne couvre pas les cas limites où ce choix a un impact réel. Voici les règles de décision que j'applique en pratique.
+C’est une question que chaque équipe Python se pose tôt ou tard. Les réponses qu’on trouve en ligne sont souvent du type "Pydantic pour les API, dataclasses pour le reste" — ce qui est un début, mais ne couvre pas les cas limites où ce choix a un impact réel. Voici les règles de décision que j’applique en pratique.
 
 ## Comprendre ce que chacun fait réellement
 
 Avant les règles, un rappel sur ce que chaque outil résout :
 
-**TypedDict** est une annotation de type pure. Il ne fait rien à l'exécution — il informe juste le type checker (mypy, pyright) sur la forme d'un dictionnaire. Aucun coût à l'exécution, aucune validation.
+**TypedDict** est une annotation de type pure. Il ne fait rien à l’exécution — il informe juste le type checker (mypy, pyright) sur la forme d’un dictionnaire. Aucun coût à l’exécution, aucune validation.
 
-**Dataclass** génère des classes Python standard : `__init__`, `__repr__` et `__eq__` sont créés automatiquement à partir des annotations. Pas de validation des types à l'exécution.
+**Dataclass** génère des classes Python standard : `__init__`, `__repr__` et `__eq__` sont créés automatiquement à partir des annotations. Pas de validation des types à l’exécution.
 
-**Pydantic BaseModel** est un système de validation complet. Il convertit et valide les données à l'exécution, lève des erreurs détaillées, sérialise/désérialise JSON, et génère des schémas JSON Schema.
+**Pydantic BaseModel** est un système de validation complet. Il convertit et valide les données à l’exécution, lève des erreurs détaillées, sérialise/désérialise JSON, et génère des schémas JSON Schema.
 
 Ce ne sont pas trois façons de faire la même chose — ce sont trois outils avec des responsabilités différentes.
 
-## Règle 1 : TypedDict pour les dictionnaires dont tu ne contrôles pas la création
+## Règle 1 : TypedDict pour les dictionnaires dont on ne contrôle pas la création
 
 ```python
 from typing import TypedDict
@@ -39,9 +39,9 @@ def process_certificate(cert: GrxCertificate) -> float:
     return cert["volume"] * 1.05  # Type checker valide l'accès
 ```
 
-TypedDict est idéal pour typer des dictionnaires qui viennent de l'extérieur (réponses JSON, résultats de requêtes SQL, configs YAML) sans les transformer en objets. L'overhead à l'exécution est nul — c'est purement statique.
+TypedDict est idéal pour typer des dictionnaires qui viennent de l’extérieur (réponses JSON, résultats de requêtes SQL, configs YAML) sans les transformer en objets. L’overhead à l’exécution est nul — c’est purement statique.
 
-La limite : TypedDict ne valide rien à l'exécution. Si l'API renvoie un `volume` sous forme de chaîne de caractères, ton code plante plus loin, pas à la désérialisation.
+La limite : TypedDict ne valide rien à l’exécution. Si l’API renvoie un `volume` sous forme de chaîne de caractères, le code plante plus loin, pas à la désérialisation.
 
 ## Règle 2 : Dataclass pour les modèles internes sans validation
 
@@ -62,7 +62,7 @@ class CertificateAggregate:
         return self.total_volume / self.certificate_count
 ```
 
-Les dataclasses sont parfaites pour les objets que tu construis toi-même dans ton code métier — résultats d'agrégation, objets intermédiaires de traitement, value objects du domaine. Elles sont plus légères que Pydantic et plus explicites que des dictionnaires.
+Les dataclasses sont parfaites pour les objets que l’on construit soi-même dans le code métier — résultats d’agrégation, objets intermédiaires de traitement, value objects du domaine. Elles sont plus légères que Pydantic et plus explicites que des dictionnaires.
 
 `@dataclass(frozen=True)` les rend immuables — utile pour les value objects :
 
@@ -77,7 +77,7 @@ class DateRange:
             raise ValueError(f"start ({self.start}) doit être avant end ({self.end})")
 ```
 
-`__post_init__` permet d'ajouter de la validation sans Pydantic — suffisant pour des invariants simples.
+`__post_init__` permet d’ajouter de la validation sans Pydantic — suffisant pour des invariants simples.
 
 ## Règle 3 : Pydantic pour tout ce qui touche les frontières du système
 
@@ -107,7 +107,7 @@ class CertificateResponse(BaseModel):
     model_config = {"from_attributes": True}  # Compatibilité avec les ORM
 ```
 
-Pydantic gagne sur toutes les frontières : entrées HTTP (corps de requête, paramètres), sorties JSON, lecture de configuration, lecture de variables d'environnement.
+Pydantic gagne sur toutes les frontières : entrées HTTP (corps de requête, paramètres), sorties JSON, lecture de configuration, lecture de variables d’environnement.
 
 ```python
 from pydantic_settings import BaseSettings
@@ -123,11 +123,11 @@ class Settings(BaseSettings):
 settings = Settings()  # Lève une erreur claire si DATABASE_URL est absente
 ```
 
-`pydantic-settings` est particulièrement utile — il lit les variables d'environnement, les convertit dans les bons types, et lève des erreurs explicites au démarrage si une variable obligatoire est manquante.
+`pydantic-settings` est particulièrement utile — il lit les variables d’environnement, les convertit dans les bons types, et lève des erreurs explicites au démarrage si une variable obligatoire est manquante.
 
 ## Les performances : quand ça compte vraiment
 
-Pydantic v2 (réécrit en Rust) est considérablement plus rapide que v1, mais reste plus lent que les dataclasses pour la construction d'objets :
+Pydantic v2 (réécrit en Rust) est considérablement plus rapide que v1, mais reste plus lent que les dataclasses pour la construction d’objets :
 
 | Outil       | Construction (relative) | Validation      | Sérialisation JSON     |
 | ----------- | ----------------------- | --------------- | ---------------------- |
@@ -135,9 +135,9 @@ Pydantic v2 (réécrit en Rust) est considérablement plus rapide que v1, mais r
 | Dataclass   | 1.2x                    | `__post_init__` | `dataclasses.asdict()` |
 | Pydantic v2 | 3-5x                    | Complète        | `.model_dump_json()`   |
 
-Sur un endpoint FastAPI qui traite 1 000 requêtes/seconde avec des modèles simples, la différence Pydantic vs dataclass est négligeable. Elle devient visible sur des pipelines de traitement qui instancient des millions d'objets — ETL, traitement de fichiers volumineux.
+Sur un endpoint FastAPI qui traite 1 000 requêtes/seconde avec des modèles simples, la différence Pydantic vs dataclass est négligeable. Elle devient visible sur des pipelines de traitement qui instancient des millions d’objets — ETL, traitement de fichiers volumineux.
 
-La règle pratique : n'optimise pas prématurément. Pydantic aux frontières, dataclasses en interne — cette séparation donne de bonnes performances par défaut sans micro-optimisation.
+La règle pratique : n’optimise pas prématurément. Pydantic aux frontières, dataclasses en interne — cette séparation donne de bonnes performances par défaut sans micro-optimisation.
 
 ## Combiner les trois
 
@@ -177,4 +177,4 @@ def process_response(raw: RawApiResponse) -> CertificateReport:
     )
 ```
 
-Chaque outil à sa place : TypedDict pour l'externe brut, Pydantic pour la validation à la frontière, dataclass pour la logique interne. C'est cette séparation qui rend le code lisible et maintenable à long terme.
+Chaque outil à sa place : TypedDict pour l’externe brut, Pydantic pour la validation à la frontière, dataclass pour la logique interne. C’est cette séparation qui rend le code lisible et maintenable à long terme.

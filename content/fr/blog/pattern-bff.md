@@ -1,23 +1,23 @@
 ---
 slug: pattern-bff
-title: "Le pattern BFF avec FastAPI : un backend devant ton frontend"
+title: "Le pattern BFF avec FastAPI : un backend devant le frontend"
 date: "2025-02-13"
 readTime: 9
 tags: ["FastAPI", "Vue.js", "Azure B2C", "Architecture", "OAuth2"]
-excerpt: "Le pattern Backend-for-Frontend consiste à intercaler un serveur entre le navigateur et les API métier. Appliqué à Vue.js + Azure B2C, il résout élégamment la gestion des tokens OAuth2 tout en renforçant la sécurité — au prix d'une complexité assumée."
+excerpt: "Le pattern Backend-for-Frontend consiste à intercaler un serveur entre le navigateur et les API métier. Appliqué à Vue.js + Azure B2C, il résout élégamment la gestion des tokens OAuth2 tout en renforçant la sécurité — au prix d’une complexité assumée."
 ---
 
-Le pattern Backend-for-Frontend (BFF) n'est pas nouveau — Netflix, SoundCloud et d'autres l'ont popularisé il y a plus d'une décennie. Pourtant, il reste sous-utilisé dans les architectures Vue.js + FastAPI, où la tendance est de gérer les tokens OAuth2 directement côté client. Voici pourquoi ce choix est risqué, et comment le BFF le résout.
+Le pattern Backend-for-Frontend (BFF) n’est pas nouveau — Netflix, SoundCloud et d’autres l’ont popularisé il y a plus d’une décennie. Pourtant, il reste sous-utilisé dans les architectures Vue.js + FastAPI, où la tendance est de gérer les tokens OAuth2 directement côté client. Voici pourquoi ce choix est risqué, et comment le BFF le résout.
 
 ## Le problème avec les tokens côté client
 
 Dans une SPA Vue.js classique avec Azure B2C, le flux OAuth2 aboutit à un `access_token` stocké quelque part côté navigateur : `localStorage`, `sessionStorage`, ou un cookie. Chacune de ces options a ses limites :
 
 - **localStorage** — accessible par tout JavaScript sur le domaine, vulnérable aux attaques XSS
-- **sessionStorage** — mêmes problèmes, disparaît à la fermeture de l'onglet
+- **sessionStorage** — mêmes problèmes, disparaît à la fermeture de l’onglet
 - **Cookie HttpOnly** — meilleure option côté client, mais le refresh token doit toujours être géré
 
-Le vrai problème : le `client_secret` Azure B2C ne peut pas être embarqué dans une SPA. L'échange de code OAuth2 (`authorization_code` → `access_token`) doit se faire côté serveur. Sans BFF, soit on sacrifie la sécurité, soit on complexifie le frontend avec du PKCE et des contournements.
+Le vrai problème : le `client_secret` Azure B2C ne peut pas être embarqué dans une SPA. L’échange de code OAuth2 (`authorization_code` → `access_token`) doit se faire côté serveur. Sans BFF, soit on sacrifie la sécurité, soit on complexifie le frontend avec du PKCE et des contournements.
 
 ## Architecture BFF
 
@@ -35,7 +35,7 @@ Navigateur (Vue.js)
                 └─── APIs métier (avec access_token en Bearer)
 ```
 
-Le navigateur ne voit jamais de token OAuth2. Il n'échange qu'un cookie de session opaque avec le BFF. C'est le BFF qui détient les tokens et les injecte dans les requêtes vers les API métier.
+Le navigateur ne voit jamais de token OAuth2. Il n’échange qu’un cookie de session opaque avec le BFF. C’est le BFF qui détient les tokens et les injecte dans les requêtes vers les API métier.
 
 ## Implémentation FastAPI
 
@@ -192,7 +192,7 @@ async def refresh(self, session: dict) -> dict:
 | Tokens dans le navigateur | Oui (localStorage / cookie) | Non — jamais exposés        |
 | `client_secret`           | Absent (PKCE requis)        | Côté serveur uniquement     |
 | Refresh token             | Géré par le frontend        | Géré par le BFF avec verrou |
-| Surface d'attaque XSS     | Tokens accessibles          | Cookie opaque uniquement    |
+| Surface d’attaque XSS     | Tokens accessibles          | Cookie opaque uniquement    |
 | Complexité                | Frontend complexe           | Backend supplémentaire      |
 
-Le BFF n'est pas la solution universelle. Sur une application publique sans données sensibles, PKCE côté client est suffisant et plus simple à opérer. Mais dès que l'on gère des tokens avec des droits élevés, des scopes sensibles, ou des intégrations multi-API, le BFF est l'architecture la plus défendable.
+Le BFF n’est pas la solution universelle. Sur une application publique sans données sensibles, PKCE côté client est suffisant et plus simple à opérer. Mais dès que l’on gère des tokens avec des droits élevés, des scopes sensibles, ou des intégrations multi-API, le BFF est l’architecture la plus défendable.

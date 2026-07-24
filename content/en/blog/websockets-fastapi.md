@@ -157,7 +157,7 @@ export function useWebSocket() {
 
 ### Approach 2: Session Cookie (More Secure)
 
-If you are using the BFF pattern with HttpOnly cookies, the WebSocket connection automatically sends the domain cookies — this is the browser's native behaviour:
+If you are using the BFF pattern with HttpOnly cookies, the WebSocket connection automatically sends the domain cookies — this is the browser’s native behaviour:
 
 ```python
 @app.websocket("/ws/notifications")

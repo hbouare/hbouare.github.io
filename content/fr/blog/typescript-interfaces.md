@@ -4,10 +4,10 @@ title: "TypeScript : interfaces hiérarchiques sur une vraie API"
 date: "2025-06-09"
 readTime: 8
 tags: ["TypeScript", "Vue.js", "API", "Frontend"]
-excerpt: "Pas un cours sur TypeScript — mais comment structurer des interfaces qui collent à une API externe réelle, avec des types utilitaires, des génériques sur les composables Vue, et les décisions concrètes qu'on prend sur du code de production."
+excerpt: "Pas un cours sur TypeScript — mais comment structurer des interfaces qui collent à une API externe réelle, avec des types utilitaires, des génériques sur les composables Vue, et les décisions concrètes qu’on prend sur du code de production."
 ---
 
-La plupart des tutoriels TypeScript montrent des exemples triviaux : `interface User { name: string; age: number }`. En production, la réalité est plus complexe. Les API externes renvoient des structures imbriquées, des champs optionnels selon le contexte, des unions de types selon l'état. Voici comment structurer tout ça proprement, à partir d'un cas réel.
+La plupart des tutoriels TypeScript montrent des exemples triviaux : `interface User { name: string; age: number }`. En production, la réalité est plus complexe. Les API externes renvoient des structures imbriquées, des champs optionnels selon le contexte, des unions de types selon l’état. Voici comment structurer tout ça proprement, à partir d’un cas réel.
 
 ## Le point de départ : une API avec une structure hiérarchique
 
@@ -60,7 +60,7 @@ export interface DateRange {
 }
 ```
 
-Les unions littérales plutôt que des `string` nus : TypeScript t'alertera immédiatement si tu passes `'WIND_OFFSHORE'` là où `EnergyTechnology` est attendu.
+Les unions littérales plutôt que des `string` nus : TypeScript signale immédiatement le passage de `'WIND_OFFSHORE'` là où `EnergyTechnology` est attendu.
 
 ## Interfaces hiérarchiques
 
@@ -99,9 +99,9 @@ export interface CertificatesResponse {
 }
 ```
 
-## Types utilitaires pour les cas d'usage
+## Types utilitaires pour les cas d’usage
 
-L'API renvoie toujours la structure complète, mais l'application n'en a pas toujours besoin en entier. Les types utilitaires TypeScript permettent de dériver des types adaptés à chaque contexte sans dupliquer les interfaces :
+L’API renvoie toujours la structure complète, mais l’application n’en a pas toujours besoin en entier. Les types utilitaires TypeScript permettent de dériver des types adaptés à chaque contexte sans dupliquer les interfaces :
 
 ```typescript
 // Pour l'affichage dans une liste — on n'a pas besoin des métadonnées
@@ -207,9 +207,9 @@ const emit = defineEmits<{
 
 `defineProps<T>()` et `defineEmits<T>()` avec des types génériques : pas de `PropType<T>` à importer, TypeScript valide les props à la compilation et dans le template.
 
-## Guards de type pour les réponses d'API
+## Guards de type pour les réponses d’API
 
-Les API réelles ne sont pas toujours conformes à leur contrat. Un guard de type permet de valider à l'exécution sans sacrifier le typage statique :
+Les API réelles ne sont pas toujours conformes à leur contrat. Un guard de type permet de valider à l’exécution sans sacrifier le typage statique :
 
 ```typescript
 function isCertificate(value: unknown): value is Certificate {
@@ -236,11 +236,11 @@ console.log(raw.volume)
 
 ## Ce que ça change en pratique
 
-Investir dans une modélisation TypeScript rigoureuse dès le début du projet, c'est :
+Investir dans une modélisation TypeScript rigoureuse dès le début du projet, c’est :
 
-- **Autocomplétion fiable** dans l'IDE sur tous les objets API
-- **Erreurs détectées à la compilation** plutôt qu'en production
-- **Refactoring sûr** — renommer un champ dans l'interface propage l'erreur partout où il est utilisé
+- **Autocomplétion fiable** dans l’IDE sur tous les objets API
+- **Erreurs détectées à la compilation** plutôt qu’en production
+- **Refactoring sûr** — renommer un champ dans l’interface propage l’erreur partout où il est utilisé
 - **Documentation implicite** — les types sont la source de vérité sur la forme des données
 
-Le coût d'entrée est réel, surtout sur un projet existant avec du JavaScript à migrer. Mais sur un nouveau projet Vue.js + API tierce, partir en TypeScript strict depuis le premier commit est toujours la décision la plus rentable à moyen terme.
+Le coût d’entrée est réel, surtout sur un projet existant avec du JavaScript à migrer. Mais sur un nouveau projet Vue.js + API tierce, partir en TypeScript strict depuis le premier commit est toujours la décision la plus rentable à moyen terme.

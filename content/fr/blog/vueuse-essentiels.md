@@ -4,10 +4,10 @@ title: "VueUse : les composables qui changent le quotidien"
 date: "2025-01-13"
 readTime: 10
 tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
-excerpt: "Pas la liste exhaustive de la doc — mais les composables VueUse que tu vas utiliser réellement sur des projets Vue.js et Nuxt professionnels, avec des cas d'usage concrets et les pièges à éviter."
+excerpt: "Pas la liste exhaustive de la doc — mais les composables VueUse que l’on utilise réellement sur des projets Vue.js et Nuxt professionnels, avec des cas d’usage concrets et les pièges à éviter."
 ---
 
-VueUse compte plus de 200 composables. La documentation les liste tous, ce qui ne t'aide pas à savoir lesquels méritent vraiment d'être appris. Voici ceux qui reviennent systématiquement sur des projets professionnels, avec les situations concrètes où ils font gagner du temps.
+VueUse compte plus de 200 composables. La documentation les liste tous, ce qui n’aide pas à savoir lesquels méritent vraiment d’être appris. Voici ceux qui reviennent systématiquement sur des projets professionnels, avec les situations concrètes où ils font gagner du temps.
 
 ## Installation
 
@@ -15,7 +15,7 @@ VueUse compte plus de 200 composables. La documentation les liste tous, ce qui n
 npm install @vueuse/core
 ```
 
-VueUse est compatible Vue 3 et Nuxt 3/4. Les composables sont tree-shakable — seuls ceux que tu importes sont inclus dans le bundle.
+VueUse est compatible Vue 3 et Nuxt 3/4. Les composables sont tree-shakable — seuls ceux qui sont importés sont inclus dans le bundle.
 
 ## `useAsyncState` : remplacer le pattern loading/error/data
 
@@ -65,7 +65,7 @@ const { state, isLoading, error, execute } = useAsyncState(
 await execute(0, { status: "ACTIVE", period: "2024-01" })
 ```
 
-Le deuxième argument de `execute` (le délai) est un vestige de l'API — passe `0` pour une exécution immédiate.
+Le deuxième argument de `execute` (le délai) est un vestige de l’API — passe `0` pour une exécution immédiate.
 
 ## `useDebounceFn` et `useThrottleFn` : performances sur les événements fréquents
 
@@ -85,7 +85,7 @@ const searchApi = useDebounceFn(async (query: string) => {
 watch(search, searchApi)
 ```
 
-`useThrottleFn` pour les cas où tu veux garantir une exécution maximum par intervalle (scroll, resize, mousemove) :
+`useThrottleFn` pour les cas où l’on veut garantir une exécution maximale par intervalle (scroll, resize, mousemove) :
 
 ```typescript
 import { useThrottleFn } from "@vueuse/core"
@@ -95,7 +95,7 @@ const onScroll = useThrottleFn((event: Event) => {
 }, 100) // Maximum 1 exécution par 100ms
 ```
 
-La différence : debounce attend que l'activité s'arrête, throttle exécute à intervalle régulier pendant l'activité. Règle pratique : debounce pour la recherche, throttle pour le scroll.
+La différence : debounce attend que l’activité s’arrête, throttle exécute à intervalle régulier pendant l’activité. Règle pratique : debounce pour la recherche, throttle pour le scroll.
 
 ## `useLocalStorage` et `useSessionStorage` : état persistant réactif
 
@@ -114,9 +114,9 @@ filters.value.status = "CANCELLED"
 // localStorage.setItem('certificate-filters', '{"status":"CANCELLED",...}') appelé automatiquement
 ```
 
-VueUse gère la sérialisation JSON, la synchronisation entre onglets (via l'événement `storage`), et les valeurs par défaut si la clé n'existe pas encore.
+VueUse gère la sérialisation JSON, la synchronisation entre onglets (via l’événement `storage`), et les valeurs par défaut si la clé n’existe pas encore.
 
-Avec un type explicite pour l'autocomplétion :
+Avec un type explicite pour l’autocomplétion :
 
 ```typescript
 interface FilterState {
@@ -132,7 +132,7 @@ const filters = useLocalStorage<FilterState>("certificate-filters", {
 })
 ```
 
-Le piège : `useLocalStorage` n'est pas disponible côté serveur (SSR/Nuxt). Utiliser `import.meta.client` ou le wrapper `useLocalStorage` de `@vueuse/nuxt` qui gère le SSR proprement.
+Le piège : `useLocalStorage` n’est pas disponible côté serveur (SSR/Nuxt). Utiliser `import.meta.client` ou le wrapper `useLocalStorage` de `@vueuse/nuxt` qui gère le SSR proprement.
 
 ## `useIntersectionObserver` : lazy loading et animations au scroll
 
@@ -169,7 +169,7 @@ Dans le template :
 </template>
 ```
 
-`stop()` arrête l'observation après le premier déclenchement — évite des appels répétés inutiles. Utile aussi pour les animations d'entrée : déclencher une classe CSS quand l'élément devient visible.
+`stop()` arrête l’observation après le premier déclenchement — évite des appels répétés inutiles. Utile aussi pour les animations d’entrée : déclencher une classe CSS quand l’élément devient visible.
 
 ## `useEventListener` : gestion propre des événements DOM
 
@@ -207,7 +207,7 @@ const { copy, copied, isSupported } = useClipboard()
 </template>
 ```
 
-`copied` revient automatiquement à `false` après 1,5 s (configurable). `isSupported` vérifie si l'API Clipboard est disponible dans le navigateur — utile pour les solutions de repli.
+`copied` revient automatiquement à `false` après 1,5 s (configurable). `isSupported` vérifie si l’API Clipboard est disponible dans le navigateur — utile pour les solutions de repli.
 
 ## `useMediaQuery` : responsive sans CSS
 
@@ -224,7 +224,7 @@ watch(isMobile, (mobile) => {
 })
 ```
 
-Utile quand la logique JavaScript doit changer selon la taille d'écran — pas seulement le CSS. Par exemple, désactiver des animations complexes sur mobile ou réduire la quantité de données chargées.
+Utile quand la logique JavaScript doit changer selon la taille d’écran — pas seulement le CSS. Par exemple, désactiver des animations complexes sur mobile ou réduire la quantité de données chargées.
 
 ## `useEventSource` : consommer un flux SSE
 
@@ -272,7 +272,7 @@ async def certificate_events(request: Request):
     )
 ```
 
-`X-Accel-Buffering: no` est critique derrière nginx ou un ingress OpenShift — sans ça, les événements sont bufferisés et n'arrivent pas en temps réel.
+`X-Accel-Buffering: no` est critique derrière nginx ou un ingress OpenShift — sans ça, les événements sont bufferisés et n’arrivent pas en temps réel.
 
 ## `useVModel` : simplifier les composants formulaire
 
@@ -302,8 +302,8 @@ const value = useVModel(props, "modelValue", emit)
 </template>
 ```
 
-Sans `useVModel`, il faut gérer manuellement la prop et l'emit — deux lignes de plus, et le risque de mutation directe de la prop.
+Sans `useVModel`, il faut gérer manuellement la prop et l’emit — deux lignes de plus, et le risque de mutation directe de la prop.
 
-## Ce qu'il faut retenir
+## Ce qu’il faut retenir
 
 VueUse vaut surtout pour trois catégories de composables : ceux qui éliminent du boilerplate récurrent (`useAsyncState`, `useVModel`), ceux qui encapsulent des API navigateur verbeuses (`useIntersectionObserver`, `useEventListener`, `useClipboard`), et ceux qui gèrent des problèmes de performance (`useDebounceFn`, `useThrottleFn`). Le reste est utile selon les cas — mais ces dix-là reviennent sur pratiquement tous les projets Vue.js professionnels.

@@ -207,7 +207,7 @@ await my_coroutine()
 asyncio.run(my_coroutine())
 ```
 
-Enabling asyncio's debug mode surfaces this and other anomalies:
+Enabling asyncio’s debug mode surfaces this and other anomalies:
 
 ```python
 import asyncio
@@ -221,4 +221,4 @@ In debug mode, asyncio logs unawaited coroutines, tasks that take longer than 10
 
 ## Key Takeaways
 
-asyncio is powerful, but its default behaviours are occasionally surprising. The essentials: use `TaskGroup` over `gather` on Python 3.11+, always maintain a strong reference to tasks created with `create_task`, add explicit timeouts to all network operations, and handle shutdown cleanly in FastAPI's `lifespan`. These four practices address the vast majority of production issues encountered with asyncio.
+asyncio is powerful, but its default behaviours are occasionally surprising. The essentials: use `TaskGroup` over `gather` on Python 3.11+, always maintain a strong reference to tasks created with `create_task`, add explicit timeouts to all network operations, and handle shutdown cleanly in FastAPI’s `lifespan`. These four practices address the vast majority of production issues encountered with asyncio.

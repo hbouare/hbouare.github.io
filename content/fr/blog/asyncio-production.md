@@ -1,13 +1,13 @@
 ---
 slug: asyncio-production
-title: "asyncio en production : les pièges que les tutos ne montrent pas"
+title: "asyncio en production : les pièges que les tutoriels ne montrent pas"
 date: "2024-08-19"
 readTime: 9
 tags: ["Python", "asyncio", "FastAPI", "Concurrence"]
 excerpt: "gather, TaskGroup, gestion des exceptions dans les tâches concurrentes, shutdown propre — ce que les tutoriels asyncio ne couvrent jamais, et ce que ça donne sur une vraie application FastAPI en production."
 ---
 
-Les tutoriels asyncio s'arrêtent presque toujours au même endroit : `await asyncio.gather(task1(), task2())`, quelques exemples de coroutines, et c'est tout. En production, la réalité est plus nuancée. Les exceptions silencieuses, les tâches qui ne se terminent jamais, les shutdowns qui bloquent — voici les problèmes réels et comment les résoudre.
+Les tutoriels asyncio s’arrêtent presque toujours au même endroit : `await asyncio.gather(task1(), task2())`, quelques exemples de coroutines, et c’est tout. En production, la réalité est plus nuancée. Les exceptions silencieuses, les tâches qui ne se terminent jamais, les shutdowns qui bloquent — voici les problèmes réels et comment les résoudre.
 
 ## Le problème avec `asyncio.gather` et les exceptions
 
@@ -129,11 +129,11 @@ async def fetch_data(url: str, timeout: float = 10.0) -> dict:
         raise
 ```
 
-`asyncio.timeout()` (Python 3.11+) est plus propre que `asyncio.wait_for()` pour les blocs de code, car il s'intègre dans un context manager et annule proprement toutes les opérations imbriquées.
+`asyncio.timeout()` (Python 3.11+) est plus propre que `asyncio.wait_for()` pour les blocs de code, car il s’intègre dans un context manager et annule proprement toutes les opérations imbriquées.
 
 ## Shutdown propre dans FastAPI
 
-Un problème sous-estimé : quand FastAPI reçoit SIGTERM (arrêt d'un pod Kubernetes, redéploiement), les tâches en cours doivent se terminer proprement.
+Un problème sous-estimé : quand FastAPI reçoit SIGTERM (arrêt d’un pod Kubernetes, redéploiement), les tâches en cours doivent se terminer proprement.
 
 ```python
 from contextlib import asynccontextmanager
@@ -154,11 +154,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 ```
 
-Le gestionnaire de contexte `lifespan` remplace `@app.on_event("startup")` et `@app.on_event("shutdown")`, désormais dépréciés. Le `yield` sépare les phases de démarrage et d'arrêt.
+Le gestionnaire de contexte `lifespan` remplace `@app.on_event("startup")` et `@app.on_event("shutdown")`, désormais dépréciés. Le `yield` sépare les phases de démarrage et d’arrêt.
 
-## Éviter le blocage de la boucle d'événements
+## Éviter le blocage de la boucle d’événements
 
-asyncio s’exécute sur un seul thread. Un appel synchrone bloquant dans une coroutine bloque toute l'application :
+asyncio s’exécute sur un seul thread. Un appel synchrone bloquant dans une coroutine bloque toute l’application :
 
 ```python
 import asyncio
@@ -187,9 +187,9 @@ async def process_file(path: str) -> str:
         return await f.read()
 ```
 
-La règle : toute opération qui prend plus de quelques millisecondes et n'est pas nativement async doit passer par `run_in_executor` ou une bibliothèque async dédiée.
+La règle : toute opération qui prend plus de quelques millisecondes et n’est pas nativement async doit passer par `run_in_executor` ou une bibliothèque async dédiée.
 
-## Déboguer les coroutines qui ne s'exécutent jamais
+## Déboguer les coroutines qui ne s’exécutent jamais
 
 Un piège fréquent pour les débutants asyncio :
 
@@ -207,7 +207,7 @@ await my_coroutine()
 asyncio.run(my_coroutine())
 ```
 
-Activer le mode debug d'asyncio détecte ces erreurs et d'autres anomalies :
+Activer le mode debug d’asyncio détecte ces erreurs et d’autres anomalies :
 
 ```python
 import asyncio
@@ -217,8 +217,8 @@ logging.basicConfig(level=logging.DEBUG)
 asyncio.run(main(), debug=True)
 ```
 
-En mode debug, asyncio signale les coroutines non attendues, les tâches qui prennent plus de 100 ms (signe d'un blocage de la boucle), et les ressources non fermées proprement.
+En mode debug, asyncio signale les coroutines non attendues, les tâches qui prennent plus de 100 ms (signe d’un blocage de la boucle), et les ressources non fermées proprement.
 
-## Ce qu'il faut retenir
+## Ce qu’il faut retenir
 
-asyncio est puissant mais ses comportements par défaut sont parfois surprenants. Les points clés : utiliser `TaskGroup` plutôt que `gather` sur Python 3.11+, toujours maintenir une référence aux tâches créées avec `create_task`, ajouter des timeouts explicites sur toutes les opérations réseau, et gérer le shutdown proprement dans le `lifespan` FastAPI. Ces quatre pratiques couvrent l'essentiel des problèmes rencontrés en production.
+asyncio est puissant mais ses comportements par défaut sont parfois surprenants. Les points clés : utiliser `TaskGroup` plutôt que `gather` sur Python 3.11+, toujours maintenir une référence aux tâches créées avec `create_task`, ajouter des timeouts explicites sur toutes les opérations réseau, et gérer le shutdown proprement dans le `lifespan` FastAPI. Ces quatre pratiques couvrent l’essentiel des problèmes rencontrés en production.
