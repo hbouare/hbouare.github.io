@@ -11,11 +11,6 @@ status: "En cours · socle livré"
 intro: "Le socle d’un SaaS de suivi financier pour PME : un monolithe modulaire par domaines où chaque nouveau domaine (catégories, factures, imports, rapports…) s’ajoute sans toucher aux fondations. Ce premier incrément livre l’architecture, le shell du tableau de bord et une chaîne qualité complète et bloquante — avant les domaines métier."
 architecture: "Un monolithe modulaire FastAPI organisé par domaines : les routes délèguent aux services métier, qui orchestrent des repositories SQLAlchemy sur PostgreSQL. Le frontend Vue 3 sépare pages, composants, stores, appels API et plugins. API REST versionnée sous /api/v1, identifiants UUID et horodatages UTC communs, migrations pensées pour rester cohérentes et réversibles. Les domaines suivants s’ajoutent sur ces fondations sans les modifier."
 
-decisions:
-  - problem: "Un SaaS financier multi-domaines peut démarrer en microservices — isolement fort, mais complexité d’infrastructure immédiate — ou en monolithe rigide, plus simple mais coûteux à faire évoluer par la suite."
-    choice: "Un monolithe modulaire organisé par domaines, en couches (routes → services → repositories), pensé pour que chaque domaine s’ajoute sans rejouer les fondations."
-    consequence: "L’évolution reste simple et le déploiement unique — au prix d’une discipline de découpage à tenir, et sans l’isolement de déploiement qu’offriraient de vrais services séparés."
-
 highlights:
   - "Monolithe modulaire par domaines, extensible sans toucher aux fondations"
   - "Shell de tableau de bord et API REST versionnée (/api/v1)"

@@ -11,11 +11,6 @@ status: "Fonctionnel"
 intro: "Un coffre à mots de passe centralisé où la confidentialité ne se négocie jamais : chaque secret est chiffré en AES-256-GCM avant stockage, si bien qu’une fuite de base ne révèle rien. L’accès est verrouillé par mot de passe fort (Argon2id) et 2FA TOTP, avec générateur avancé, tableau de bord de sécurité et audit des actions sensibles."
 architecture: "Une frontière nette : rien n’atteint la base en clair. Le chiffrement est appliqué côté backend avant persistance et MongoDB ne voit jamais que des entrées chiffrées — ce qui vaut aussi pour une sauvegarde ou une copie volée. L’API FastAPI suit une Clean Architecture (domaine / application / infrastructure / api), avec JWT access + refresh, révocation et gestion des sessions/appareils, et 2FA TOTP. Le frontend n’a donc pas à être un maillon de confiance : il consulte et saisit, il ne protège pas."
 
-decisions:
-  - problem: "Protéger les secrets même en cas de fuite de base impose de tout chiffrer. Mais un modèle zero-knowledge, où seule la machine du client peut déchiffrer, rend impossibles la recherche côté serveur et la récupération de compte — deux fonctions attendues d’un gestionnaire au quotidien."
-    choice: "Un chiffrement enveloppe AES-256-GCM appliqué côté serveur, avec une clé maître versionnée (pour la rotation) jamais exposée au client, plutôt qu’un zero-knowledge côté client."
-    consequence: "La recherche serveur, la récupération et la rotation de clé restent possibles — au prix d’une surface de confiance élargie : le serveur, contrairement à un modèle zero-knowledge, peut techniquement accéder aux secrets en clair au moment du traitement."
-
 highlights:
   - "Chiffrement enveloppe AES-256-GCM, clé maître versionnée, jamais exposée au client"
   - "Authentification forte : Argon2id + 2FA TOTP, sessions et appareils révocables"

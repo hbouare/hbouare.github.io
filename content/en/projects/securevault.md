@@ -11,11 +11,6 @@ status: "Functional"
 intro: "A centralised password vault where confidentiality is never negotiable: every secret is encrypted with AES-256-GCM before storage, so a database leak reveals nothing. Access is locked behind a strong password (Argon2id) and TOTP 2FA, with an advanced generator, a security dashboard and an audit trail of sensitive actions."
 architecture: "One hard boundary: nothing reaches the database in clear text. Encryption is applied in the backend before persistence and MongoDB only ever sees encrypted entries — which holds just as true for a backup or a stolen copy. The FastAPI backend follows Clean Architecture (domain / application / infrastructure / api), with JWT access + refresh, revocation and session/device management, and TOTP 2FA. The frontend therefore never has to be a link in the trust chain: it views and it captures, it does not protect."
 
-decisions:
-  - problem: "Protecting secrets even if the database leaks means encrypting everything. But a zero-knowledge model, where only the client’s machine can decrypt, makes server-side search and account recovery impossible — two things people expect from a password manager day to day."
-    choice: "Server-side AES-256-GCM envelope encryption, with a versioned master key (for rotation) never exposed to the client, rather than client-side zero-knowledge."
-    consequence: "Server-side search, recovery and key rotation stay possible — at the cost of a wider trust surface: unlike a zero-knowledge model, the server can technically reach the secrets in clear at processing time."
-
 highlights:
   - "AES-256-GCM envelope encryption, versioned master key, never exposed to the client"
   - "Strong authentication: Argon2id + TOTP 2FA, revocable sessions and devices"

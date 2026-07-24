@@ -2,22 +2,18 @@
 <!--
   Project case study.
 
-  Three reading tiers, each with a DIFFERENT visual form, because the same
-  page has to satisfy four audiences that stop at different depths:
+  A lean, progressive read:
 
-    1. The summit    — hero, facts strip, results. A recruiter can leave
-                       here, in ~15 seconds, already convinced.
-    2. The narrative — context/problem, then the response. A client or
-                       delivery lead stops here.
-    3. Under the hood — architecture prose, the layer plan, the decisions
-                       and their costs. A senior developer reads to the end.
+    1. Hero + meta   — title, one-line hook, the stack and run status. A
+                       recruiter gets the essentials in ~15 seconds.
+    2. Overview      — one paragraph (problem + response) and the key features.
+    3. Under the hood — the architecture narrative, for readers who want the
+                       shape of the system.
 
   Then a way forward: source access on request, and the next project.
 
   Rendering stays DATA-DRIVEN (`tierDefs` below): the tiers are one loop, not
-  a dozen copied blocks, so ordering lives in one place and every project
-  renders only the fields it actually has. Only the summit and the exit are
-  written out, because they are singular rather than repeated.
+  a dozen copied blocks, so every project renders only the fields it has.
 -->
 <template>
   <v-container class="case px-6 px-md-10 section-v-pad" fluid>
@@ -76,17 +72,11 @@
                 {{ sec.text }}
               </p>
 
-              <ul v-else-if="sec.kind === 'list'" class="case-list">
+              <ul v-else class="case-list">
                 <li v-for="item in sec.items" :key="item" class="type-body-md">
                   {{ item }}
                 </li>
               </ul>
-
-              <CaseDecisions
-                v-else
-                :decisions="sec.decisions!"
-                :labels="decisionLabels"
-              />
             </div>
           </div>
         </UiRevealBlock>
@@ -153,26 +143,18 @@ const isFilled = (v: unknown): v is string =>
   v.trim() !== "" &&
   !v.trim().toUpperCase().startsWith("TODO")
 
-const decisionLabels = computed(() => ({
-  problem: t("case.decision_problem"),
-  choice: t("case.decision_choice"),
-  consequence: t("case.decision_consequence"),
-}))
-
 // ── Progressive reading tiers ─────────────────────────────────────────────
 // Each entry maps a frontmatter field to a label + a render kind. `tiers`
 // resolves this against the current project, so the template is a plain
 // loop: absent fields are dropped, and a tier with no content disappears
 // entirely rather than rendering an empty heading.
-type Decision = { problem: string; choice: string; consequence: string }
-type SectionKind = "prose" | "list" | "decisions"
+type SectionKind = "prose" | "list"
 
 interface ResolvedSection {
   label: string
   kind: SectionKind
   text?: string
   items?: string[]
-  decisions?: Decision[]
 }
 interface ResolvedTier {
   id: string
@@ -203,16 +185,14 @@ const tierDefs: {
       { field: "highlights", label: () => t("case.highlights"), kind: "list" },
     ],
   },
-  // Under the hood: the architecture narrative and the ONE trade-off that
-  // shows engineering judgement (`decisions`, problem → choice → what it
-  // costs) — the strongest senior signal, previously dropped from the page.
+  // Under the hood: the architecture narrative — the technical annex for
+  // readers who want the shape of the system.
   {
     id: "technical",
     heading: () => t("case.section_technical"),
     note: () => t("case.for_devs"),
     fields: [
       { field: "architecture", label: () => t("case.architecture"), kind: "prose" },
-      { field: "decisions", label: () => t("case.decisions"), kind: "decisions" },
     ],
   },
 ]
@@ -227,8 +207,7 @@ const resolveSection = (
     return typeof value === "string" && value ? [{ label, kind, text: value }] : []
   }
   if (!Array.isArray(value) || !value.length) return []
-  if (kind === "list") return [{ label, kind, items: value as string[] }]
-  return [{ label, kind, decisions: value as Decision[] }]
+  return [{ label, kind, items: value as string[] }]
 }
 
 const tiers = computed<ResolvedTier[]>(() => {
@@ -297,10 +276,8 @@ if (project.value) {
 </script>
 
 <style scoped lang="scss">
-// Wider than the previous 900px column: the facts strip, the results grid
-// and the technical plan are multi-column blocks that were being squeezed.
-// Prose inside stays capped in ch, so the measure never follows the
-// container.
+// A generous column. Prose inside stays capped in ch (--measure-prose), so
+// the reading measure never follows this container width.
 .case-inner {
   max-width: 1080px;
   margin: 0 auto;
@@ -362,8 +339,7 @@ if (project.value) {
 }
 
 // Full ink: this is the narrative, and it should not read as weaker than the
-// bullet lists beside it. Secondary tone is reserved for supporting text
-// (plan details, the context and cost of a decision).
+// bullet lists beside it.
 .case-prose {
   margin: 0;
   max-width: var(--measure-prose);

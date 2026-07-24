@@ -37,16 +37,6 @@ const projectSchema = z.object({
   highlights:   z.array(z.string()).optional(), // key features
   architecture: z.string().optional(),          // architecture narrative
 
-  // ── Engineering trade-offs ─────────────────────────────────────────────
-  // The block senior developers actually read. Each entry must name a real
-  // cost in `consequence` — a decision with no downside is marketing, not
-  // engineering, and reads as such.
-  decisions: z.array(z.object({
-    problem:     z.string(),
-    choice:      z.string(),
-    consequence: z.string(),
-  })).optional(),
-
   // There is deliberately NO repository/demo/docs URL here. Source access is
   // granted personally on request via the contact page, and a field kept
   // "for reference only" would not stay private: Nuxt Content serialises the
