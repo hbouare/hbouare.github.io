@@ -161,7 +161,10 @@ function setupCopyButtons() {
 .blog-main {
   flex: 1;
   min-width: 0;
-  max-width: 800px;
+  // Long-form reading column. `--measure-wide` (72ch) keeps prose in the
+  // comfortable 45–75-char range and gives code blocks the classic ~80-column
+  // width, replacing the old 800px (~100 chars/line — too wide to read).
+  max-width: var(--measure-wide);
 }
 
 .blog-sidebar {

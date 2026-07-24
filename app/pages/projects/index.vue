@@ -102,7 +102,7 @@ const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, ()
 <style scoped lang="scss">
 // Privacy note — hairline caption, capped width for readability.
 .projects-privacy {
-  max-width: 640px;
+  max-width: var(--measure-wide);
 }
 
 // Teaser card — the whole card is the link. Hairline + hover come from
@@ -155,7 +155,7 @@ const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, ()
 }
 .proj-hook {
   color: rgb(var(--v-theme-muted));
-  max-width: 42ch;
+  max-width: var(--measure-compact);
 }
 
 // Push tags + CTA to the bottom so cards align.

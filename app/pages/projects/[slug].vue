@@ -390,7 +390,7 @@ if (project.value) {
 // (plan details, the context and cost of a decision).
 .case-prose {
   margin: 0;
-  max-width: 62ch;
+  max-width: var(--measure-prose);
   color: rgb(var(--v-theme-on-background));
 }
 
@@ -402,7 +402,7 @@ if (project.value) {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  max-width: 62ch;
+  max-width: var(--measure-prose);
 
   li {
     color: rgb(var(--v-theme-on-background));

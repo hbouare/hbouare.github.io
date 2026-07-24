@@ -133,7 +133,7 @@ useMotion(root, ({ motion }) => {
 .plan-detail {
   margin: 0;
   padding-bottom: var(--space-xxl);
-  max-width: 62ch;
+  max-width: var(--measure-prose);
   color: rgb(var(--v-theme-muted));
 
   @media (max-width: 767px) {

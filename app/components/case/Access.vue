@@ -43,6 +43,6 @@ const localePath = useLocalePath()
   border: 1px solid rgb(var(--v-theme-border));
 }
 .case-encart-text {
-  max-width: 62ch;
+  max-width: var(--measure-prose);
 }
 </style>

@@ -200,7 +200,7 @@ useJsonLd({
 // ── Act I — Introduction ──────────────────────────────────────────────
 .research-intro {
   margin-top: 2.5rem;
-  max-width: 680px;
+  max-width: var(--measure-wide);
 }
 .research-lead {
   color: rgb(var(--v-theme-on-background));
@@ -308,7 +308,7 @@ useJsonLd({
 .pub-summary {
   color: rgb(var(--v-theme-muted));
   margin-top: 1rem;
-  max-width: 62ch;
+  max-width: var(--measure-prose);
 }
 
 // Themes + skills side by side, stacking on narrow cards.
@@ -382,7 +382,7 @@ useJsonLd({
 // ── Act III — Impact ──────────────────────────────────────────────────
 .impact-lead {
   margin-top: 2.5rem;
-  max-width: 640px;
+  max-width: var(--measure-wide);
   color: rgb(var(--v-theme-on-background));
   font-weight: 500;
 }
@@ -420,6 +420,6 @@ useJsonLd({
 }
 .impact-item-desc {
   margin-top: 0.5rem;
-  max-width: 42ch;
+  max-width: var(--measure-compact);
 }
 </style>

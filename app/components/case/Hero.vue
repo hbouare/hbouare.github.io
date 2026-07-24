@@ -101,13 +101,13 @@ useMotion(root, ({ motion, mobile }) => {
 // in ch so the title keeps a deliberate 2–3 line break at every size rather
 // than running edge to edge.
 .case-hero-title {
-  max-width: 20ch;
+  max-width: var(--measure-tight);
 }
 
 // The lead reads in FULL ink. Body prose further down is muted; the hook is
 // the one paragraph that outranks it.
 .case-hook {
-  max-width: 60ch;
+  max-width: var(--measure-prose);
   color: rgb(var(--v-theme-on-background));
 }
 

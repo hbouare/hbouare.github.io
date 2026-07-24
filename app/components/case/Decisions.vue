@@ -102,7 +102,7 @@ useMotion(root, ({ motion }) => {
   }
 
   dd {
-    max-width: 62ch;
+    max-width: var(--measure-prose);
     color: rgb(var(--v-theme-muted));
   }
 
