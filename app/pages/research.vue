@@ -13,8 +13,10 @@
   type badge is the only differentiator, never a hue.
 -->
 <template>
-  <v-container class="research px-6 px-md-10 section-v-pad" fluid>
-    <div class="research-inner">
+  <div class="research-page">
+    <UiWaveField />
+    <v-container class="research px-6 px-md-10 section-v-pad position-relative" fluid>
+      <div class="research-inner">
       <!-- ── Act I — Introduction ─────────────────────────────────────── -->
       <UiSectionHeader
         :label="$t('research.section')"
@@ -140,7 +142,8 @@
         </dl>
       </UiRevealBlock>
     </div>
-  </v-container>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -182,6 +185,13 @@ useJsonLd({
 </script>
 
 <style scoped lang="scss">
+// Positioned wrapper so the fixed ambient wave field (z-index 0) sits behind
+// the page content, which stacks above it via the container's position-relative.
+.research-page {
+  position: relative;
+  min-height: 100vh;
+}
+
 .research-inner {
   max-width: 920px;
   margin: 0 auto;
@@ -190,7 +200,7 @@ useJsonLd({
 // ── Act I — Introduction ──────────────────────────────────────────────
 .research-intro {
   margin-top: 2.5rem;
-  max-width: 680px;
+  max-width: var(--measure-wide);
 }
 .research-lead {
   color: rgb(var(--v-theme-on-background));
@@ -298,7 +308,7 @@ useJsonLd({
 .pub-summary {
   color: rgb(var(--v-theme-muted));
   margin-top: 1rem;
-  max-width: 62ch;
+  max-width: var(--measure-prose);
 }
 
 // Themes + skills side by side, stacking on narrow cards.
@@ -372,7 +382,7 @@ useJsonLd({
 // ── Act III — Impact ──────────────────────────────────────────────────
 .impact-lead {
   margin-top: 2.5rem;
-  max-width: 640px;
+  max-width: var(--measure-wide);
   color: rgb(var(--v-theme-on-background));
   font-weight: 500;
 }
@@ -410,6 +420,6 @@ useJsonLd({
 }
 .impact-item-desc {
   margin-top: 0.5rem;
-  max-width: 42ch;
+  max-width: var(--measure-compact);
 }
 </style>

@@ -38,6 +38,17 @@
   --type-micro-cap: 12px;
   --type-caption: 13px;
 
+  // Reading measure — how wide a text block may get, expressed in `ch` so it
+  // tracks the font instead of drifting per component. ONE scale replaces the
+  // old ad-hoc mix of px (440/640/680/800) and ch (20/42/60/62) widths that
+  // made line length differ page to page. Comfortable prose sits at 45–75
+  // characters; `prose` (62ch) is the workhorse, already the dominant value.
+  --measure-tight: 22ch; // large display headings / pull quotes
+  --measure-lead: 50ch; // hero & section subtitles (larger type, fewer chars)
+  --measure-prose: 62ch; // body reading — the default
+  --measure-wide: 72ch; // long-form article prose / generous intros
+  --measure-compact: 42ch; // compact card & grid descriptions
+
   // Families
   --font-display: 'Inter', 'Arial Narrow', Arial, Verdana, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
@@ -178,6 +189,57 @@ html[data-theme='light'] body {
   letter-spacing: 1.17px;
   text-transform: uppercase;
 }
+
+// ── Text wrapping (global, one source of truth) ────────────────────────
+// HOW text breaks, defined once so no component restates it. Before this,
+// balance/pretty/overflow-wrap appeared NOWHERE, so every heading broke at
+// the raw box edge (orphan words, widowed last lines) and long unbreakable
+// tokens (URLs, identifiers) could force horizontal overflow.
+//
+// - Headings BALANCE: their lines are distributed to roughly equal lengths,
+//   which kills the "random break" look and lone trailing words.
+// - Body copy is PRETTY: the last line is never left as a single short word
+//   (progressive — browsers without support fall back to normal wrapping).
+// - Everything gets overflow-wrap so an over-long token wraps instead of
+//   widening its container (this also protects the no-horizontal-overflow
+//   guarantee the e2e suite checks).
+//
+// The base-element rules use :where() (zero specificity) so markdown-rendered
+// prose (blog posts, case studies) inherits the system automatically while any
+// component style still wins. The tier classes carry the same intent for
+// component-authored text.
+:where(h1, h2, h3, h4, h5, h6) {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+:where(p, li, dd, dt, blockquote, figcaption) {
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+.type-display-xxl,
+.type-display-xl,
+.type-display-lg,
+.type-title {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.type-body-lg,
+.type-body-md,
+.type-caption {
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+// ── Reading-measure utilities ──────────────────────────────────────────
+// Cap a text block's width from the template without a per-component rule.
+// For markdown-rendered prose (blog posts, case studies) the measure is
+// applied to the text elements inside the prose wrapper instead — see the
+// relevant page styles — so code blocks, images and tables keep full width.
+.measure-tight { max-width: var(--measure-tight); }
+.measure-lead { max-width: var(--measure-lead); }
+.measure { max-width: var(--measure-prose); }
+.measure-wide { max-width: var(--measure-wide); }
+.measure-compact { max-width: var(--measure-compact); }
 
 // ── Layout helpers ─────────────────────────────────────────────────────
 .section-pad {

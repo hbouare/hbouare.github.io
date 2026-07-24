@@ -244,7 +244,7 @@ useMotion(heroRoot, ({ motion, mobile }) => {
 }
 .hero-subtitle {
   margin-top: 1.5rem;
-  max-width: 440px;
+  max-width: var(--measure-lead);
 }
 
 // Stats — border colour and hover come from .hairline-interactive.
