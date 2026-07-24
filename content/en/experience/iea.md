@@ -4,7 +4,7 @@ order: 2
 role: "Full-Stack Developer"
 company: "Paris Institute for Advanced Study"
 period: "April 2024 — February 2026"
-employment: "Freelance"
+employment: "Freelance · Part-time"
 location: "Paris, France"
 flag: "🇫🇷"
 tags: ["Nuxt.js", "TypeScript", "AWS", "MongoDB", "GitHub Actions", "Terraform"]
