@@ -53,6 +53,55 @@ queryCollection(`${locale.value}_blog`).order("date", "DESC").all()
 
 So adding content means adding a Markdown file under **both** `content/fr/...` and `content/en/...` with frontmatter that satisfies the schema (e.g. experiences need `id, order, role, company, period, location, flag, tags`). New routes are picked up by Nitro's `crawlLinks` prerender — add explicit entries to `nitro.prerender.routes` in [nuxt.config.ts](nuxt.config.ts) only for pages not reachable by crawling.
 
+#### Frontmatter is PUBLISHED, whether or not it is rendered
+
+Nuxt Content serialises the **whole document** into the prerendered
+`_payload.json` next to each route. A field that no component reads is still
+one `curl` away at `/projects/<slug>/_payload.json`.
+
+This bit once already: repository URLs were kept in project frontmatter as an
+"author-side reference, deliberately never rendered", and shipped in the
+payload of every build. **Never put anything in content that must not be
+public** — private URLs, client names, credentials. There is no render-time
+way to take it back.
+
+The corollary is a performance one: `queryCollection().all()` with no
+`select()` ships every full document. `/projects` was serving four complete
+case studies to draw four teaser cards. Pages that render a subset of fields
+should `select()` that subset — and note that `select()` narrows the row type
+*before* `order()` sees it, so a column you sort on has to be selected too.
+
+#### Project case studies (`/projects/[slug]`)
+
+Three reading tiers, each with a deliberately different visual form, because
+one page serves a recruiter (~15s), a client, a delivery lead and a senior
+developer:
+
+1. **Summit** — hero, facts strip, results. Everything a non-technical reader
+   needs, above the fold-ish. `impact` is FIRST, not last.
+2. **Narrative** — context/problem, then response.
+3. **Under the hood** — architecture prose, the `stack` layer plan, then
+   `decisions` (problem → choice → **what it costs**).
+
+Rendering stays data-driven via `tierDefs` in the page: one loop, not a dozen
+copied blocks. Adding a section means adding a field to the schema and one
+entry to `tierDefs`. The presentational pieces live in `app/components/case/`
+(`<CaseHero>`, `<CaseFacts>`, `<CaseOutcomes>`, `<CasePlan>`,
+`<CaseDecisions>`, `<CaseAccess>`, `<CaseNext>`).
+
+Two content rules:
+
+- **`decisions[].consequence` is mandatory in the schema on purpose.** A
+  decision with no stated cost reads as marketing to the audience most likely
+  to check.
+- **Facts (`period`, `team`, `status`) whose value starts with `TODO` are
+  dropped at render** (`isFilled` in the page). A placeholder is a visible
+  reminder in the source that can never ship as a fabricated fact. Do not
+  "helpfully" fill these in — they are the author's to supply.
+
+Source access is granted personally via `/contact`; there is no repo, demo or
+docs link on these pages, and no `access` flag branching the UI.
+
 ### Theming (dark-first, anti-flash, View Transitions)
 
 Theme state lives in **Vuetify** (`dark`/`light` themes defined in [app/plugins/vuetify.ts](app/plugins/vuetify.ts)), and everything else mirrors it:
@@ -298,8 +347,19 @@ drops the element back to its CSS resting `0`.
 - **Section openers** (`UiSectionHeader`): self-animating — eyebrow fade +
   masked title reveal. **Do not wrap them in `UiRevealBlock`** — it doubles
   the entrance.
-- **`UiRevealBlock`**: scroll reveal via ScrollTrigger. Public API unchanged
-  (`:delay` ms).
+- **`UiRevealBlock`**: scroll reveal. GSAP owns the tween; an
+  **IntersectionObserver** owns the trigger (not ScrollTrigger). A `once`
+  ScrollTrigger caches its start in scroll pixels at creation, so a large
+  programmatic jump arriving before its first update can leave the trigger
+  un-fired forever — and a reveal that never fires is not a missing
+  animation, it is content stuck at the CSS resting `opacity: 0`: in the DOM,
+  indexed, invisible, no console error. The observer's `rootMargin`
+  (`SCROLL_START_MARGIN`) carries a deliberately huge **top** value so an
+  element that ends up *above* the viewport (scroll-to-bottom, restored
+  position, in-page anchor) still counts as entered. Don't shrink it.
+  - Corollary for tests: `scroll-behavior: smooth` is set site-wide in
+    main.scss, so a bare `window.scrollTo(0, …)` animates and can be dropped
+    under load. E2E scroll jumps use `behavior: "instant"` on purpose.
 - **Page transitions**: GSAP JS hooks on `<NuxtPage :transition>` in
   [app/app.vue](app/app.vue) (`css: false`). The hooks MUST call `done()` on
   every path, including reduced motion, or navigation hangs.

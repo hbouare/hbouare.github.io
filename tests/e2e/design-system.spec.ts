@@ -207,7 +207,12 @@ test.describe("research", () => {
   // and must render its full set of items, revealed on scroll.
   test("impact section reveals its items", async ({ page }) => {
     await page.goto("/research")
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    // behavior:"instant" overrides the site-wide `scroll-behavior: smooth`
+    // (main.scss): a smooth scrollTo can be dropped under parallel-worker load
+    // and leave scrollY at 0, so the below-fold items never enter view.
+    await page.evaluate(() =>
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
+    )
     const items = page.locator(".impact-item")
     await expect(items.first()).toBeVisible({ timeout: 8_000 })
     expect(await items.count()).toBe(8)
@@ -264,10 +269,14 @@ test.describe("projects", () => {
   test("case study renders and routes to contact", async ({ page }) => {
     const res = await page.goto("/projects/fleetops")
     expect(res?.status()).toBe(200)
-    // The hook is above the fold; the impact block and CTA reveal on scroll
-    // (visibility:hidden via autoAlpha until then), so drive to the bottom.
+    // The hook is above the fold; the results block sits just below it and the
+    // access CTA at the foot reveals on scroll, so drive to the bottom.
+    // behavior:"instant" overrides the site-wide `scroll-behavior: smooth`
+    // (main.scss), which can otherwise drop a programmatic scrollTo under load.
     await expect(page.locator(".case-hook")).toBeVisible()
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await page.evaluate(() =>
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
+    )
     await expect(page.locator(".case-impact")).toBeVisible({ timeout: 8_000 })
 
     const contactCta = page.locator('.case-encart a[href$="/contact"]')

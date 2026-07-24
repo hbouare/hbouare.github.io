@@ -87,8 +87,15 @@ useSeoMeta({
   ogDescription: t("projects.meta_desc"),
 })
 
+// Only the fields the teaser cards render. Without select(), Nuxt Content
+// serialises every full case study — architecture, decisions, deliverables —
+// into this page's prerendered _payload.json, which the index never reads and
+// the visitor still downloads.
 const { data: projects } = await useAsyncData(`projects-all-${locale.value}`, () =>
-  queryCollection(`${locale.value}_projects`).order("order", "ASC").all(),
+  queryCollection(`${locale.value}_projects`)
+    .select("slug", "title", "context", "hook", "tags", "featured", "order")
+    .order("order", "ASC")
+    .all(),
 )
 </script>
 

@@ -78,7 +78,15 @@ test.describe("motion enabled", () => {
   test("reveal blocks end fully visible after scrolling", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" })
     await page.goto("/projects")
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    // behavior:"instant" is load-bearing, not cosmetic. main.scss sets
+    // `scroll-behavior: smooth` site-wide, so a bare scrollTo animates — and
+    // under parallel-worker CPU load that animation is sometimes dropped
+    // entirely (scrollY stays 0), leaving the below-fold blocks unreached and
+    // this assertion flaking. An explicit instant jump is what "scroll to the
+    // bottom" was always meant to be.
+    await page.evaluate(() =>
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
+    )
     const blocks = page.locator(".reveal-block")
     const count = await blocks.count()
     for (let i = 0; i < count; i++) {

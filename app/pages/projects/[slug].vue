@@ -1,109 +1,111 @@
 <!-- app/pages/projects/[slug].vue -->
 <!--
-  Project case study. Structured frontmatter (intro / challenge / solution /
-  objectives / highlights / impact / architecture / deliverables) is grouped
-  into three progressive reading tiers — Overview (everyone) → Features & value
-  (everyone) → Under the hood (developers) — plus a Resources block. Rendering
-  is DATA-DRIVEN (`tiers` below): the sections are one loop, not eight copied
-  blocks, so order/grouping live in one place and every project renders only
-  the fields it actually has. Reuses the design-system primitives and tokens;
-  icons stay minimal to keep the monochrome, hairline identity.
+  Project case study.
+
+  Three reading tiers, each with a DIFFERENT visual form, because the same
+  page has to satisfy four audiences that stop at different depths:
+
+    1. The summit    — hero, facts strip, results. A recruiter can leave
+                       here, in ~15 seconds, already convinced.
+    2. The narrative — context/problem, then the response. A client or
+                       delivery lead stops here.
+    3. Under the hood — architecture prose, the layer plan, the decisions
+                       and their costs. A senior developer reads to the end.
+
+  Then a way forward: source access on request, and the next project.
+
+  Rendering stays DATA-DRIVEN (`tierDefs` below): the tiers are one loop, not
+  a dozen copied blocks, so ordering lives in one place and every project
+  renders only the fields it actually has. Only the summit and the exit are
+  written out, because they are singular rather than repeated.
 -->
 <template>
   <v-container class="case px-6 px-md-10 section-v-pad" fluid>
     <div v-if="project" class="case-inner">
-      <UiRevealBlock>
-        <NuxtLink :to="localePath('/projects')" class="back-link type-micro-cap text-muted">
-          <v-icon size="14" class="mr-1">mdi-arrow-left</v-icon>
-          {{ $t("projects.back") }}
-        </NuxtLink>
-      </UiRevealBlock>
+      <NuxtLink :to="localePath('/projects')" class="back-link type-micro-cap text-muted">
+        <v-icon size="14" class="mr-1">mdi-arrow-left</v-icon>
+        {{ $t("projects.back") }}
+      </NuxtLink>
 
-      <!-- Hero: context · title · hook · role · technologies -->
-      <header class="case-hero">
-        <UiEyebrow class="mb-4">{{ project.context }}</UiEyebrow>
-        <UiDisplayTitle tag="h1" level="xl">{{ project.title }}</UiDisplayTitle>
-        <p v-if="project.hook" class="case-hook type-body-lg mt-6">
-          {{ project.hook }}
-        </p>
-        <div class="case-meta mt-8">
-          <p v-if="project.role" class="type-micro-cap">{{ project.role }}</p>
-          <div v-if="project.tags?.length" class="case-tech mt-4">
-            <UiEyebrow tone="muted" :rule="false" class="mb-2">{{ $t("case.tech") }}</UiEyebrow>
-            <div class="d-flex flex-wrap ga-1">
-              <v-chip v-for="tag in project.tags" :key="tag" size="x-small">
-                {{ tag }}
-              </v-chip>
-            </div>
-          </div>
-        </div>
-      </header>
+      <!-- ── 1. The summit ─────────────────────────────────────────────── -->
+      <CaseHero
+        :context="project.context"
+        :title="project.title"
+        :hook="project.hook"
+      />
 
-      <!-- Progressive tiers, rendered from the `tiers` config -->
-      <template v-for="tier in tiers" :key="tier.id">
-        <UiRevealBlock v-if="tier.heading">
-          <div class="case-tier">
-            <UiDisplayTitle tag="h2" level="lg">{{ tier.heading }}</UiDisplayTitle>
-            <p v-if="tier.note" class="case-tier-note type-micro-cap text-muted mt-2">
+      <CaseFacts v-if="facts.length" :facts="facts" />
+
+      <CaseOutcomes
+        v-if="project.impact?.length"
+        :heading="$t('case.impact')"
+        :items="project.impact"
+      />
+
+      <!-- ── 2 & 3. Narrative, then the technical annex ─────────────────── -->
+      <section v-for="tier in tiers" :key="tier.id" class="case-tier">
+        <header class="case-tier-head">
+          <UiDisplayTitle tag="h2" level="lg" reveal>
+            {{ tier.heading }}
+          </UiDisplayTitle>
+          <UiRevealBlock v-if="tier.note">
+            <p class="case-tier-note type-micro-cap text-muted mt-3">
               {{ tier.note }}
             </p>
-          </div>
-        </UiRevealBlock>
+          </UiRevealBlock>
+        </header>
 
-        <UiRevealBlock v-for="sec in tier.sections" :key="sec.label">
-          <section class="case-section">
+        <UiRevealBlock
+          v-for="(sec, i) in tier.sections"
+          :key="sec.label"
+          :delay="i * 80"
+        >
+          <div class="case-section">
             <UiEyebrow :rule="false" class="case-label">{{ sec.label }}</UiEyebrow>
 
-            <p v-if="sec.kind === 'prose'" class="case-prose type-body-lg">
-              {{ sec.text }}
-            </p>
+            <div class="case-section-body">
+              <p v-if="sec.kind === 'prose'" class="case-prose type-body-lg">
+                {{ sec.text }}
+              </p>
 
-            <ul v-else-if="sec.kind === 'list'" class="case-list">
-              <li v-for="item in sec.items" :key="item" class="type-body-md">{{ item }}</li>
-            </ul>
-
-            <div v-else class="case-impact section-surface">
-              <ul>
-                <li v-for="item in sec.items" :key="item" class="type-body-lg">{{ item }}</li>
+              <ul v-else-if="sec.kind === 'list'" class="case-list">
+                <li v-for="item in sec.items" :key="item" class="type-body-md">
+                  {{ item }}
+                </li>
               </ul>
-            </div>
-          </section>
-        </UiRevealBlock>
-      </template>
 
-      <!-- Resources: repo / demo / docs when public, otherwise a way to reach out -->
-      <UiRevealBlock>
-        <aside class="case-encart section-surface pa-6 py-sm-8 px-sm-9">
-          <template v-if="project.access === 'public'">
-            <UiEyebrow :rule="false" class="mb-3">{{ $t("case.resources") }}</UiEyebrow>
-            <div class="d-flex flex-wrap ga-3">
-              <v-btn v-if="project.github" :href="project.github" target="_blank" rel="noopener" size="large">
-                GitHub<v-icon end size="small" icon="mdi-arrow-top-right" />
-              </v-btn>
-              <v-btn v-if="project.demo" :href="project.demo" target="_blank" rel="noopener" variant="text" size="large">
-                Demo<v-icon end size="small" icon="mdi-arrow-top-right" />
-              </v-btn>
-              <v-btn v-if="project.docs" :href="project.docs" target="_blank" rel="noopener" variant="text" size="large">
-                Documentation<v-icon end size="small" icon="mdi-arrow-top-right" />
-              </v-btn>
+              <CasePlan v-else-if="sec.kind === 'plan'" :layers="sec.layers!" />
+
+              <CaseDecisions
+                v-else
+                :decisions="sec.decisions!"
+                :labels="decisionLabels"
+              />
             </div>
-          </template>
-          <template v-else>
-            <UiEyebrow :rule="false" class="mb-3">{{ $t("case.private_title") }}</UiEyebrow>
-            <p class="case-encart-text type-body-md text-muted">
-              {{ $t("case.private_note") }}
-            </p>
-            <v-btn
-              :to="localePath('/contact')"
-              size="large"
-              append-icon="mdi-arrow-right"
-              class="mt-6"
-            >
-              {{ $t("projects.request_access") }}
-            </v-btn>
-          </template>
-        </aside>
+          </div>
+        </UiRevealBlock>
+      </section>
+
+      <!-- Technologies: the raw stack, kept as chips at the foot of the
+           technical tier rather than in the hero, where it competed with the
+           hook for the first glance. -->
+      <UiRevealBlock v-if="project.tags?.length">
+        <div class="case-section case-tech">
+          <UiEyebrow :rule="false" class="case-label">{{ $t("case.tech") }}</UiEyebrow>
+          <div class="case-section-body d-flex flex-wrap ga-2">
+            <v-chip v-for="tag in project.tags" :key="tag" size="small">
+              {{ tag }}
+            </v-chip>
+          </div>
+        </div>
       </UiRevealBlock>
+
+      <!-- ── The way forward ───────────────────────────────────────────── -->
+      <UiRevealBlock>
+        <CaseAccess />
+      </UiRevealBlock>
+
+      <CaseNext v-if="nextProject" :project="nextProject" />
     </div>
 
     <div v-else class="text-center py-20">
@@ -117,55 +119,115 @@ const { locale, t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 
+const slug = route.params.slug as string
+
 const { data: project } = await useAsyncData(
-  `project-${locale.value}-${route.params.slug}`,
+  `project-${locale.value}-${slug}`,
   () =>
     queryCollection(`${locale.value}_projects`)
-      .where("slug", "=", route.params.slug as string)
+      .where("slug", "=", slug)
       .first(),
 )
 
+// Sibling projects, for the "next project" band. Only the two fields that
+// band needs are selected — a case study should not ship four full case
+// studies in its payload just to render one link.
+const { data: siblings } = await useAsyncData(
+  `projects-nav-${locale.value}`,
+  () =>
+    queryCollection(`${locale.value}_projects`)
+      // `order` has to be selected as well as sorted on: select() narrows the
+      // row type, and order() can only reference a column that survived it.
+      .select("slug", "title", "order")
+      .order("order", "ASC")
+      .all(),
+)
+
+// Wraps around, so the last project points back at the first and the
+// sequence never dead-ends.
+const nextProject = computed(() => {
+  const all = siblings.value
+  if (!all?.length) return null
+  const i = all.findIndex((p) => p.slug === slug)
+  if (i === -1) return null
+  return all[(i + 1) % all.length] ?? null
+})
+
+// ── Facts strip ───────────────────────────────────────────────────────────
+// A value still carrying its `TODO` placeholder counts as unfilled and is
+// dropped, so an un-authored fact leaves the source with a visible reminder
+// but never reaches the built page as a fabricated one.
+const isFilled = (v: unknown): v is string =>
+  typeof v === "string" &&
+  v.trim() !== "" &&
+  !v.trim().toUpperCase().startsWith("TODO")
+
+const facts = computed(() => {
+  const p = project.value
+  if (!p) return []
+  return (
+    [
+      ["case.role", p.role],
+      ["case.period", p.period],
+      ["case.team", p.team],
+      ["case.status", p.status],
+    ] as const
+  )
+    .filter(([, value]) => isFilled(value))
+    .map(([key, value]) => ({ label: t(key), value: value as string }))
+})
+
+const decisionLabels = computed(() => ({
+  problem: t("case.decision_problem"),
+  choice: t("case.decision_choice"),
+  consequence: t("case.decision_consequence"),
+}))
+
 // ── Progressive reading tiers ─────────────────────────────────────────────
-// The narrative fields are grouped into three tiers (overview → value →
-// technical). Each entry maps a frontmatter field to a label + render kind.
-// `tiers` resolves this against the current project so the template is a plain
-// loop: absent fields are dropped, and a tier with no content disappears.
-type SectionKind = "prose" | "list" | "impact"
+// Each entry maps a frontmatter field to a label + a render kind. `tiers`
+// resolves this against the current project, so the template is a plain
+// loop: absent fields are dropped, and a tier with no content disappears
+// entirely rather than rendering an empty heading.
+type StackLayer = { layer: string; detail: string }
+type Decision = { problem: string; choice: string; consequence: string }
+type SectionKind = "prose" | "list" | "plan" | "decisions"
+
 interface ResolvedSection {
   label: string
   kind: SectionKind
   text?: string
   items?: string[]
+  layers?: StackLayer[]
+  decisions?: Decision[]
 }
 interface ResolvedTier {
   id: string
-  heading: string | null
+  heading: string
   note?: string
   sections: ResolvedSection[]
 }
 
 const tierDefs: {
   id: string
-  heading: () => string | null
+  heading: () => string
   note?: () => string
   fields: { field: string; label: () => string; kind: SectionKind }[]
 }[] = [
   {
-    id: "overview",
-    heading: () => null,
+    id: "problem",
+    heading: () => t("case.section_problem"),
     fields: [
       { field: "intro", label: () => t("case.context"), kind: "prose" },
       { field: "challenge", label: () => t("case.challenge"), kind: "prose" },
-      { field: "solution", label: () => t("case.solution"), kind: "prose" },
+      { field: "objectives", label: () => t("case.objectives"), kind: "list" },
     ],
   },
   {
-    id: "value",
-    heading: () => t("case.section_features"),
+    id: "response",
+    heading: () => t("case.section_response"),
     fields: [
-      { field: "objectives", label: () => t("case.objectives"), kind: "list" },
+      { field: "solution", label: () => t("case.solution"), kind: "prose" },
       { field: "highlights", label: () => t("case.highlights"), kind: "list" },
-      { field: "impact", label: () => t("case.impact"), kind: "impact" },
     ],
   },
   {
@@ -174,77 +236,126 @@ const tierDefs: {
     note: () => t("case.for_devs"),
     fields: [
       { field: "architecture", label: () => t("case.architecture"), kind: "prose" },
+      { field: "stack", label: () => t("case.plan"), kind: "plan" },
+      { field: "decisions", label: () => t("case.decisions"), kind: "decisions" },
       { field: "deliverables", label: () => t("case.deliverables"), kind: "list" },
     ],
   },
 ]
 
+/** Turns one frontmatter value into a renderable section, or nothing. */
+const resolveSection = (
+  value: unknown,
+  label: string,
+  kind: SectionKind,
+): ResolvedSection[] => {
+  if (kind === "prose") {
+    return typeof value === "string" && value ? [{ label, kind, text: value }] : []
+  }
+  if (!Array.isArray(value) || !value.length) return []
+  if (kind === "list") return [{ label, kind, items: value as string[] }]
+  if (kind === "plan") return [{ label, kind, layers: value as StackLayer[] }]
+  return [{ label, kind, decisions: value as Decision[] }]
+}
+
 const tiers = computed<ResolvedTier[]>(() => {
   const p = project.value as Record<string, unknown> | null
   if (!p) return []
   return tierDefs
-    .map((tier) => {
-      const sections = tier.fields.flatMap<ResolvedSection>((f) => {
-        const value = p[f.field]
-        if (f.kind === "prose") {
-          return typeof value === "string" && value
-            ? [{ label: f.label(), kind: f.kind, text: value }]
-            : []
-        }
-        return Array.isArray(value) && value.length
-          ? [{ label: f.label(), kind: f.kind, items: value as string[] }]
-          : []
-      })
-      return { id: tier.id, heading: tier.heading(), note: tier.note?.(), sections }
-    })
+    .map((tier) => ({
+      id: tier.id,
+      heading: tier.heading(),
+      note: tier.note?.(),
+      sections: tier.fields.flatMap((f) =>
+        resolveSection(p[f.field], f.label(), f.kind),
+      ),
+    }))
     .filter((tier) => tier.sections.length > 0)
 })
 
 if (project.value) {
+  const p = project.value
+  const description = p.hook ?? p.intro
+  const url = `https://hamedbouare.me${localePath(`/projects/${p.slug}`)}`
+
   useSeoMeta({
-    title: project.value.title,
-    description: project.value.hook ?? project.value.intro,
-    ogTitle: `${project.value.title} - Hamed Bouare`,
-    ogDescription: project.value.hook ?? project.value.intro,
+    title: p.title,
+    description,
+    ogTitle: `${p.title} - Hamed Bouare`,
+    ogDescription: description,
+    ogType: "article",
   })
+
   useJsonLd({
     "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: project.value.title,
-    abstract: project.value.hook,
-    creator: { "@type": "Person", name: "Hamed Bouare", url: "https://hamedbouare.me" },
+    "@graph": [
+      {
+        "@type": "CreativeWork",
+        "@id": url,
+        name: p.title,
+        url,
+        abstract: p.hook,
+        description,
+        // The stack doubles as keywords — it is the vocabulary people
+        // actually search these projects by.
+        keywords: p.tags?.join(", "),
+        inLanguage: locale.value,
+        creator: {
+          "@type": "Person",
+          name: "Hamed Bouare",
+          url: "https://hamedbouare.me",
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Projects",
+            item: `https://hamedbouare.me${localePath("/projects")}`,
+          },
+          { "@type": "ListItem", position: 2, name: p.title, item: url },
+        ],
+      },
+    ],
   })
 }
 </script>
 
 <style scoped lang="scss">
+// Wider than the previous 900px column: the facts strip, the results grid
+// and the technical plan are multi-column blocks that were being squeezed.
+// Prose inside stays capped in ch, so the measure never follows the
+// container.
 .case-inner {
-  max-width: 900px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 
-// ── Hero ────────────────────────────────────────────────────────────────
-.case-hero {
-  padding-bottom: 3rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid rgb(var(--v-theme-border));
-}
-.case-hook {
-  max-width: 640px;
-  color: rgb(var(--v-theme-on-background)); // the lead reads in full ink
-}
-.case-meta .type-micro-cap {
-  color: rgb(var(--v-theme-on-background));
-}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  margin-bottom: var(--space-huge);
+  transition: color 0.2s ease;
 
-// ── Tier divider — marks where each reading tier begins (the "for
-// developers" cue lives on the technical tier). ──────────────────────────
-.case-tier {
-  padding-top: 3rem;
-
-  @media (max-width: 767px) {
-    padding-top: 2rem;
+  &:hover,
+  &:focus-visible {
+    color: rgb(var(--v-theme-on-background));
   }
+}
+
+// ── Tier ────────────────────────────────────────────────────────────────
+// The hairline now marks a TIER boundary, not every section. Previously
+// every one of eight sections carried an identical rule and identical
+// padding, which is what made the page read as one repeated block.
+.case-tier {
+  padding-top: var(--section-pad);
+  border-top: 1px solid rgb(var(--v-theme-border));
+}
+.case-tier-head {
+  margin-bottom: var(--space-huge);
 }
 .case-tier-note {
   letter-spacing: 0.96px;
@@ -254,34 +365,42 @@ if (project.value) {
 .case-section {
   display: grid;
   grid-template-columns: 180px 1fr;
-  gap: 3rem;
-  padding: 2.75rem 0;
-  border-bottom: 1px solid rgb(var(--v-theme-border));
+  gap: var(--space-huge);
+  padding-bottom: var(--space-huge);
 
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 2rem 0;
+    // The rail collapses on phones; the label needs real separation from the
+    // text or the two read as one paragraph.
+    gap: var(--space-sm);
   }
 }
 .case-label {
   padding-top: 0.35rem; // optically align the eyebrow with the first line
   color: rgb(var(--v-theme-muted));
 }
-.case-prose {
-  max-width: 620px;
-  color: rgb(var(--v-theme-muted));
+.case-section-body {
+  min-width: 0; // lets long unbroken strings wrap instead of widening the grid
 }
 
-// Objectives / features / deliverables — hairline-marked list (the system's
-// marker, not icons).
+// Full ink: this is the narrative, and it should not read as weaker than the
+// bullet lists beside it. Secondary tone is reserved for supporting text
+// (plan details, the context and cost of a decision).
+.case-prose {
+  margin: 0;
+  max-width: 62ch;
+  color: rgb(var(--v-theme-on-background));
+}
+
+// Hairline-marked list — the system's marker, not icons.
 .case-list {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: var(--space-md);
+  max-width: 62ch;
 
   li {
     color: rgb(var(--v-theme-on-background));
@@ -300,57 +419,7 @@ if (project.value) {
   }
 }
 
-// Impact — the payoff, set apart in a bordered surface panel.
-.case-impact {
-  border: 1px solid rgb(var(--v-theme-border));
-  padding: 1.75rem 2rem;
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  li {
-    color: rgb(var(--v-theme-on-background));
-    padding-left: 1.5rem;
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.75em;
-      width: 16px;
-      height: 1px;
-      background: currentColor;
-    }
-  }
-}
-
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  margin-bottom: 2.5rem;
-  transition: color 0.2s ease;
-
-  &:hover,
-  &:focus-visible {
-    color: rgb(var(--v-theme-on-background));
-  }
-}
-
-// Resources / private-project encart.
-// Padding comes from Vuetify utilities in the template (pa-6 py-sm-8 px-sm-9),
-// so the responsive step no longer needs a media query.
-.case-encart {
-  margin-top: 3rem;
-  border: 1px solid rgb(var(--v-theme-border));
-}
-.case-encart-text {
-  max-width: 560px;
+.case-tech {
+  padding-bottom: var(--space-huge);
 }
 </style>
