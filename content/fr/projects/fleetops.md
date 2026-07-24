@@ -3,15 +3,14 @@ slug: "fleetops"
 order: 1
 title: "FleetOps — Gestion de flotte automobile"
 featured: true
-context: "Projet client — transport & services"
+context: "Projet personnel — transport & services"
 hook: "Piloter tout un parc de véhicules depuis un seul écran, et ne plus laisser passer une échéance."
 
-# Faits affichés sous le titre. Toute valeur commençant par TODO est
-# ignorée au rendu : à remplacer, mais rien de faux ne sera publié entre-temps.
+# Faits affichés sous le titre. `period` est volontairement absent : l'historique
+# du dépôt est un instantané, il ne reflète pas la durée réelle de développement.
 role: "Conception & développement full-stack"
-period: "TODO — ex. 2024 · 6 mois"
-team: "TODO — ex. Solo / 3 développeurs"
-status: "TODO — ex. En production / Livré / Prototype"
+team: "Solo"
+status: "Fonctionnel — données de démonstration incluses"
 
 intro: "Une application de gestion de flotte pensée pour remplacer un suivi éclaté — tableurs, e-mails, rappels manuels — par une gestion opérationnelle centralisée, où chaque échéance est détectée automatiquement."
 objectives:

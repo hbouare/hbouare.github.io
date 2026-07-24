@@ -3,15 +3,14 @@ slug: "fleetops"
 order: 1
 title: "FleetOps — Vehicle Fleet Management"
 featured: true
-context: "Client engagement — transport & services"
+context: "Personal project — transport & services"
 hook: "Steer an entire vehicle fleet from a single screen, and never let a deadline slip."
 
-# Facts shown under the title. Any value starting with TODO is dropped at
-# render: replace them, but nothing false ships in the meantime.
+# Facts shown under the title. `period` is intentionally omitted: the repo
+# history is a snapshot and does not reflect the real development timeline.
 role: "Full-stack design & development"
-period: "TODO — e.g. 2024 · 6 months"
-team: "TODO — e.g. Solo / 3 developers"
-status: "TODO — e.g. In production / Delivered / Prototype"
+team: "Solo"
+status: "Functional — demo data included"
 
 intro: "A fleet-management application built to replace fragmented tracking — spreadsheets, emails, manual reminders — with centralised operations where every deadline is detected automatically."
 objectives:

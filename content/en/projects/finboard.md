@@ -1,55 +1,54 @@
 ---
 slug: "finboard"
 order: 2
-title: "Financial Monitoring Dashboard"
+title: "Pilotis — foundations of a financial-tracking SaaS"
 featured: false
-context: "Client engagement — SMB, finance"
-hook: "A small business’s entire finances in one dashboard, always up to date."
+context: "Personal project — SMB, finance"
+hook: "The foundations of a financial-tracking SaaS for SMBs: a solid technical base, laid before the features."
 
-# Facts shown under the title. Any value starting with TODO is dropped at
-# render: replace them, but nothing false ships in the meantime.
+# Facts shown under the title. `period` is intentionally omitted: the repo
+# history is a snapshot and does not reflect the real development timeline.
 role: "Full-stack design & development"
-period: "TODO — e.g. 2023 · 4 months"
-team: "TODO — e.g. Solo / 2 developers"
-status: "TODO — e.g. In production / Delivered / Prototype"
+team: "Solo"
+status: "In progress — foundations delivered"
 
-intro: "Designed for SMBs, the tool had to give clear, consolidated visibility over financial flows that were previously spread across multiple sources."
+intro: "A financial-tracking SaaS aimed at SMBs, whose first increment lays the foundations: the architecture, the dashboard shell and a complete quality chain, before the business domains are added."
 objectives:
-  - "Consolidate scattered financial flows into a single dashboard"
-  - "Automate transaction categorisation and reconciliation"
-  - "Make reporting reliable and surface anomalies early"
-challenge: "Teams reconciled and categorised transactions from multiple sources by hand — slow, repetitive, error-prone work, with no consolidated view of their indicators."
-solution: "A single dashboard that imports transactions automatically, tracks revenue and expenses, manages invoices and visualises key indicators — with, at its core, a categorisation engine driven by business-editable rules rather than a black box."
+  - "Lay an extensible technical base for a multi-domain financial SaaS"
+  - "Eventually consolidate scattered financial flows into a single dashboard"
+  - "Guarantee a strict, blocking quality chain from the foundation up"
+challenge: "The target, for an SMB, is reconciliation and categorisation done by hand over transactions scattered across sources — slow, repetitive, with no consolidated view. But before tackling that business problem, a multi-domain SaaS needs foundations that will not be reworked: security, data model, conventions."
+solution: "A modular monolith organised by domains, where each new domain (finance, categories, invoices, imports, reports, alerts…) is added without touching the foundations. This first increment delivers the foundations, the dashboard shell and a complete quality chain — the rest plugs into it incrementally."
 
-architecture: "Three blocks, and one rule: the dashboard computes nothing. The Python backend ingests transactions and applies the rules engine to them; PostgreSQL holds both the financial data and pre-computed aggregates; the Vue.js frontend only ever reads those aggregates. That split is what keeps the dashboards responsive as the history grows."
+architecture: "A FastAPI modular monolith organised by domains: routes delegate to business services, which orchestrate SQLAlchemy repositories on PostgreSQL. The Vue 3 frontend separates pages, components, stores, API calls and plugins. A REST API versioned under /api/v1, shared UUID identifiers and UTC timestamps, migrations designed to stay coherent and reversible. Later domains are added on these foundations without modifying them."
 stack:
   - layer: "Interface"
-    detail: "Vue.js · dashboards, indicator visualisation, exports"
-  - layer: "Processing"
-    detail: "Python · automatic bank-transaction import · rule-based categorisation engine · report generation (CSV / PDF)"
+    detail: "Vue 3 · Vuetify · TypeScript · dashboard shell, pages / components / stores / API separation"
+  - layer: "API"
+    detail: "FastAPI · modular monolith by domains · REST API /api/v1 · UUID identifiers and UTC timestamps"
   - layer: "Data"
-    detail: "PostgreSQL · financial records and pre-computed aggregates"
+    detail: "PostgreSQL · SQLAlchemy · coherent, reversible migrations"
   - layer: "Delivery"
-    detail: "Docker containerisation · continuous deployment through GitLab CI"
+    detail: "Docker Compose · GitLab CI (blocking) · pre-commit · Ruff / Black / MyPy strict / pytest on the back; ESLint / Prettier / TS strict / Stylelint / Vitest / Playwright on the front"
 
 decisions:
-  - problem: "Automatic categorisation could have relied on a statistical model: more autonomous, but opaque. A misclassified transaction then becomes unexplainable — and uncorrectable by the finance team itself."
-    choice: "An explicit rules engine, editable by the business, rather than a black box."
-    consequence: "Every classification is traceable and correctable without a developer — at the cost of a rule set to maintain, which does not generalise to new cases on its own."
+  - problem: "A multi-domain financial SaaS can start as microservices — strong isolation, but immediate infrastructure complexity — or as a rigid monolith, simpler but costly to evolve later."
+    choice: "A modular monolith organised by domains, in layers (routes → services → repositories), designed so each domain is added without reworking the foundations."
+    consequence: "Evolution stays simple and deployment stays single — at the cost of a layering discipline to uphold, and without the deployment isolation that truly separate services would give."
 
 highlights:
-  - "Rule-based, business-configurable categorisation engine"
-  - "Automatic bank-transaction import"
-  - "Monthly reports and accounting exports (CSV / PDF)"
-  - "Alerts on overdue invoices and abnormal cash flow"
+  - "Modular monolith by domains, extensible without touching the foundations"
+  - "Dashboard shell and a versioned REST API (/api/v1)"
+  - "Shared data model: UUID identifiers, UTC timestamps, reversible migrations"
+  - "Complete, blocking quality chain (lint, strict typing, tests) in CI"
 deliverables:
-  - "Financial dashboard web application"
-  - "Configurable rule-based categorisation engine"
-  - "Report generation and exports (CSV / PDF)"
-  - "Containerised deployment and CI/CD pipeline"
+  - "Technical foundations of a financial SaaS (FastAPI backend + Vue 3 frontend)"
+  - "Dashboard shell and versioned REST API"
+  - "Complete quality chain (Ruff, Black, MyPy, pytest; ESLint, Prettier, Vitest, Playwright) in CI"
+  - "Docker Compose orchestration, one-command run"
 impact:
-  - "Transaction reconciliation and categorisation automated, previously manual"
-  - "Monthly reporting and accounting exports (CSV / PDF) generated on demand"
-  - "Real-time alerts on overdue invoices and abnormal cash-flow patterns"
-tags: ["Python","Vue.js","PostgreSQL","Docker","GitLab CI"]
+  - "A typed, tested, tooled technical base, ready to receive the business domains"
+  - "A strict quality chain laid from the foundation rather than bolted on later"
+  - "A modular architecture that absorbs future domains without rewriting the foundations"
+tags: ["FastAPI","Vue 3","TypeScript","PostgreSQL","SQLAlchemy","Docker","GitLab CI"]
 ---

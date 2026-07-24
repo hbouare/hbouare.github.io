@@ -6,12 +6,11 @@ featured: false
 context: "Projet personnel / R&D sécurité"
 hook: "Un coffre à mots de passe où même une fuite de base ne révèle rien."
 
-# Faits affichés sous le titre. Toute valeur commençant par TODO est
-# ignorée au rendu : à remplacer, mais rien de faux ne sera publié entre-temps.
+# Faits affichés sous le titre. `period` est volontairement absent : l'historique
+# du dépôt est un instantané, il ne reflète pas la durée réelle de développement.
 role: "Conception & développement full-stack"
-period: "TODO — ex. 2023 · 3 mois"
-team: "TODO — ex. Solo"
-status: "TODO — ex. R&D / Prototype / Usage personnel"
+team: "Solo"
+status: "Fonctionnel"
 
 intro: "Une application pour stocker et organiser ses identifiants dans un espace centralisé, sans jamais transiger sur la confidentialité des données."
 objectives:
@@ -19,38 +18,37 @@ objectives:
   - "Simplifier la gestion quotidienne des mots de passe"
   - "Offrir un stockage organisé et recherchable"
 challenge: "Stocker des secrets impose une garantie forte : même si la base de données fuite, les identifiants doivent rester illisibles — le tout sans alourdir l’usage quotidien."
-solution: "Un coffre où chaque information est chiffrée avant stockage via un mécanisme fort, organisée par catégories, avec générateur de mots de passe robustes, recherche instantanée et import/export chiffré."
+solution: "Un coffre où chaque secret est chiffré en AES-256-GCM avant stockage, l’accès protégé par mot de passe fort (Argon2id) et 2FA TOTP, avec générateur avancé, tableau de bord de sécurité et audit des actions sensibles."
 
-architecture: "Une frontière nette : rien n’atteint la base en clair. Le chiffrement est appliqué côté backend avant persistance, et MongoDB ne voit jamais que des entrées chiffrées — ce qui vaut aussi pour une sauvegarde ou une copie volée. Le frontend n’a donc pas à être un maillon de confiance : il consulte et saisit, il ne protège pas."
+architecture: "Une frontière nette : rien n’atteint la base en clair. Le chiffrement est appliqué côté backend avant persistance et MongoDB ne voit jamais que des entrées chiffrées — ce qui vaut aussi pour une sauvegarde ou une copie volée. L’API FastAPI suit une Clean Architecture (domaine / application / infrastructure / api), avec JWT access + refresh, révocation et gestion des sessions/appareils, et 2FA TOTP. Le frontend n’a donc pas à être un maillon de confiance : il consulte et saisit, il ne protège pas."
 stack:
   - layer: "Interface"
-    detail: "Vue.js · TypeScript · consultation, saisie, recherche instantanée, générateur de mots de passe"
-  - layer: "Traitement"
-    detail: "Python · chiffrement des données avant persistance · import / export chiffré · historique des modifications"
+    detail: "Vue 3 · Vuetify · TypeScript · SPA : consultation, saisie, recherche, générateur, tableau de bord de sécurité"
+  - layer: "API"
+    detail: "FastAPI · Clean Architecture (domaine / application / infrastructure / api) · JWT access + refresh, révocation et sessions · 2FA TOTP · rate-limiting et anti-brute-force"
   - layer: "Données"
-    detail: "MongoDB · entrées chiffrées uniquement, jamais de clair"
+    detail: "MongoDB · entrées chiffrées AES-256-GCM uniquement, jamais de clair"
   - layer: "Livraison"
-    detail: "Conteneurisation Docker · déploiement continu via GitLab CI"
+    detail: "Docker Compose · GitLab CI (lint → typage → tests → build) · pre-commit"
 
-# TODO — Ajouter ici l’arbitrage technique réel du projet (le problème posé,
-# le choix fait, ce qu’il coûte). La section disparaît tant que ce champ est
-# absent. Piste la plus forte : chiffrement côté serveur plutôt que
-# zero-knowledge côté client — ce que cela simplifie (recherche, récupération)
-# et ce que cela élargit (surface de confiance).
+decisions:
+  - problem: "Protéger les secrets même en cas de fuite de base impose de tout chiffrer. Mais un modèle zero-knowledge, où seule la machine du client peut déchiffrer, rend impossibles la recherche côté serveur et la récupération de compte — deux fonctions attendues d’un gestionnaire au quotidien."
+    choice: "Un chiffrement enveloppe AES-256-GCM appliqué côté serveur, avec une clé maître versionnée (pour la rotation) jamais exposée au client, plutôt qu’un zero-knowledge côté client."
+    consequence: "La recherche serveur, la récupération et la rotation de clé restent possibles — au prix d’une surface de confiance élargie : le serveur, contrairement à un modèle zero-knowledge, peut techniquement accéder aux secrets en clair au moment du traitement."
 
 highlights:
-  - "Chiffrement des données avant stockage"
-  - "Générateur de mots de passe robustes"
-  - "Organisation par catégories & recherche instantanée"
-  - "Import / export chiffré et historique des modifications"
+  - "Chiffrement enveloppe AES-256-GCM, clé maître versionnée, jamais exposée au client"
+  - "Authentification forte : Argon2id + 2FA TOTP, sessions et appareils révocables"
+  - "Générateur avancé, recherche instantanée et tableau de bord de sécurité"
+  - "Rate-limiting, anti-brute-force et audit des actions sensibles"
 deliverables:
-  - "Application de coffre-fort chiffré"
-  - "Générateur de mots de passe et recherche instantanée"
-  - "Import / export chiffré et historique des modifications"
-  - "Déploiement conteneurisé et pipeline CI/CD"
+  - "Application de coffre-fort chiffré (AES-256-GCM enveloppe)"
+  - "Authentification Argon2id + 2FA TOTP avec gestion des sessions/appareils"
+  - "Générateur de mots de passe, recherche et tableau de bord de sécurité"
+  - "Déploiement conteneurisé et pipeline CI (GitLab)"
 impact:
   - "Identifiants chiffrés avant stockage — protégés même en cas de fuite de base"
-  - "Générateur de mots de passe robustes et recherche instantanée"
-  - "Import / export chiffré et historique des modifications"
-tags: ["Python","Vue.js","TypeScript","MongoDB","Docker","GitLab CI"]
+  - "Accès verrouillé par Argon2id et 2FA TOTP, sessions révocables"
+  - "Clé maître versionnée : la rotation reste possible sans re-livraison"
+tags: ["FastAPI","Vue 3","TypeScript","MongoDB","AES-256-GCM","Docker","GitLab CI"]
 ---
