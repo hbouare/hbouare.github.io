@@ -21,8 +21,11 @@ const WAVE = {
   spacing: 32,
   /** Outward drift speed, px/s. Slow enough to read as a standing pattern. */
   pxPerSec: 5,
-  /** Peak opacity of a wavefront (faded down with distance from there). */
-  alpha: 0.055,
+  /** Peak opacity of a wavefront (faded down with distance from there).
+   *  Theme-specific: at equal alpha a grey hairline does not read the same on
+   *  black as on white, so each ground gets its own value. */
+  alphaDark: 0.12,
+  alphaLight: 0.14,
   lineWidth: 1,
   /** Internal frame cap — slow waves don't need 60fps, and this halves cost. */
   fps: 30,
@@ -72,10 +75,13 @@ export const waveField = (): FieldGenerator => {
     ctx.clearRect(0, 0, W, H)
     ctx.lineWidth = WAVE.lineWidth
     const rgb = env.ink()
+    // Ink is monochrome "v,v,v": a high first channel means light ink (dark
+    // theme). Read per draw so a theme flip re-picks the alpha immediately.
+    const peak = Number.parseInt(rgb, 10) > 127 ? WAVE.alphaDark : WAVE.alphaLight
     for (const s of sources) {
       for (let r = offset; r < maxR; r += WAVE.spacing) {
-        const a = WAVE.alpha * (1 - r / maxR) // fade with distance from the source
-        if (a <= 0.002) continue
+        const a = peak * (1 - r / maxR) // fade with distance from the source
+        if (a <= 0.003) continue
         ctx.strokeStyle = `rgba(${rgb}, ${a.toFixed(3)})`
         ctx.beginPath()
         ctx.arc(s.x, s.y, r, 0, Math.PI * 2)
