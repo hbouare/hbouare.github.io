@@ -7,8 +7,8 @@
     1. Hero + meta   — title, one-line hook, the stack and run status. A
                        recruiter gets the essentials in ~15 seconds.
     2. Overview      — one paragraph (problem + response) and the key features.
-    3. Under the hood — the architecture narrative, for readers who want the
-                       shape of the system.
+    3. Under the hood — the architecture in three plain layers (front-end,
+                       back-end, database), described by what each one does.
 
   Then a way forward: source access on request, and the next project.
 
@@ -43,7 +43,7 @@
         </div>
       </UiRevealBlock>
 
-      <!-- ── 2 & 3. Narrative, then the technical annex ─────────────────── -->
+      <!-- ── 2. Overview ────────────────────────────────────────────────── -->
       <section v-for="tier in tiers" :key="tier.id" class="case-tier">
         <header class="case-tier-head">
           <UiDisplayTitle tag="h2" level="lg" reveal>
@@ -78,6 +78,37 @@
           </div>
         </UiRevealBlock>
       </section>
+
+      <!-- ── 3. Under the hood: architecture in three plain layers ───────── -->
+      <section v-if="hasLayers" class="case-tier">
+        <header class="case-tier-head">
+          <UiDisplayTitle tag="h2" level="lg" reveal>
+            {{ $t("case.section_technical") }}
+          </UiDisplayTitle>
+        </header>
+        <UiRevealBlock>
+          <CaseLayers
+            :frontend="project.frontend"
+            :backend="project.backend"
+            :database="project.database"
+          />
+        </UiRevealBlock>
+      </section>
+
+      <!-- Gallery: screenshots, diagrams, results. Optional. -->
+      <UiRevealBlock v-if="project.gallery?.length">
+        <section class="case-gallery">
+          <UiEyebrow :rule="false" class="case-gallery-label">{{ $t("case.gallery") }}</UiEyebrow>
+          <div class="case-gallery-grid">
+            <figure v-for="(fig, i) in project.gallery" :key="i" class="case-fig">
+              <img :src="fig.src" :alt="fig.caption || project.title" loading="lazy" decoding="async" />
+              <figcaption v-if="fig.caption" class="case-fig-cap type-caption text-muted">
+                {{ fig.caption }}
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+      </UiRevealBlock>
 
       <!-- ── The way forward ───────────────────────────────────────────── -->
       <UiRevealBlock>
@@ -140,6 +171,11 @@ const isFilled = (v: unknown): v is string =>
   v.trim() !== "" &&
   !v.trim().toUpperCase().startsWith("TODO")
 
+// Present when the project describes its front-end / back-end / database.
+const hasLayers = computed(
+  () => !!(project.value?.frontend || project.value?.backend || project.value?.database),
+)
+
 // ── Progressive reading tiers ─────────────────────────────────────────────
 // Each entry maps a frontmatter field to a label + a render kind. `tiers`
 // resolves this against the current project, so the template is a plain
@@ -180,16 +216,6 @@ const tierDefs: {
       // under the "Aperçu" heading. `solution` is folded into it in content.
       { field: "intro", label: () => "", kind: "prose" },
       { field: "highlights", label: () => t("case.highlights"), kind: "list" },
-    ],
-  },
-  // Under the hood: the architecture narrative — the technical annex for
-  // readers who want the shape of the system.
-  {
-    id: "technical",
-    heading: () => t("case.section_technical"),
-    note: () => t("case.for_devs"),
-    fields: [
-      { field: "architecture", label: () => t("case.architecture"), kind: "prose" },
     ],
   },
 ]
@@ -383,5 +409,32 @@ if (project.value) {
 }
 .case-status {
   color: rgb(var(--v-theme-muted));
+}
+
+// ── Gallery visuals (optional, graceful when absent) ─────────────────────
+.case-fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgb(var(--v-theme-border));
+  border-radius: 8px;
+}
+.case-gallery {
+  padding-top: var(--section-pad);
+  border-top: 1px solid rgb(var(--v-theme-border));
+}
+.case-gallery-label {
+  margin-bottom: var(--space-xl);
+}
+.case-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+.case-fig {
+  margin: 0;
+}
+.case-fig-cap {
+  margin-top: var(--space-sm);
 }
 </style>

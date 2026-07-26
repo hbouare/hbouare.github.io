@@ -1,6 +1,7 @@
 {
   "nav": {
     "about": "À propos",
+    "services": "Services",
     "experience": "Parcours",
     "projects": "Projets",
     "research": "Recherche",
@@ -10,30 +11,29 @@
     "menu": "Ouvrir le menu"
   },
   "hero": {
-    "tag": "Senior Software Engineer · Full-Stack · AI · Data Engineering · R&D",
-    "title_1": "Des logiciels",
-    "title_em": "pensés pour durer",
+    "tag": "Architecte logiciel · IA & Data Engineering · R&D · Conseil technique",
+    "title_1": "Des problèmes complexes,",
+    "title_em": "des logiciels fiables",
     "title_3": "",
-    "subtitle": "Ingénieur logiciel et docteur en mécanique, je conçois des applications qui transforment les données en outils concrets. De la modélisation à la mise en production, chaque solution est pensée pour être fiable, durable et répondre aux besoins de celles et ceux qui l’utilisent au quotidien.",
-    "cta_projects": "Voir mes projets",
-    "cta_contact": "Me contacter",
-    "cta_cv": "Télécharger mon CV",
+    "subtitle": "Architecte logiciel et docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes — data, IA, backends. Du calcul scientifique (Fortran, MATLAB) au logiciel de production (Python, TypeScript) : une même méthode de chercheur, appliquée à des problèmes d’ingénierie concrets.",
+    "cta_projects": "Études de cas",
+    "cta_contact": "Discuter d’un projet",
     "scroll": "Défiler",
     "intl_label": "Expérience internationale",
     "stat_years": "Années d’expérience",
     "stat_countries": "Pays",
-    "stat_projects": "Projets livrés",
+    "stat_pubs": "Publications évaluées",
     "country_france": "🇫🇷 France",
     "country_uk": "🇬🇧 Royaume-Uni"
   },
   "about": {
     "section": "01 — À propos",
-    "title_1": "Construire pour",
-    "title_em": "durer,",
-    "title_3": "pas pour impressionner",
-    "p1": "J’ai conçu et livré des applications en France comme au Royaume-Uni, au sein d’équipes aux méthodes de travail, aux métiers et aux cultures très différentes. Ces expériences m’ont appris qu’aucun projet ne se ressemble. Avant de proposer une solution, prendre le temps de comprendre le contexte, les objectifs et les contraintes est devenu une évidence.",
-    "p2": "Pour moi, la valeur d’un logiciel ne se mesure pas à sa complexité technique, mais à son utilité. Un bon logiciel est avant tout un outil qui simplifie le travail, fait gagner du temps et répond durablement aux besoins de ses utilisateurs.",
-    "p3": "Cette vision se retrouve dans chacun de mes choix techniques. Je privilégie des solutions simples, robustes et évolutives, pensées pour être comprises, maintenues et enrichies par toute une équipe, sans dépendre de la personne qui les a conçues. Une architecture n’a pas besoin d’être spectaculaire pour être réussie : elle l’est lorsqu’elle reste fiable, lisible et utile, même plusieurs années après sa mise en production."
+    "title_1": "La rigueur du",
+    "title_em": "chercheur,",
+    "title_3": "la précision de l’ingénieur",
+    "p1": "Un doctorat en modélisation numérique m’a appris à traiter des problèmes mal posés : les décomposer, les modéliser, les résoudre avec rigueur, puis confronter les résultats au réel. C’est cette démarche que j’applique aux systèmes que je conçois — d’autant plus quand les enjeux sont techniques et incertains.",
+    "p2": "Je juge un logiciel à son utilité et à sa robustesse, pas à sa sophistication. Une bonne architecture n’a pas besoin d’être spectaculaire : elle doit rester fiable, lisible et maintenable par toute une équipe — y compris plusieurs années après sa mise en production, sans dépendre de la personne qui l’a conçue.",
+    "p3": "J’ai conçu et livré des systèmes en France comme au Royaume-Uni, dans des contextes techniques et humains très différents. J’en tire une conviction : aucune solution ne vaut sans une compréhension précise du problème, des contraintes et de l’objectif. C’est par là que je commence, toujours."
   },
   "experience": {
     "section": "02 — Parcours",
@@ -41,7 +41,7 @@
     "title_em": "construit"
   },
   "projects": {
-    "section": "03 — Projets",
+    "section": "04 — Projets",
     "title_1": "Ce que j’ai",
     "title_em": "bâti",
     "featured": "Projet phare",
@@ -54,8 +54,30 @@
     "back": "Retour aux projets",
     "not_found": "Projet introuvable."
   },
+  "services": {
+    "section": "03 — Services",
+    "title_1": "Ce que je peux",
+    "title_em": "prendre en charge",
+    "meta_desc": "Architecture backend, data engineering, IA appliquée, audit technique et conseil — pour concevoir, fiabiliser et faire évoluer des systèmes complexes.",
+    "intro": "J’interviens là où les enjeux techniques sont élevés : concevoir, fiabiliser ou débloquer un système. Missions ponctuelles, accompagnement au long cours, ou expertise sur un point précis.",
+    "svc_1_t": "Architecture applicative & backend",
+    "svc_1_d": "Quand un backend grossit, il devient difficile à faire évoluer, à tester et à maintenir. Je conçois des architectures backend claires et en couches — en Python (FastAPI) comme en TypeScript/Node — testées et documentées, pensées pour durer et pour être reprises par une équipe.",
+    "svc_2_t": "Data Engineering",
+    "svc_2_d": "Des données éclatées entre sources, sans modèle commun, sont impossibles à exploiter avec confiance. Je mets en place des modèles de données et des pipelines fiables, versionnés et vérifiables, sur lesquels vos produits et vos décisions peuvent s’appuyer.",
+    "svc_3_t": "IA appliquée",
+    "svc_3_d": "Intégrer l’IA à un produit réel, c’est passer du prototype à quelque chose de fiable, évalué et maîtrisé. J’aide à cadrer les cas d’usage utiles, à mesurer ce qui fonctionne, et à mettre en production sans fragiliser l’existant.",
+    "svc_4_t": "Audit technique & performance",
+    "svc_4_d": "Une application lente, coûteuse ou fragile, sans cause clairement identifiée. Je réalise un diagnostic priorisé — architecture, base de données, points de contention — et vous remets un plan d’action concret, ordonné par impact.",
+    "svc_5_t": "Modernisation & mise en production",
+    "svc_5_d": "Un système hérité freine vos évolutions. Je conduis une modernisation progressive — sans big-bang — avec conteneurisation, intégration continue et garde-fous de production, pour retrouver de la vitesse sans tout réécrire.",
+    "svc_6_t": "Conseil technique & R&D",
+    "svc_6_d": "Un problème mal posé, un choix d’architecture structurant, un sujet à forte incertitude. J’apporte une méthode de chercheur — analyser, modéliser, arbitrer — pour décider sur des bases solides plutôt que sur des intuitions.",
+    "cta_title": "Un de ces sujets correspond à votre besoin ?",
+    "cta_text": "Décrivez-le en quelques lignes, je vous réponds rapidement.",
+    "cta_button": "Discuter d’un projet"
+  },
   "blog": {
-    "section": "05 — Blog",
+    "section": "06 — Blog",
     "title_1": "Pensées &",
     "title_em": "articles",
     "read_more": "Lire l’article",
@@ -69,7 +91,7 @@
     "not_found": "Article introuvable."
   },
   "contact": {
-    "section": "06 — Contact",
+    "section": "07 — Contact",
     "title_1": "Travaillons",
     "title_em": "ensemble",
     "desc": "Vous recherchez un développeur pour renforcer votre équipe ou mener un projet ? Décrivez votre besoin en quelques lignes et discutons-en.",
@@ -99,17 +121,19 @@
   },
   "case": {
     "highlights": "Fonctionnalités clés",
-    "architecture": "Architecture",
+    "gallery": "En images",
+    "layer_frontend": "Front-end",
+    "layer_backend": "Back-end",
+    "layer_database": "Base de données",
     "section_overview": "Aperçu",
     "section_technical": "Sous le capot",
-    "for_devs": "Section technique, pour les développeurs",
     "access_title": "Accès au code",
     "access_note": "Le code de ce projet n’est pas public. Sur demande, je fournis un accès en lecture au dépôt, ou une présentation détaillée de l’architecture et des choix techniques.",
     "access_cta": "Demander l’accès au dépôt",
     "next_project": "Projet suivant"
   },
   "research": {
-    "section": "04 — Recherche",
+    "section": "05 — Recherche",
     "title_1": "Docteur en",
     "title_em": "mécanique, algorithmes",
     "title_3": "& modélisation numérique",
@@ -132,7 +156,7 @@
     "impact_label": "Impact",
     "impact_title_1": "De la recherche",
     "impact_title_em": "à l’ingénierie",
-    "impact_lead": "La recherche n’est pas une parenthèse dans mon parcours : c’est le socle de ma manière de travailler.",
+    "impact_lead": "C’est cette rigueur que j’apporte à vos projets les plus exigeants — ceux où l’incertitude est forte et l’erreur coûteuse.",
     "impact_1_t": "Résolution de problèmes complexes",
     "impact_1_d": "Décomposer un problème mal posé, le formuler, puis le résoudre méthodiquement.",
     "impact_2_t": "Modélisation",

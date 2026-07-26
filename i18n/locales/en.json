@@ -1,6 +1,7 @@
 {
   "nav": {
     "about": "About",
+    "services": "Services",
     "experience": "Experience",
     "projects": "Projects",
     "research": "Research",
@@ -10,30 +11,29 @@
     "menu": "Open menu"
   },
   "hero": {
-    "tag": "Senior Software Engineer · Full-Stack · AI · Data Engineering · R&D",
-    "title_1": "Software",
-    "title_em": "made to last",
+    "tag": "Software Architect · AI & Data Engineering · R&D · Technical Consulting",
+    "title_1": "Complex problems,",
+    "title_em": "reliable software",
     "title_3": "",
-    "subtitle": "Software engineer and PhD in mechanics, I build applications that turn data into practical tools. From modelling through to production, every solution is designed to be reliable, durable and to meet the real needs of the people who rely on it day to day.",
-    "cta_projects": "See my projects",
-    "cta_contact": "Contact me",
-    "cta_cv": "Download my CV",
+    "subtitle": "Software architect and PhD in numerical modelling, I design and harden complex systems — data, AI, backends. From scientific computing (Fortran, MATLAB) to production software (Python, TypeScript): one researcher’s method, applied to real engineering problems.",
+    "cta_projects": "Case studies",
+    "cta_contact": "Discuss a project",
     "scroll": "Scroll",
     "intl_label": "International experience",
     "stat_years": "Years of experience",
     "stat_countries": "Countries",
-    "stat_projects": "Projects shipped",
+    "stat_pubs": "Peer-reviewed publications",
     "country_france": "🇫🇷 France",
     "country_uk": "🇬🇧 United Kingdom"
   },
   "about": {
     "section": "01 — About",
-    "title_1": "Built to",
-    "title_em": "last,",
-    "title_3": "not to impress",
-    "p1": "I’ve designed and shipped applications in both France and the United Kingdom, within teams that differed widely in their working methods, their industries and their cultures. Those experiences taught me that no two projects are alike. Before proposing a solution, taking the time to understand the context, the goals and the constraints has become second nature.",
-    "p2": "To me, the value of software isn’t measured by its technical complexity but by its usefulness. Good software is, above all, a tool that simplifies work, saves time and meets its users’ needs for the long term.",
-    "p3": "That conviction runs through every technical choice I make. I favour solutions that are simple, robust and built to evolve — designed to be understood, maintained and extended by a whole team, without depending on whoever first designed them. An architecture doesn’t need to be spectacular to succeed: it succeeds when it stays reliable, readable and useful, even years after it goes into production."
+    "title_1": "The rigour of a",
+    "title_em": "researcher,",
+    "title_3": "the precision of an engineer",
+    "p1": "A PhD in numerical modelling taught me to tackle ill-posed problems: break them down, model them, solve them rigorously, then test the results against reality. That is the method I bring to the systems I design — all the more when the stakes are technical and uncertain.",
+    "p2": "I judge software by its usefulness and its robustness, not its sophistication. A good architecture doesn’t need to be spectacular: it needs to stay reliable, readable and maintainable by a whole team — even years after it goes into production, without depending on whoever designed it.",
+    "p3": "I’ve designed and delivered systems in both France and the United Kingdom, across very different technical and human contexts. It left me with one conviction: no solution is worth anything without a precise understanding of the problem, the constraints and the goal. That is always where I start."
   },
   "experience": {
     "section": "02 — Experience",
@@ -41,7 +41,7 @@
     "title_em": "built"
   },
   "projects": {
-    "section": "03 — Projects",
+    "section": "04 — Projects",
     "title_1": "What I’ve",
     "title_em": "shipped",
     "featured": "Featured",
@@ -54,8 +54,30 @@
     "back": "Back to projects",
     "not_found": "Project not found."
   },
+  "services": {
+    "section": "03 — Services",
+    "title_1": "What I can",
+    "title_em": "take on",
+    "meta_desc": "Backend architecture, data engineering, applied AI, technical audits and consulting — to design, harden and evolve complex systems.",
+    "intro": "I step in where the technical stakes are high: to design, harden or unblock a system. One-off missions, long-term support, or focused expertise on a single point.",
+    "svc_1_t": "Application architecture & backend",
+    "svc_1_d": "As a backend grows, it becomes hard to evolve, test and maintain. I design clear, layered backend architectures — in Python (FastAPI) as well as TypeScript/Node — tested and documented, built to last and to be picked up by a team.",
+    "svc_2_t": "Data Engineering",
+    "svc_2_d": "Data scattered across sources, with no common model, is impossible to use with confidence. I build reliable, versioned and verifiable data models and pipelines that your products and decisions can genuinely rely on.",
+    "svc_3_t": "Applied AI",
+    "svc_3_d": "Bringing AI into a real product means moving from prototype to something reliable, measured and under control. I help frame the use cases that matter, measure what actually works, and ship to production without destabilising what exists.",
+    "svc_4_t": "Technical & performance audit",
+    "svc_4_d": "An application that is slow, costly or fragile — with no clearly identified cause. I run a prioritised diagnosis (architecture, database, contention points) and hand you a concrete action plan, ordered by impact.",
+    "svc_5_t": "Modernisation & delivery",
+    "svc_5_d": "A legacy system slows your progress. I lead a gradual modernisation — no big bang — with containerisation, continuous integration and production safeguards, to regain speed without rewriting everything.",
+    "svc_6_t": "Technical consulting & R&D",
+    "svc_6_d": "An ill-posed problem, a structuring architecture choice, a topic with high uncertainty. I bring a researcher’s method — analyse, model, decide — to choose on solid ground rather than intuition.",
+    "cta_title": "Does one of these match your need?",
+    "cta_text": "Describe it in a few lines and I’ll get back to you quickly.",
+    "cta_button": "Discuss a project"
+  },
   "blog": {
-    "section": "05 — Blog",
+    "section": "06 — Blog",
     "title_1": "Thoughts &",
     "title_em": "articles",
     "read_more": "Read article",
@@ -69,7 +91,7 @@
     "not_found": "Article not found."
   },
   "contact": {
-    "section": "06 — Contact",
+    "section": "07 — Contact",
     "title_1": "Let’s work",
     "title_em": "together",
     "desc": "Looking for a developer to strengthen your team or lead a project? Tell me about your need in a few lines and let’s talk.",
@@ -99,17 +121,19 @@
   },
   "case": {
     "highlights": "Key features",
-    "architecture": "Architecture",
+    "gallery": "In pictures",
+    "layer_frontend": "Front-end",
+    "layer_backend": "Back-end",
+    "layer_database": "Database",
     "section_overview": "Overview",
     "section_technical": "Under the hood",
-    "for_devs": "The technical detail, for developers",
     "access_title": "Source access",
     "access_note": "The code for this project is not public. On request, I provide read access to the repository, or a detailed walkthrough of the architecture and its design choices.",
     "access_cta": "Request repository access",
     "next_project": "Next project"
   },
   "research": {
-    "section": "04 — Research",
+    "section": "05 — Research",
     "title_1": "PhD in",
     "title_em": "mechanics, algorithms",
     "title_3": "& numerical modelling",
@@ -132,7 +156,7 @@
     "impact_label": "Impact",
     "impact_title_1": "From research",
     "impact_title_em": "to engineering",
-    "impact_lead": "Research was not a detour in my career: it is the foundation of how I work.",
+    "impact_lead": "It’s that rigour I bring to your most demanding projects — the ones where uncertainty is high and mistakes are expensive.",
     "impact_1_t": "Complex problem solving",
     "impact_1_d": "Break down an ill-posed problem, frame it, then solve it methodically.",
     "impact_2_t": "Modelling",

@@ -27,15 +27,29 @@ const projectSchema = z.object({
   // Case-study fields — all optional so an unfilled project degrades
   // gracefully (the card simply omits them). Together they drive the lean
   // /projects/[slug] narrative:
-  //   hook (pitch) → status → intro (overview) → highlights → architecture → decisions.
+  //   hook (pitch) → status → intro (overview) → highlights → layers.
   // `status` any value beginning with `TODO` is treated as unfilled and
   // dropped at render (see `isFilled` in app/pages/projects/[slug].vue).
-  context:      z.string().optional(),          // category, e.g. "Personal project — fintech"
-  hook:         z.string().optional(),          // one-line pitch (teaser + case-study hero)
-  status:       z.string().optional(),          // e.g. "Functional · demo" — a hero-meta caption
-  intro:        z.string().optional(),          // the overview paragraph (problem + response in one)
-  highlights:   z.array(z.string()).optional(), // key features
-  architecture: z.string().optional(),          // architecture narrative
+  context:    z.string().optional(),          // category, e.g. "Personal project — fintech"
+  hook:       z.string().optional(),          // one-line pitch (teaser + case-study hero)
+  status:     z.string().optional(),          // e.g. "Functional · demo" — a hero-meta caption
+  intro:      z.string().optional(),          // the overview paragraph (problem + response in one)
+  highlights: z.array(z.string()).optional(), // key features
+
+  // ── Architecture, in three plain layers ─────────────────────────────────
+  // Each describes what the layer DOES for this project (not its stack — the
+  // tech lives in `tags`). Rendered by <CaseLayers> under "Under the hood".
+  frontend: z.string().optional(),
+  backend:  z.string().optional(),
+  database: z.string().optional(),
+
+  // ── Gallery (optional) ───────────────────────────────────────────────────
+  // Screenshots, diagrams or result shots, paths pointing at /public assets.
+  // Absent → the section is dropped.
+  gallery: z.array(z.object({
+    src:     z.string(),
+    caption: z.string().optional(),
+  })).optional(),
 
   // There is deliberately NO repository/demo/docs URL here. Source access is
   // granted personally on request via the contact page, and a field kept

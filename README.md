@@ -37,7 +37,7 @@ Après un premier clone, installer le navigateur de test une fois :
 │   ├── assets/styles/main.scss    # SCSS global, tokens (--space-*, --type-*)
 │   ├── components/
 │   │   ├── navigation/            # TopBar, Footer, ScrollToTop
-│   │   ├── sections/              # Hero, Marquee, About, Experience, Contact
+│   │   ├── sections/              # Hero, About, Services, Experience, Contact
 │   │   ├── case/                  # blocs des études de cas /projects/[slug]
 │   │   └── ui/                    # primitives : Eyebrow, DisplayTitle, SectionHeader, RevealBlock…
 │   ├── composables/               # useAppTheme, useMotion, useGsap, useJsonLd…

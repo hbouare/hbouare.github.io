@@ -22,7 +22,7 @@ export const EASE = {
   out: "power3.out",
   /** Symmetric, for things that move and come back. */
   inOut: "power2.inOut",
-  /** Linear, for continuous motion (marquee, velocity-driven effects). */
+  /** Linear, for continuous, velocity-driven motion. */
   none: "none",
 } as const
 

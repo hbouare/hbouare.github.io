@@ -1,7 +1,6 @@
 <template>
   <div>
     <SectionsHeroSection />
-    <SectionsMarqueeBar />
     <SectionsAboutSection />
     <SectionsExperienceSection />
   </div>

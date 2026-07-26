@@ -23,19 +23,11 @@
             the band still reads as having one CTA.
           -->
           <div class="d-flex align-center ga-4 mt-10 hero-beat flex-wrap">
-            <v-btn :to="localePath('/projects')"  size="large">
-              {{ $t("hero.cta_projects") }}
-            </v-btn>
-            <v-btn :to="localePath('/contact')"  size="large">
+            <v-btn :to="localePath('/contact')" size="large">
               {{ $t("hero.cta_contact") }}
             </v-btn>
-            <v-btn
-              :href="`/cv/cv-hamed-bouare-${locale}.pdf`"
-              download
-              
-              size="large"
-            >
-              {{ $t("hero.cta_cv") }}
+            <v-btn :to="localePath('/projects')" variant="text" size="large">
+              {{ $t("hero.cta_projects") }}
             </v-btn>
           </div>
 
@@ -94,7 +86,7 @@ import { DURATION, EASE, STAGGER, DISTANCE } from "~/config/motion"
 
 const localePath = useLocalePath()
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const countries = computed(() => [
   t("hero.country_france"),
@@ -104,7 +96,7 @@ const countries = computed(() => [
 const stats = [
   { value: "8+", key: "stat_years", numeric: 8, suffix: "+" },
   { value: "2", key: "stat_countries", numeric: 2 },
-  { value: "20+", key: "stat_projects", numeric: 20, suffix: "+" },
+  { value: "5", key: "stat_pubs", numeric: 5 },
 ]
 
 const statsRef = ref<HTMLElement | ComponentPublicInstance | null>(null)
