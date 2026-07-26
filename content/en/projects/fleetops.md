@@ -7,7 +7,7 @@ context: "Personal project — transport & services"
 hook: "Steer an entire vehicle fleet from a single screen, and never let a deadline slip."
 
 status: "Functional · demo data"
-cover: "/projects/fleetops/architecture.svg"
+cover: "/projects/fleetops/architecture-en.svg"
 
 intro: "A fleet-management application that replaces fragmented tracking — spreadsheets, emails, manual reminders — with a single operational view. It watches three sources of deadlines (driver licences, regulatory documents, servicing), by date or by mileage, and turns each approaching deadline into a ranked alert that a manager acknowledges and then resolves."
 architecture: "A three-layer web application — Vue 3 interface, versioned FastAPI API, PostgreSQL database — with all business logic and every authorisation check living server-side. The heart of the system is not the CRUD but the alert engine: it watches three sources of deadlines and two triggers, by date and by mileage. How it computes them is the defining choice of the project."

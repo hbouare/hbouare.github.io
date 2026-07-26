@@ -7,7 +7,7 @@ context: "Personal project — SMB, finance"
 hook: "The foundations of a financial-tracking SaaS for SMBs: a solid technical base, laid before the features."
 
 status: "In progress · foundations delivered"
-cover: "/projects/finboard/architecture.svg"
+cover: "/projects/finboard/architecture-en.svg"
 
 intro: "The foundations of a financial-tracking SaaS for SMBs: a modular monolith organised by domains, where each new domain (categories, invoices, imports, reports…) is added without touching the foundations. This first increment delivers the architecture, the dashboard shell and a complete, blocking quality chain — before the business domains."
 architecture: "A FastAPI modular monolith organised by domains: routes delegate to business services, which orchestrate SQLAlchemy repositories on PostgreSQL. The Vue 3 frontend separates pages, components, stores, API calls and plugins. A REST API versioned under /api/v1, shared UUID identifiers and UTC timestamps, migrations designed to stay coherent and reversible. Later domains are added on these foundations without modifying them."
