@@ -363,8 +363,6 @@ drops the element back to its CSS resting `0`.
 - **Page transitions**: GSAP JS hooks on `<NuxtPage :transition>` in
   [app/app.vue](app/app.vue) (`css: false`). The hooks MUST call `done()` on
   every path, including reduced motion, or navigation hangs.
-- **Marquee**: GSAP loop + velocity-driven skew (CSS cannot compose the loop's
-  translate with the skew on one transform). Static under reduced motion.
 - **Nav scroll state, logo draw, infinity SVG, hover states**: kept as CSS —
   GSAP would add no value. Do not "upgrade" working CSS transitions to GSAP.
 
@@ -372,7 +370,7 @@ drops the element back to its CSS resting `0`.
 
 `yarn test:e2e` includes `tests/e2e/motion.spec.ts`, which asserts reduced
 motion reveals everything, the hero counter reaches its value, navigation
-never blocks, and the marquee stays still under reduced motion — all silent
+never blocks — all silent
 failure modes. Always test **desktop AND mobile, motion AND reduced-motion**;
 several bugs here only appeared in one specific combination.
 

@@ -37,6 +37,16 @@ const projectSchema = z.object({
   highlights:   z.array(z.string()).optional(), // key features
   architecture: z.string().optional(),          // architecture narrative
 
+  // ── Visuals ────────────────────────────────────────────────────────────
+  // Optional. A cover screenshot/diagram shown under the stack, and a gallery
+  // of screenshots, diagrams or result shots. Paths point at /public assets,
+  // e.g. "/projects/<slug>/cover.png". Absent → the page renders as text-only.
+  cover:   z.string().optional(),
+  gallery: z.array(z.object({
+    src:     z.string(),
+    caption: z.string().optional(),
+  })).optional(),
+
   // There is deliberately NO repository/demo/docs URL here. Source access is
   // granted personally on request via the contact page, and a field kept
   // "for reference only" would not stay private: Nuxt Content serialises the

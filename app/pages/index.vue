@@ -1,8 +1,8 @@
 <template>
   <div>
     <SectionsHeroSection />
-    <SectionsMarqueeBar />
     <SectionsAboutSection />
+    <SectionsServicesSection teaser />
     <SectionsExperienceSection />
   </div>
 </template>

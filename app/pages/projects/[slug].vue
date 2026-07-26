@@ -43,6 +43,15 @@
         </div>
       </UiRevealBlock>
 
+      <!-- Cover: the product itself, right under the stack — the fastest way
+           to make the work read as real. Optional; absent projects are
+           unaffected. -->
+      <UiRevealBlock v-if="project.cover">
+        <figure class="case-cover">
+          <img :src="project.cover" :alt="project.title" loading="lazy" decoding="async" />
+        </figure>
+      </UiRevealBlock>
+
       <!-- ── 2 & 3. Narrative, then the technical annex ─────────────────── -->
       <section v-for="tier in tiers" :key="tier.id" class="case-tier">
         <header class="case-tier-head">
@@ -78,6 +87,21 @@
           </div>
         </UiRevealBlock>
       </section>
+
+      <!-- Gallery: screenshots, diagrams, results. Optional. -->
+      <UiRevealBlock v-if="project.gallery?.length">
+        <section class="case-gallery">
+          <UiEyebrow :rule="false" class="case-gallery-label">{{ $t("case.gallery") }}</UiEyebrow>
+          <div class="case-gallery-grid">
+            <figure v-for="(fig, i) in project.gallery" :key="i" class="case-fig">
+              <img :src="fig.src" :alt="fig.caption || project.title" loading="lazy" decoding="async" />
+              <figcaption v-if="fig.caption" class="case-fig-cap type-caption text-muted">
+                {{ fig.caption }}
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+      </UiRevealBlock>
 
       <!-- ── The way forward ───────────────────────────────────────────── -->
       <UiRevealBlock>
@@ -383,5 +407,36 @@ if (project.value) {
 }
 .case-status {
   color: rgb(var(--v-theme-muted));
+}
+
+// ── Visuals: cover + gallery (optional, graceful when absent) ────────────
+.case-cover {
+  margin: 0 0 var(--space-huge);
+}
+.case-cover img,
+.case-fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgb(var(--v-theme-border));
+  border-radius: 8px;
+}
+.case-gallery {
+  padding-top: var(--section-pad);
+  border-top: 1px solid rgb(var(--v-theme-border));
+}
+.case-gallery-label {
+  margin-bottom: var(--space-xl);
+}
+.case-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+.case-fig {
+  margin: 0;
+}
+.case-fig-cap {
+  margin-top: var(--space-sm);
 }
 </style>

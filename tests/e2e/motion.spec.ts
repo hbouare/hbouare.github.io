@@ -32,19 +32,6 @@ test.describe("reduced motion", () => {
     expect(await page.locator(".hero-line").count()).toBe(0)
   })
 
-  // The marquee is an infinite loop — under reduced motion it must sit
-  // still, not scroll forever.
-  test("marquee does not auto-scroll", async ({ page }) => {
-    await reduce(page)
-    await page.goto("/")
-    const track = page.locator(".marquee-track")
-    await expect(track).toBeVisible()
-    const before = await track.evaluate((el) => el.getBoundingClientRect().left)
-    await page.waitForTimeout(700)
-    const after = await track.evaluate((el) => el.getBoundingClientRect().left)
-    expect(Math.abs(after - before)).toBeLessThan(2)
-  })
-
   // Reveal blocks rest at opacity 0 and are shown by ScrollTrigger; under
   // reduced motion, content below the fold must not be trapped invisible.
   test("below-the-fold content is visible without scrolling", async ({

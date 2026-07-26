@@ -7,6 +7,7 @@ context: "Projet personnel / R&D sécurité"
 hook: "Un coffre à mots de passe où même une fuite de base ne révèle rien."
 
 status: "Fonctionnel"
+cover: "/projects/securevault/architecture.svg"
 
 intro: "Un coffre à mots de passe centralisé où la confidentialité ne se négocie jamais : chaque secret est chiffré en AES-256-GCM avant stockage, si bien qu’une fuite de base ne révèle rien. L’accès est verrouillé par mot de passe fort (Argon2id) et 2FA TOTP, avec générateur avancé, tableau de bord de sécurité et audit des actions sensibles."
 architecture: "Une frontière nette : rien n’atteint la base en clair. Le chiffrement est appliqué côté backend avant persistance et MongoDB ne voit jamais que des entrées chiffrées — ce qui vaut aussi pour une sauvegarde ou une copie volée. L’API FastAPI suit une Clean Architecture (domaine / application / infrastructure / api), avec JWT access + refresh, révocation et gestion des sessions/appareils, et 2FA TOTP. Le frontend n’a donc pas à être un maillon de confiance : il consulte et saisit, il ne protège pas."

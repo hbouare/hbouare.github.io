@@ -7,6 +7,7 @@ context: "Personal / security R&D project"
 hook: "A password vault where even a database leak reveals nothing."
 
 status: "Functional"
+cover: "/projects/securevault/architecture.svg"
 
 intro: "A centralised password vault where confidentiality is never negotiable: every secret is encrypted with AES-256-GCM before storage, so a database leak reveals nothing. Access is locked behind a strong password (Argon2id) and TOTP 2FA, with an advanced generator, a security dashboard and an audit trail of sensitive actions."
 architecture: "One hard boundary: nothing reaches the database in clear text. Encryption is applied in the backend before persistence and MongoDB only ever sees encrypted entries — which holds just as true for a backup or a stolen copy. The FastAPI backend follows Clean Architecture (domain / application / infrastructure / api), with JWT access + refresh, revocation and session/device management, and TOTP 2FA. The frontend therefore never has to be a link in the trust chain: it views and it captures, it does not protect."
