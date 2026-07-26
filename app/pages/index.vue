@@ -2,7 +2,6 @@
   <div>
     <SectionsHeroSection />
     <SectionsAboutSection />
-    <SectionsServicesSection teaser />
     <SectionsExperienceSection />
   </div>
 </template>

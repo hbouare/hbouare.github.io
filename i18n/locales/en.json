@@ -37,7 +37,7 @@
     "p3": "I’ve designed and delivered systems in both France and the United Kingdom, across very different technical and human contexts. It left me with one conviction: no solution is worth anything without a precise understanding of the problem, the constraints and the goal. That is always where I start."
   },
   "experience": {
-    "section": "03 — Experience",
+    "section": "02 — Experience",
     "title_1": "Where I’ve",
     "title_em": "built"
   },
@@ -56,7 +56,7 @@
     "not_found": "Project not found."
   },
   "services": {
-    "section": "02 — Services",
+    "section": "03 — Services",
     "title_1": "What I can",
     "title_em": "take on",
     "meta_desc": "Python architecture, data engineering, applied AI, technical audits and consulting — to design, harden and evolve complex systems.",
@@ -75,8 +75,7 @@
     "svc_6_d": "An ill-posed problem, a structuring architecture choice, a topic with high uncertainty. I bring a researcher’s method — analyse, model, decide — to choose on solid ground rather than intuition.",
     "cta_title": "Does one of these match your need?",
     "cta_text": "Describe it in a few lines and I’ll get back to you quickly.",
-    "cta_button": "Discuss a project",
-    "teaser_cta": "See the services"
+    "cta_button": "Discuss a project"
   },
   "blog": {
     "section": "06 — Blog",

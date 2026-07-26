@@ -37,7 +37,7 @@
     "p3": "J’ai conçu et livré des systèmes en France comme au Royaume-Uni, dans des contextes techniques et humains très différents. J’en tire une conviction : aucune solution ne vaut sans une compréhension précise du problème, des contraintes et de l’objectif. C’est par là que je commence, toujours."
   },
   "experience": {
-    "section": "03 — Parcours",
+    "section": "02 — Parcours",
     "title_1": "Où j’ai",
     "title_em": "construit"
   },
@@ -56,7 +56,7 @@
     "not_found": "Projet introuvable."
   },
   "services": {
-    "section": "02 — Services",
+    "section": "03 — Services",
     "title_1": "Ce que je peux",
     "title_em": "prendre en charge",
     "meta_desc": "Architecture Python, data engineering, IA appliquée, audit technique et conseil — pour concevoir, fiabiliser et faire évoluer des systèmes complexes.",
@@ -75,8 +75,7 @@
     "svc_6_d": "Un problème mal posé, un choix d’architecture structurant, un sujet à forte incertitude. J’apporte une méthode de chercheur — analyser, modéliser, arbitrer — pour décider sur des bases solides plutôt que sur des intuitions.",
     "cta_title": "Un de ces sujets correspond à votre besoin ?",
     "cta_text": "Décrivez-le en quelques lignes, je vous réponds rapidement.",
-    "cta_button": "Discuter d’un projet",
-    "teaser_cta": "Voir les services"
+    "cta_button": "Discuter d’un projet"
   },
   "blog": {
     "section": "06 — Blog",

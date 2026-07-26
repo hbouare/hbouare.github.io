@@ -4,11 +4,9 @@
   I hire him FOR?" Six named services, each stated as a client problem + what I
   deliver — no technology soup, no marketing.
 
-  One component, two uses:
-    - <SectionsServicesSection />         full page (/services): intro + a
-                                          conversion block to /contact.
-    - <SectionsServicesSection teaser />  home funnel: same grid, a quiet link
-                                          through to the full page instead.
+  Lives on its own page (/services): the intro, the six services, and a
+  conversion block to /contact. Deliberately NOT duplicated on the home — the
+  offer has one place, so the same six cards never appear twice.
 -->
 <template>
   <section class="section-services section-v-pad px-6 px-md-10">
@@ -19,7 +17,7 @@
         :line-em="$t('services.title_em')"
       />
 
-      <UiRevealBlock v-if="!teaser" :delay="80">
+      <UiRevealBlock :delay="80">
         <p class="services-intro type-body-lg mt-8">{{ $t("services.intro") }}</p>
       </UiRevealBlock>
 
@@ -38,17 +36,7 @@
       </div>
 
       <UiRevealBlock :delay="120">
-        <!-- Teaser routes to the full offer; the full page routes to contact. -->
-        <div v-if="teaser" class="services-more mt-12">
-          <v-btn
-            :to="localePath('/services')"
-            variant="text"
-            append-icon="mdi-arrow-right"
-          >
-            {{ $t("services.teaser_cta") }}
-          </v-btn>
-        </div>
-        <div v-else class="services-cta section-surface mt-16">
+        <div class="services-cta section-surface mt-16">
           <h2 class="services-cta-title type-title">{{ $t("services.cta_title") }}</h2>
           <p class="services-cta-text type-body-md text-muted mt-2">
             {{ $t("services.cta_text") }}
@@ -68,7 +56,6 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ teaser?: boolean }>()
 const localePath = useLocalePath()
 </script>
 
