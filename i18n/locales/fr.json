@@ -122,10 +122,11 @@
   "case": {
     "highlights": "Fonctionnalités clés",
     "gallery": "En images",
-    "architecture": "Architecture",
+    "layer_frontend": "Front-end",
+    "layer_backend": "Back-end",
+    "layer_database": "Base de données",
     "section_overview": "Aperçu",
     "section_technical": "Sous le capot",
-    "for_devs": "Section technique, pour les développeurs",
     "access_title": "Accès au code",
     "access_note": "Le code de ce projet n’est pas public. Sur demande, je fournis un accès en lecture au dépôt, ou une présentation détaillée de l’architecture et des choix techniques.",
     "access_cta": "Demander l’accès au dépôt",

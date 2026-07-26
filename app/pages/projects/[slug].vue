@@ -7,8 +7,8 @@
     1. Hero + meta   — title, one-line hook, the stack and run status. A
                        recruiter gets the essentials in ~15 seconds.
     2. Overview      — one paragraph (problem + response) and the key features.
-    3. Under the hood — the architecture narrative, for readers who want the
-                       shape of the system.
+    3. Under the hood — the architecture in three plain layers (front-end,
+                       back-end, database), described by what each one does.
 
   Then a way forward: source access on request, and the next project.
 
@@ -43,16 +43,7 @@
         </div>
       </UiRevealBlock>
 
-      <!-- Cover: the product itself, right under the stack — the fastest way
-           to make the work read as real. Optional; absent projects are
-           unaffected. -->
-      <UiRevealBlock v-if="project.cover">
-        <figure class="case-cover">
-          <img :src="project.cover" :alt="project.title" loading="lazy" decoding="async" />
-        </figure>
-      </UiRevealBlock>
-
-      <!-- ── 2 & 3. Narrative, then the technical annex ─────────────────── -->
+      <!-- ── 2. Overview ────────────────────────────────────────────────── -->
       <section v-for="tier in tiers" :key="tier.id" class="case-tier">
         <header class="case-tier-head">
           <UiDisplayTitle tag="h2" level="lg" reveal>
@@ -85,6 +76,22 @@
               </ul>
             </div>
           </div>
+        </UiRevealBlock>
+      </section>
+
+      <!-- ── 3. Under the hood: architecture in three plain layers ───────── -->
+      <section v-if="hasLayers" class="case-tier">
+        <header class="case-tier-head">
+          <UiDisplayTitle tag="h2" level="lg" reveal>
+            {{ $t("case.section_technical") }}
+          </UiDisplayTitle>
+        </header>
+        <UiRevealBlock>
+          <CaseLayers
+            :frontend="project.frontend"
+            :backend="project.backend"
+            :database="project.database"
+          />
         </UiRevealBlock>
       </section>
 
@@ -164,6 +171,11 @@ const isFilled = (v: unknown): v is string =>
   v.trim() !== "" &&
   !v.trim().toUpperCase().startsWith("TODO")
 
+// Present when the project describes its front-end / back-end / database.
+const hasLayers = computed(
+  () => !!(project.value?.frontend || project.value?.backend || project.value?.database),
+)
+
 // ── Progressive reading tiers ─────────────────────────────────────────────
 // Each entry maps a frontmatter field to a label + a render kind. `tiers`
 // resolves this against the current project, so the template is a plain
@@ -204,16 +216,6 @@ const tierDefs: {
       // under the "Aperçu" heading. `solution` is folded into it in content.
       { field: "intro", label: () => "", kind: "prose" },
       { field: "highlights", label: () => t("case.highlights"), kind: "list" },
-    ],
-  },
-  // Under the hood: the architecture narrative — the technical annex for
-  // readers who want the shape of the system.
-  {
-    id: "technical",
-    heading: () => t("case.section_technical"),
-    note: () => t("case.for_devs"),
-    fields: [
-      { field: "architecture", label: () => t("case.architecture"), kind: "prose" },
     ],
   },
 ]
@@ -409,11 +411,7 @@ if (project.value) {
   color: rgb(var(--v-theme-muted));
 }
 
-// ── Visuals: cover + gallery (optional, graceful when absent) ────────────
-.case-cover {
-  margin: 0 0 var(--space-huge);
-}
-.case-cover img,
+// ── Gallery visuals (optional, graceful when absent) ─────────────────────
 .case-fig img {
   display: block;
   width: 100%;

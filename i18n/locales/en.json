@@ -122,10 +122,11 @@
   "case": {
     "highlights": "Key features",
     "gallery": "In pictures",
-    "architecture": "Architecture",
+    "layer_frontend": "Front-end",
+    "layer_backend": "Back-end",
+    "layer_database": "Database",
     "section_overview": "Overview",
     "section_technical": "Under the hood",
-    "for_devs": "The technical detail, for developers",
     "access_title": "Source access",
     "access_note": "The code for this project is not public. On request, I provide read access to the repository, or a detailed walkthrough of the architecture and its design choices.",
     "access_cta": "Request repository access",
