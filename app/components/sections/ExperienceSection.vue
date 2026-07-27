@@ -17,9 +17,6 @@
 
       <UiRevealBlock>
         <p class="exp-lead type-body-lg mt-8">{{ $t("experience.lead") }}</p>
-        <ul v-if="sectors.length" class="exp-sectors mt-6" aria-label="Secteurs">
-          <li v-for="s in sectors" :key="s" class="exp-sector type-micro-cap">{{ s }}</li>
-        </ul>
       </UiRevealBlock>
 
       <div class="exp-list mt-14">
@@ -41,7 +38,7 @@
             </div>
             <h3 class="exp-company type-title">{{ exp.company }}</h3>
             <p class="exp-meta type-micro-cap text-muted">
-              {{ exp.role }} · <span class="exp-flag">{{ exp.flag }}</span> {{ exp.location }}
+              {{ exp.role }} · {{ exp.location }}
             </p>
             <div class="exp-body type-body-md text-muted">
               <ContentRenderer :value="exp" />
@@ -61,45 +58,12 @@ const { data: experiences } = await useAsyncData(
   () =>
     queryCollection(`${locale.value}_experience`).order("order", "ASC").all(),
 )
-
-// The credibility strip: each sector once, in the order it first appears.
-const sectors = computed(() => {
-  const seen = new Set<string>()
-  const out: string[] = []
-  for (const e of experiences.value ?? []) {
-    if (e.sector && !seen.has(e.sector)) {
-      seen.add(e.sector)
-      out.push(e.sector)
-    }
-  }
-  return out
-})
 </script>
 
 <style scoped lang="scss">
 .exp-lead {
   max-width: var(--measure-prose);
   color: rgb(var(--v-theme-on-background));
-}
-
-// Sector strip — the reach, scannable in one glance. Editorial (mid-dot
-// separated), not chips: these are proof, not the tech tags we dropped.
-.exp-sectors {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 0;
-}
-.exp-sector {
-  color: rgb(var(--v-theme-on-background));
-  &:not(:last-child)::after {
-    content: "·";
-    margin: 0 0.85rem;
-    color: rgb(var(--v-theme-muted));
-  }
 }
 
 // ── Entry ─────────────────────────────────────────────────────────────────
@@ -123,9 +87,6 @@ const sectors = computed(() => {
 }
 .exp-meta {
   margin-top: 0.15rem;
-}
-.exp-flag {
-  font-size: 1.1rem;
 }
 .exp-body {
   margin-top: var(--space-md);
