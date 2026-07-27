@@ -34,7 +34,7 @@
             </div>
             <h3 class="exp-company type-title">{{ exp.company }}</h3>
             <p class="exp-meta type-micro-cap text-muted">
-              {{ exp.role }} · {{ exp.location }}
+              {{ exp.role }} · {{ exp.location }}<template v-if="exp.employment"> · {{ exp.employment }}</template>
             </p>
             <div class="exp-body type-body-md text-muted">
               <ContentRenderer :value="exp" />
