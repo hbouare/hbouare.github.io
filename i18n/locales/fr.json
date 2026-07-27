@@ -26,10 +26,6 @@
     "country_france": "🇫🇷 France",
     "country_uk": "🇬🇧 Royaume-Uni"
   },
-  "credibility": {
-    "label": "Des systèmes conçus et livrés pour",
-    "aria": "Références"
-  },
   "home": {
     "cta_title": "Un projet, un doute technique ?",
     "cta_text": "Décrivez votre besoin en quelques lignes — je vous réponds rapidement.",
@@ -47,8 +43,7 @@
   "experience": {
     "section": "02 — Parcours",
     "title_1": "Où j’ai",
-    "title_em": "construit",
-    "lead": "De l’énergie à la recherche, des environnements où la fiabilité n’est pas une option."
+    "title_em": "construit"
   },
   "projects": {
     "section": "04 — Projets",

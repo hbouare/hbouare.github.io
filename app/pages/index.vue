@@ -1,7 +1,6 @@
 <template>
   <div>
     <SectionsHeroSection />
-    <SectionsCredibilityStrip />
     <SectionsAboutSection />
     <SectionsExperienceSection />
     <UiCtaBand

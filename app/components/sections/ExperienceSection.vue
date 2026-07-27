@@ -15,10 +15,6 @@
         :line-em="$t('experience.title_em')"
       />
 
-      <UiRevealBlock>
-        <p class="exp-lead type-body-lg mt-8">{{ $t("experience.lead") }}</p>
-      </UiRevealBlock>
-
       <div class="exp-list mt-14">
         <template v-if="!experiences">
           <div v-for="n in 3" :key="n" class="exp-skeleton">
@@ -61,11 +57,6 @@ const { data: experiences } = await useAsyncData(
 </script>
 
 <style scoped lang="scss">
-.exp-lead {
-  max-width: var(--measure-prose);
-  color: rgb(var(--v-theme-on-background));
-}
-
 // ── Entry ─────────────────────────────────────────────────────────────────
 .exp-item {
   border-top: 1px solid rgb(var(--v-theme-border));
