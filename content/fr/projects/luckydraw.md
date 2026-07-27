@@ -19,4 +19,23 @@ highlights:
   - "Achat de tickets et historique de participation"
   - "Back-office : résultats, transactions, statistiques, exports"
 tags: ["Node.js","Express","TypeScript","Vue 3","MongoDB","Redis"]
+
+cover:
+  src: "/projects/luckydraw/hero.webp"
+  alt: "Le catalogue des loteries : cagnottes, catégories et statuts en direct"
+
+gallery:
+  - src: "/projects/luckydraw/verify.webp"
+    caption: "Chaque tirage est cryptographiquement vérifiable (commit-reveal) : hash publié avant, graine révélée, résultat rejouable"
+    span: 4
+  - src: "/projects/luckydraw/mobile.webp"
+    caption: "Parcourir les loteries et jouer, aussi depuis mobile"
+    device: phone
+    span: 2
+  - src: "/projects/luckydraw/detail.webp"
+    caption: "Fiche loterie : gain, prix du ticket, tirage daté et règlement"
+    span: 3
+  - src: "/projects/luckydraw/landing.webp"
+    caption: "Tentez votre chance, en toute confiance"
+    span: 3
 ---
