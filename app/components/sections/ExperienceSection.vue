@@ -1,14 +1,21 @@
+<!-- app/components/sections/ExperienceSection.vue -->
+<!--
+  Not a CV. Proof. The value of this section is the SECTORS and the names —
+  energy, healthcare, rail, industry, research; EDF, GE HealthCare, SNCF… — so
+  each entry leads with its sector and company, not a job title, and the tech
+  stack (tags) is dropped: it is noise here, and lives in the hero and the
+  services. A sector strip up top lets a decision-maker scan the reach at once.
+-->
 <template>
   <section id="experience" class="section-pad section-surface">
     <v-container class="px-6 px-md-10" fluid>
       <UiSectionHeader
-          :label="$t('experience.section')"
-          :line1="$t('experience.title_1')"
-          :line-em="$t('experience.title_em')"
-        />
+        :label="$t('experience.section')"
+        :line1="$t('experience.title_1')"
+        :line-em="$t('experience.title_em')"
+      />
 
       <div class="exp-list mt-14">
-        <!-- Skeleton loaders while data loads -->
         <template v-if="!experiences">
           <div v-for="n in 3" :key="n" class="exp-skeleton">
             <v-skeleton-loader type="list-item-three-line" />
@@ -20,36 +27,19 @@
           :key="exp.id"
           :delay="i * 100"
         >
-          <div class="exp-item">
-            <v-row no-gutters class="exp-row">
-              <v-col cols="12" md="2" class="type-micro-cap text-muted">
-                {{ exp.period }}
-                <span v-if="exp.employment" class="exp-employment d-block mt-1">
-                  {{ exp.employment }}
-                </span>
-              </v-col>
-              <v-col cols="12" md="8">
-                <h3 class="exp-role type-title">{{ exp.role }}</h3>
-                <p class="type-micro-cap mt-1">{{ exp.company }}</p>
-                <!-- Mobile location -->
-                <div class="d-md-none type-micro-cap text-muted mt-1">
-                  <span class="exp-flag">{{ exp.flag }}</span> {{ exp.location }}
-                </div>
-                <div class="exp-body type-body-md text-muted mt-3">
-                  <ContentRenderer :value="exp" />
-                </div>
-                <div class="d-flex flex-wrap ga-1 mt-3">
-                  <v-chip v-for="tag in exp.tags" :key="tag" size="x-small">
-                    {{ tag }}
-                  </v-chip>
-                </div>
-              </v-col>
-              <v-col md="2" class="d-none d-md-flex exp-location type-micro-cap text-muted">
-                <span class="exp-flag">{{ exp.flag }}</span>
-                <span class="mt-1">{{ exp.location }}</span>
-              </v-col>
-            </v-row>
-          </div>
+          <article class="exp-item">
+            <div class="exp-top">
+              <span v-if="exp.sector" class="exp-sector-tag type-micro-cap">{{ exp.sector }}</span>
+              <span class="exp-period type-micro-cap text-muted">{{ exp.period }}</span>
+            </div>
+            <h3 class="exp-company type-title">{{ exp.company }}</h3>
+            <p class="exp-meta type-micro-cap text-muted">
+              {{ exp.role }} · {{ exp.location }}<template v-if="exp.employment"> · {{ exp.employment }}</template>
+            </p>
+            <div class="exp-body type-body-md text-muted">
+              <ContentRenderer :value="exp" />
+            </div>
+          </article>
         </UiRevealBlock>
       </div>
     </v-container>
@@ -67,38 +57,36 @@ const { data: experiences } = await useAsyncData(
 </script>
 
 <style scoped lang="scss">
+// ── Entry ─────────────────────────────────────────────────────────────────
 .exp-item {
   border-top: 1px solid rgb(var(--v-theme-border));
+  padding: var(--space-xl) 0;
 }
-.exp-row {
-  padding: 1.25rem 0;
+.exp-top {
+  display: flex;
   align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xs);
 }
-// Contract type under the period — fuller ink than the muted date so it
-// reads as a distinct label (used to flag two overlapping missions).
-.exp-employment {
+// The sector leads — full ink, it is the point of the row.
+.exp-sector-tag {
   color: rgb(var(--v-theme-on-background));
 }
-// Role dims to muted when the row is not hovered — the system's only
-// available emphasis device without a hue.
-.exp-role {
-  color: rgb(var(--v-theme-muted));
-  transition: color 0.3s;
-  .exp-item:hover & {
-    color: rgb(var(--v-theme-on-background));
-  }
+.exp-company {
+  color: rgb(var(--v-theme-on-background));
+}
+.exp-meta {
+  margin-top: 0.15rem;
+}
+.exp-body {
+  margin-top: var(--space-md);
+  max-width: var(--measure-prose);
 }
 .exp-body :deep(p) {
   margin: 0;
 }
-.exp-location {
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-.exp-flag {
-  font-size: 1.2rem;
-}
+
 .exp-skeleton {
   border-top: 1px solid rgb(var(--v-theme-border));
   padding: 1rem 0;

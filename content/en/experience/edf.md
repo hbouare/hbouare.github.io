@@ -3,6 +3,7 @@ id: edf
 order: 1
 role: "Data Engineer & Full-Stack Developer"
 company: "EDF"
+sector: "Energy"
 period: "June 2024 — Present"
 employment: "Full-time"
 location: "Saint-Denis, France"

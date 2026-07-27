@@ -13,6 +13,7 @@
   type badge is the only differentiator, never a hue.
 -->
 <template>
+  <div>
   <v-container class="research px-6 px-md-10 section-v-pad" fluid>
     <div class="research-inner">
       <!-- ── Act I — Introduction ─────────────────────────────────────── -->
@@ -141,12 +142,21 @@
       </UiRevealBlock>
     </div>
   </v-container>
+
+  <UiCtaBand
+    :title="$t('research.cta_title')"
+    :text="$t('research.cta_text')"
+    :button="$t('research.cta_button')"
+    :to="localePath('/contact')"
+  />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { publications, type Publication, type PublicationType } from "~/config/publications"
 
 const { locale, t } = useI18n()
+const localePath = useLocalePath()
 
 const copy = (pub: Publication) => pub[locale.value as "fr" | "en"]
 

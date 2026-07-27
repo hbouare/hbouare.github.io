@@ -15,16 +15,21 @@
     "title_1": "Des problèmes complexes,",
     "title_em": "des logiciels fiables",
     "title_3": "",
-    "subtitle": "Architecte logiciel et docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes — data, IA, backends. Du calcul scientifique (Fortran, MATLAB) au logiciel de production (Python, TypeScript) : une même méthode de chercheur, appliquée à des problèmes d’ingénierie concrets.",
+    "subtitle": "Architecte logiciel et docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes — data, IA, du front-end au back-end. Du calcul scientifique au logiciel de production : une même méthode de chercheur, appliquée à des problèmes d’ingénierie concrets.",
     "cta_projects": "Études de cas",
     "cta_contact": "Discuter d’un projet",
     "scroll": "Défiler",
     "intl_label": "Expérience internationale",
     "stat_years": "Années d’expérience",
-    "stat_countries": "Pays",
+    "stat_sectors": "Secteurs",
     "stat_pubs": "Publications évaluées",
     "country_france": "🇫🇷 France",
     "country_uk": "🇬🇧 Royaume-Uni"
+  },
+  "home": {
+    "cta_title": "Un projet, un doute technique ?",
+    "cta_text": "Décrivez votre besoin en quelques lignes — je vous réponds rapidement.",
+    "cta_button": "Travaillons ensemble"
   },
   "about": {
     "section": "01 — À propos",
@@ -59,22 +64,34 @@
     "title_1": "Ce que je peux",
     "title_em": "prendre en charge",
     "meta_desc": "Architecture backend, data engineering, IA appliquée, audit technique et conseil — pour concevoir, fiabiliser et faire évoluer des systèmes complexes.",
-    "intro": "J’interviens là où les enjeux techniques sont élevés : concevoir, fiabiliser ou débloquer un système. Missions ponctuelles, accompagnement au long cours, ou expertise sur un point précis.",
-    "svc_1_t": "Architecture applicative & backend",
-    "svc_1_d": "Quand un backend grossit, il devient difficile à faire évoluer, à tester et à maintenir. Je conçois des architectures backend claires et en couches — en Python (FastAPI) comme en TypeScript/Node — testées et documentées, pensées pour durer et pour être reprises par une équipe.",
+    "intro": "Concevoir, fiabiliser ou débloquer un système — là où les enjeux techniques sont élevés. En mission ponctuelle, en accompagnement au long cours, ou sur un point précis.",
+    "svc_1_t": "Architecture applicative full-stack",
+    "svc_1_p": "Une application qui grossit devient vite difficile à faire évoluer, à tester et à maintenir.",
+
+    "svc_1_d": "La réponse tient dans une architecture claire et en couches, du front-end au back-end — Vue côté interface, Python ou TypeScript/Node côté serveur — testée, documentée, pensée pour durer et pour être reprise par toute une équipe.",
     "svc_2_t": "Data Engineering",
-    "svc_2_d": "Des données éclatées entre sources, sans modèle commun, sont impossibles à exploiter avec confiance. Je mets en place des modèles de données et des pipelines fiables, versionnés et vérifiables, sur lesquels vos produits et vos décisions peuvent s’appuyer.",
+    "svc_2_p": "Des données éparpillées entre les sources, sans modèle commun, restent impossibles à exploiter en confiance.",
+
+    "svc_2_d": "Un modèle propre et des pipelines fiables, versionnés et vérifiables, leur redonnent une base sur laquelle produits et décisions peuvent réellement s’appuyer.",
     "svc_3_t": "IA appliquée",
-    "svc_3_d": "Intégrer l’IA à un produit réel, c’est passer du prototype à quelque chose de fiable, évalué et maîtrisé. J’aide à cadrer les cas d’usage utiles, à mesurer ce qui fonctionne, et à mettre en production sans fragiliser l’existant.",
+    "svc_3_p": "Intégrer l’IA à un produit réel, c’est passer du prototype à quelque chose de fiable, évalué et maîtrisé.",
+
+    "svc_3_d": "Cela suppose de cadrer les cas d’usage qui comptent, de mesurer ce qui fonctionne vraiment, et de livrer en production sans fragiliser l’existant.",
     "svc_4_t": "Audit technique & performance",
-    "svc_4_d": "Une application lente, coûteuse ou fragile, sans cause clairement identifiée. Je réalise un diagnostic priorisé — architecture, base de données, points de contention — et vous remets un plan d’action concret, ordonné par impact.",
+    "svc_4_p": "Une application lente, coûteuse ou fragile — sans cause clairement identifiée.",
+
+    "svc_4_d": "Un diagnostic priorisé (architecture, base de données, points de contention) en révèle l’origine et débouche sur un plan d’action concret, ordonné par impact.",
     "svc_5_t": "Modernisation & mise en production",
-    "svc_5_d": "Un système hérité freine vos évolutions. Je conduis une modernisation progressive — sans big-bang — avec conteneurisation, intégration continue et garde-fous de production, pour retrouver de la vitesse sans tout réécrire.",
+    "svc_5_p": "Un système hérité finit par freiner chaque évolution.",
+
+    "svc_5_d": "Plutôt qu’une réécriture, une modernisation par étapes — conteneurisation, intégration continue, garde-fous de production — pour retrouver de la vitesse sans tout casser.",
     "svc_6_t": "Conseil technique & R&D",
-    "svc_6_d": "Un problème mal posé, un choix d’architecture structurant, un sujet à forte incertitude. J’apporte une méthode de chercheur — analyser, modéliser, arbitrer — pour décider sur des bases solides plutôt que sur des intuitions.",
+    "svc_6_p": "Un problème mal posé, un choix d’architecture structurant, un sujet à forte incertitude.",
+
+    "svc_6_d": "Une méthode de chercheur — analyser, modéliser, arbitrer — permet de trancher sur des bases solides plutôt que sur des intuitions.",
     "cta_title": "Un de ces sujets correspond à votre besoin ?",
     "cta_text": "Décrivez-le en quelques lignes, je vous réponds rapidement.",
-    "cta_button": "Discuter d’un projet"
+    "cta_button": "Décrire votre besoin"
   },
   "blog": {
     "section": "06 — Blog",
@@ -94,7 +111,7 @@
     "section": "07 — Contact",
     "title_1": "Travaillons",
     "title_em": "ensemble",
-    "desc": "Vous recherchez un développeur pour renforcer votre équipe ou mener un projet ? Décrivez votre besoin en quelques lignes et discutons-en.",
+    "desc": "Un projet à cadrer, un système à fiabiliser, un problème technique à forte incertitude ? Décrivez votre besoin en quelques lignes, je vous réponds rapidement.",
     "form_name": "Nom",
     "form_email": "Adresse e-mail",
     "form_message": "Message",
@@ -172,6 +189,9 @@
     "impact_7_t": "Communication scientifique",
     "impact_7_d": "Rendre une idée complexe claire pour un public non spécialiste.",
     "impact_8_t": "Gestion de projet au long cours",
-    "impact_8_d": "Mener un travail exigeant et autonome sur plusieurs années, jusqu’au bout."
+    "impact_8_d": "Mener un travail exigeant et autonome sur plusieurs années, jusqu’au bout.",
+    "cta_title": "Un problème complexe, à forte incertitude ?",
+    "cta_text": "C’est exactement le terrain où cette méthode fait la différence.",
+    "cta_button": "Discuter d’un projet exigeant"
   }
 }

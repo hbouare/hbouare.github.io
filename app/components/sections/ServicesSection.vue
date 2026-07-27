@@ -24,10 +24,8 @@
       <div class="services-grid mt-14">
         <UiRevealBlock v-for="n in 6" :key="n" :delay="(n - 1) * 70" class="h-100">
           <article class="service-card hairline-interactive">
-            <span class="service-num type-micro-cap text-muted">
-              {{ String(n).padStart(2, "0") }}
-            </span>
             <h3 class="service-title type-title">{{ $t(`services.svc_${n}_t`) }}</h3>
+            <p class="service-problem type-body-md">{{ $t(`services.svc_${n}_p`) }}</p>
             <p class="service-desc type-body-md text-muted">
               {{ $t(`services.svc_${n}_d`) }}
             </p>
@@ -82,12 +80,15 @@ const localePath = useLocalePath()
   display: flex;
   flex-direction: column;
 }
-.service-num {
-  display: block;
-  margin-bottom: var(--space-md);
-}
 .service-title {
   color: rgb(var(--v-theme-on-background));
+}
+// The problem statement leads — full ink, so scanning the six cards reads as
+// "here are six problems I solve". The response sits under it, muted.
+.service-problem {
+  margin-top: var(--space-md);
+  color: rgb(var(--v-theme-on-background));
+  max-width: var(--measure-prose);
 }
 .service-desc {
   margin-top: var(--space-sm);

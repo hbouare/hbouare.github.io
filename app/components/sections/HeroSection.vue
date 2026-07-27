@@ -26,7 +26,7 @@
             <v-btn :to="localePath('/contact')" size="large">
               {{ $t("hero.cta_contact") }}
             </v-btn>
-            <v-btn :to="localePath('/projects')" variant="text" size="large">
+            <v-btn :to="localePath('/projects')" size="large">
               {{ $t("hero.cta_projects") }}
             </v-btn>
           </div>
@@ -95,7 +95,7 @@ const countries = computed(() => [
 
 const stats = [
   { value: "8+", key: "stat_years", numeric: 8, suffix: "+" },
-  { value: "2", key: "stat_countries", numeric: 2 },
+  { value: "5", key: "stat_sectors", numeric: 5 },
   { value: "5", key: "stat_pubs", numeric: 5 },
 ]
 

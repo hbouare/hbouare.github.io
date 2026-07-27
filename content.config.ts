@@ -6,6 +6,10 @@ const experienceSchema = z.object({
   order:    z.number(),
   role:     z.string(),
   company:  z.string(),
+  // The engagement's sector — Énergie / Santé / Ferroviaire… This is the
+  // proof framing: a decision-maker scans sectors and critical environments,
+  // not job titles.
+  sector:   z.string().optional(),
   period:   z.string(),
   // Contract type (e.g. "Freelance", "Temps plein"). Optional — only set it
   // where it disambiguates, e.g. two overlapping missions run in parallel.
