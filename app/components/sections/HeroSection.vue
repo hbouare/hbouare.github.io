@@ -26,7 +26,7 @@
             <v-btn :to="localePath('/contact')" size="large">
               {{ $t("hero.cta_contact") }}
             </v-btn>
-            <v-btn :to="localePath('/projects')" variant="text" size="large">
+            <v-btn :to="localePath('/projects')" size="large">
               {{ $t("hero.cta_projects") }}
             </v-btn>
           </div>

@@ -65,10 +65,10 @@
     "title_em": "prendre en charge",
     "meta_desc": "Architecture backend, data engineering, IA appliquée, audit technique et conseil — pour concevoir, fiabiliser et faire évoluer des systèmes complexes.",
     "intro": "Concevoir, fiabiliser ou débloquer un système — là où les enjeux techniques sont élevés. En mission ponctuelle, en accompagnement au long cours, ou sur un point précis.",
-    "svc_1_t": "Architecture applicative & backend",
-    "svc_1_p": "Un backend qui grossit devient vite difficile à faire évoluer, à tester et à maintenir.",
+    "svc_1_t": "Architecture applicative full-stack",
+    "svc_1_p": "Une application qui grossit devient vite difficile à faire évoluer, à tester et à maintenir.",
 
-    "svc_1_d": "La réponse tient dans une architecture claire et en couches — Python (FastAPI) comme TypeScript/Node — testée, documentée, pensée pour durer et pour être reprise par toute une équipe.",
+    "svc_1_d": "La réponse tient dans une architecture claire et en couches, du front-end au back-end — Vue côté interface, Python ou TypeScript/Node côté serveur — testée, documentée, pensée pour durer et pour être reprise par toute une équipe.",
     "svc_2_t": "Data Engineering",
     "svc_2_p": "Des données éparpillées entre les sources, sans modèle commun, restent impossibles à exploiter en confiance.",
 

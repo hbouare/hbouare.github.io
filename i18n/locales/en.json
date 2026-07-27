@@ -65,10 +65,10 @@
     "title_em": "take on",
     "meta_desc": "Backend architecture, data engineering, applied AI, technical audits and consulting — to design, harden and evolve complex systems.",
     "intro": "Designing, hardening or unblocking a system — where the technical stakes are high. As a one-off mission, ongoing support, or focused expertise on a single point.",
-    "svc_1_t": "Application architecture & backend",
-    "svc_1_p": "A backend that grows quickly becomes hard to evolve, test and maintain.",
+    "svc_1_t": "Full-stack application architecture",
+    "svc_1_p": "An application that grows quickly becomes hard to evolve, test and maintain.",
 
-    "svc_1_d": "The answer lies in a clear, layered architecture — Python (FastAPI) as well as TypeScript/Node — tested, documented, built to last and to be picked up by a whole team.",
+    "svc_1_d": "The answer lies in a clear, layered architecture, from front-end to back-end — Vue on the front, Python or TypeScript/Node on the server — tested, documented, built to last and to be picked up by a whole team.",
     "svc_2_t": "Data Engineering",
     "svc_2_p": "Data scattered across sources, with no common model, stays impossible to use with confidence.",
 
