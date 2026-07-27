@@ -21,10 +21,19 @@
     "scroll": "Scroll",
     "intl_label": "International experience",
     "stat_years": "Years of experience",
-    "stat_countries": "Countries",
+    "stat_sectors": "Sectors",
     "stat_pubs": "Peer-reviewed publications",
     "country_france": "🇫🇷 France",
     "country_uk": "🇬🇧 United Kingdom"
+  },
+  "credibility": {
+    "label": "Systems designed and delivered for",
+    "aria": "References"
+  },
+  "home": {
+    "cta_title": "A project, a technical doubt?",
+    "cta_text": "Describe your need in a few lines — I’ll get back to you quickly.",
+    "cta_button": "Let’s work together"
   },
   "about": {
     "section": "01 — About",
@@ -62,20 +71,32 @@
     "meta_desc": "Backend architecture, data engineering, applied AI, technical audits and consulting — to design, harden and evolve complex systems.",
     "intro": "Designing, hardening or unblocking a system — where the technical stakes are high. As a one-off mission, ongoing support, or focused expertise on a single point.",
     "svc_1_t": "Application architecture & backend",
-    "svc_1_d": "A backend that grows quickly becomes hard to evolve, test and maintain. The answer lies in a clear, layered architecture — Python (FastAPI) as well as TypeScript/Node — tested, documented, built to last and to be picked up by a whole team.",
+    "svc_1_p": "A backend that grows quickly becomes hard to evolve, test and maintain.",
+
+    "svc_1_d": "The answer lies in a clear, layered architecture — Python (FastAPI) as well as TypeScript/Node — tested, documented, built to last and to be picked up by a whole team.",
     "svc_2_t": "Data Engineering",
-    "svc_2_d": "Data scattered across sources, with no common model, stays impossible to use with confidence. A clean data model and reliable, versioned, verifiable pipelines give it a footing that products and decisions can genuinely rely on.",
+    "svc_2_p": "Data scattered across sources, with no common model, stays impossible to use with confidence.",
+
+    "svc_2_d": "A clean data model and reliable, versioned, verifiable pipelines give it a footing that products and decisions can genuinely rely on.",
     "svc_3_t": "Applied AI",
-    "svc_3_d": "Bringing AI into a real product means moving from prototype to something reliable, measured and under control. That means framing the use cases that matter, measuring what actually works, and shipping to production without destabilising what exists.",
+    "svc_3_p": "Bringing AI into a real product means moving from prototype to something reliable, measured and under control.",
+
+    "svc_3_d": "That means framing the use cases that matter, measuring what actually works, and shipping to production without destabilising what exists.",
     "svc_4_t": "Technical & performance audit",
-    "svc_4_d": "An application that is slow, costly or fragile — with no clearly identified cause. A prioritised diagnosis (architecture, database, contention points) surfaces the root cause and leads to a concrete action plan, ordered by impact.",
+    "svc_4_p": "An application that is slow, costly or fragile — with no clearly identified cause.",
+
+    "svc_4_d": "A prioritised diagnosis (architecture, database, contention points) surfaces the root cause and leads to a concrete action plan, ordered by impact.",
     "svc_5_t": "Modernisation & delivery",
-    "svc_5_d": "A legacy system ends up slowing every change. Rather than a rewrite, a step-by-step modernisation — containerisation, continuous integration, production safeguards — to regain speed without breaking everything.",
+    "svc_5_p": "A legacy system ends up slowing every change.",
+
+    "svc_5_d": "Rather than a rewrite, a step-by-step modernisation — containerisation, continuous integration, production safeguards — to regain speed without breaking everything.",
     "svc_6_t": "Technical consulting & R&D",
-    "svc_6_d": "An ill-posed problem, a structuring architecture choice, a topic with high uncertainty. A researcher’s method — analyse, model, decide — makes it possible to choose on solid ground rather than intuition.",
+    "svc_6_p": "An ill-posed problem, a structuring architecture choice, a topic with high uncertainty.",
+
+    "svc_6_d": "A researcher’s method — analyse, model, decide — makes it possible to choose on solid ground rather than intuition.",
     "cta_title": "Does one of these match your need?",
     "cta_text": "Describe it in a few lines and I’ll get back to you quickly.",
-    "cta_button": "Discuss a project"
+    "cta_button": "Describe your need"
   },
   "blog": {
     "section": "06 — Blog",
@@ -173,6 +194,9 @@
     "impact_7_t": "Scientific communication",
     "impact_7_d": "Make a complex idea clear to a non-specialist audience.",
     "impact_8_t": "Long-term project management",
-    "impact_8_d": "Sustain demanding, self-directed work over several years and see it through."
+    "impact_8_d": "Sustain demanding, self-directed work over several years and see it through.",
+    "cta_title": "A complex problem, with high uncertainty?",
+    "cta_text": "That is exactly where this method makes the difference.",
+    "cta_button": "Discuss a demanding project"
   }
 }

@@ -95,7 +95,7 @@ const countries = computed(() => [
 
 const stats = [
   { value: "8+", key: "stat_years", numeric: 8, suffix: "+" },
-  { value: "2", key: "stat_countries", numeric: 2 },
+  { value: "5", key: "stat_sectors", numeric: 5 },
   { value: "5", key: "stat_pubs", numeric: 5 },
 ]
 
