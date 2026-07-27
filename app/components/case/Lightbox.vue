@@ -34,7 +34,7 @@
 
         <figure class="lb-figure">
           <img class="lb-img" :src="cur.src" :alt="cur.caption || ''" />
-          <figcaption v-if="cur.caption" class="lb-cap type-caption">
+          <figcaption v-if="cur.caption" class="lb-cap mt-4 Atype-caption">
             {{ cur.caption }}
           </figcaption>
         </figure>
