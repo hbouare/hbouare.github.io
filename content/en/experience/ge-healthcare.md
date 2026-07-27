@@ -3,6 +3,7 @@ id: ge-healthcare
 order: 3
 role: "Front-End Developer"
 company: "GE HealthCare"
+sector: "Healthcare"
 period: "January 2023 — January 2024"
 location: "Buc, France"
 flag: "🇫🇷"

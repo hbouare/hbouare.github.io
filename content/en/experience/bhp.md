@@ -3,6 +3,7 @@ id: bhp
 order: 4
 role: "Full-Stack Developer"
 company: "BHP"
+sector: "Industry"
 period: "June 2022 — December 2022"
 location: "Paris, France"
 flag: "🇫🇷"

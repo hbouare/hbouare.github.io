@@ -3,6 +3,7 @@ id: iea
 order: 2
 role: "Développeur Full-Stack"
 company: "Institut d’études avancées"
+sector: "Recherche"
 period: "Avril 2024 — Février 2026"
 employment: "Freelance · Temps partiel"
 location: "Paris, France"

@@ -3,6 +3,7 @@ id: lsbb
 order: 6
 role: "Ingénieur de recherche & Développeur Back-end"
 company: "LSBB & Avignon Université"
+sector: "Recherche"
 period: "Avril 2018 — Septembre 2021"
 location: "Avignon, France & Édimbourg, Royaume-Uni"
 flag: "🇫🇷 & 🇬🇧"

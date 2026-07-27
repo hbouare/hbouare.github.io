@@ -3,6 +3,7 @@ id: iea
 order: 2
 role: "Full-Stack Developer"
 company: "Paris Institute for Advanced Study"
+sector: "Research"
 period: "April 2024 — February 2026"
 employment: "Freelance · Part-time"
 location: "Paris, France"

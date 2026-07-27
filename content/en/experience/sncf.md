@@ -3,6 +3,7 @@ id: sncf
 order: 5
 role: "Back-End Developer"
 company: "SNCF"
+sector: "Rail"
 period: "September 2021 — June 2022"
 location: "Paris, France"
 flag: "🇫🇷"
