@@ -139,6 +139,10 @@
   "case": {
     "highlights": "Key features",
     "gallery": "In pictures",
+    "enlarge": "Enlarge",
+    "lb_close": "Close",
+    "lb_prev": "Previous image",
+    "lb_next": "Next image",
     "layer_frontend": "Front-end",
     "layer_backend": "Back-end",
     "layer_database": "Database",

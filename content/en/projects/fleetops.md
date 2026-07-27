@@ -19,4 +19,26 @@ highlights:
   - "Admin / manager roles enforced server-side, JWT httpOnly cookie and Argon2 hashing"
   - "Paginated, filterable lists (search, status, sort) and cost tracking"
 tags: ["FastAPI","Vue 3","TypeScript","PostgreSQL","SQLAlchemy"]
+
+cover:
+  src: "/projects/fleetops/hero.webp"
+  alt: "FleetOps dashboard — operational overview of the fleet"
+
+gallery:
+  - src: "/projects/fleetops/vehicles.webp"
+    caption: "The fleet: search, filters and each vehicle’s status"
+    span: 6
+  - src: "/projects/fleetops/form.webp"
+    caption: "Vehicle record: identification and operational data"
+    span: 3
+  - src: "/projects/fleetops/analytics.webp"
+    caption: "Fleet breakdown and monthly costs at a glance"
+    span: 3
+  - src: "/projects/fleetops/costs.webp"
+    caption: "Cost tracking by vehicle, category and supplier"
+    span: 4
+  - src: "/projects/fleetops/mobile.webp"
+    caption: "Responsive interface, built for the field"
+    device: phone
+    span: 2
 ---

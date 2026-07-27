@@ -19,4 +19,26 @@ highlights:
   - "Rôles admin / gestionnaire appliqués côté serveur, JWT en cookie httpOnly et hachage Argon2"
   - "Listes paginées et filtrables (recherche, statut, tri) et suivi des coûts"
 tags: ["FastAPI","Vue 3","TypeScript","PostgreSQL","SQLAlchemy"]
+
+cover:
+  src: "/projects/fleetops/hero.webp"
+  alt: "Tableau de bord FleetOps — vue d’ensemble opérationnelle du parc"
+
+gallery:
+  - src: "/projects/fleetops/vehicles.webp"
+    caption: "Le parc : recherche, filtres et statut de chaque véhicule"
+    span: 6
+  - src: "/projects/fleetops/form.webp"
+    caption: "Fiche véhicule : identification et données d’exploitation"
+    span: 3
+  - src: "/projects/fleetops/analytics.webp"
+    caption: "Répartition du parc et coûts du mois en un coup d’œil"
+    span: 3
+  - src: "/projects/fleetops/costs.webp"
+    caption: "Suivi des coûts par véhicule, catégorie et fournisseur"
+    span: 4
+  - src: "/projects/fleetops/mobile.webp"
+    caption: "Interface responsive, pensée pour le terrain"
+    device: phone
+    span: 2
 ---

@@ -30,6 +30,18 @@
         :hook="project.hook"
       />
 
+      <!-- Hero screenshot — the big shot that makes the product tangible. -->
+      <UiRevealBlock v-if="project.cover">
+        <CaseShot
+          class="case-cover"
+          :src="project.cover.src"
+          :alt="project.cover.alt || project.title"
+          device="browser"
+          featured
+          @open="lightboxIndex = 0"
+        />
+      </UiRevealBlock>
+
       <!-- Hero meta: the stack (what a technical reader scans first) and how
            the project runs, hoisted directly under the hook instead of buried
            at the foot. Replaces the old role/team/status facts strip. -->
@@ -95,19 +107,13 @@
         </UiRevealBlock>
       </section>
 
-      <!-- Gallery: screenshots, diagrams, results. Optional. -->
+      <!-- Gallery: asymmetric screenshot grid → lightbox. Optional. -->
       <UiRevealBlock v-if="project.gallery?.length">
-        <section class="case-gallery">
-          <UiEyebrow :rule="false" class="case-gallery-label">{{ $t("case.gallery") }}</UiEyebrow>
-          <div class="case-gallery-grid">
-            <figure v-for="(fig, i) in project.gallery" :key="i" class="case-fig">
-              <img :src="fig.src" :alt="fig.caption || project.title" loading="lazy" decoding="async" />
-              <figcaption v-if="fig.caption" class="case-fig-cap type-caption text-muted">
-                {{ fig.caption }}
-              </figcaption>
-            </figure>
-          </div>
-        </section>
+        <CaseGallery
+          :items="project.gallery"
+          :offset="project.cover ? 1 : 0"
+          @open="(i) => (lightboxIndex = i)"
+        />
       </UiRevealBlock>
 
       <!-- ── The way forward ───────────────────────────────────────────── -->
@@ -116,6 +122,8 @@
       </UiRevealBlock>
 
       <CaseNext v-if="nextProject" :project="nextProject" />
+
+      <CaseLightbox :shots="allShots" v-model:index="lightboxIndex" />
     </div>
 
     <div v-else class="text-center py-20">
@@ -175,6 +183,18 @@ const isFilled = (v: unknown): v is string =>
 const hasLayers = computed(
   () => !!(project.value?.frontend || project.value?.backend || project.value?.database),
 )
+
+// Lightbox: the page owns the ordered shot list (cover first, then gallery)
+// and the open index (-1 = closed). Both the cover shot and the gallery drive
+// the same index, so navigation runs across every shot on the page.
+const lightboxIndex = ref(-1)
+const allShots = computed(() => {
+  const p = project.value
+  if (!p) return []
+  const cover = p.cover ? [{ src: p.cover.src, caption: p.cover.alt ?? p.title }] : []
+  const gallery = (p.gallery ?? []).map((g) => ({ src: g.src, caption: g.caption }))
+  return [...cover, ...gallery]
+})
 
 // ── Progressive reading tiers ─────────────────────────────────────────────
 // Each entry maps a frontmatter field to a label + a render kind. `tiers`
@@ -411,30 +431,9 @@ if (project.value) {
   color: rgb(var(--v-theme-muted));
 }
 
-// ── Gallery visuals (optional, graceful when absent) ─────────────────────
-.case-fig img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid rgb(var(--v-theme-border));
-  border-radius: 8px;
-}
-.case-gallery {
-  padding-top: var(--section-pad);
-  border-top: 1px solid rgb(var(--v-theme-border));
-}
-.case-gallery-label {
-  margin-bottom: var(--space-xl);
-}
-.case-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--space-lg);
-}
-.case-fig {
-  margin: 0;
-}
-.case-fig-cap {
-  margin-top: var(--space-sm);
+// ── Hero cover screenshot ────────────────────────────────────────────────
+.case-cover {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-huge);
 }
 </style>
