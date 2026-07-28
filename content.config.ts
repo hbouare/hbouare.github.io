@@ -47,12 +47,22 @@ const projectSchema = z.object({
   backend:  z.string().optional(),
   database: z.string().optional(),
 
-  // ── Gallery (optional) ───────────────────────────────────────────────────
-  // Screenshots, diagrams or result shots, paths pointing at /public assets.
-  // Absent → the section is dropped.
+  // ── Visuals (optional) ───────────────────────────────────────────────────
+  // `cover` is the big hero screenshot (browser mockup, top of the case study).
+  cover: z.object({
+    src: z.string(),
+    alt: z.string().optional(),
+  }).optional(),
+
+  // Gallery — screenshots in an asymmetric 6-column grid, opened in a
+  // lightbox. `device` picks the mockup frame (browser | phone); `span` (2–6)
+  // drives how many of the six columns a tile occupies. Absent → section dropped.
   gallery: z.array(z.object({
     src:     z.string(),
     caption: z.string().optional(),
+    alt:     z.string().optional(),
+    device:  z.enum(["browser", "phone"]).optional(),
+    span:    z.number().optional(),
   })).optional(),
 
   // There is deliberately NO repository/demo/docs URL here. Source access is

@@ -19,4 +19,23 @@ highlights:
   - "Shared data model: UUID identifiers, UTC timestamps, reversible migrations"
   - "Complete, blocking quality chain (lint, strict typing, tests) in CI"
 tags: ["FastAPI","Vue 3","TypeScript","PostgreSQL","SQLAlchemy"]
+
+cover:
+  src: "/projects/finboard/hero.webp"
+  alt: "Pilotis — dashboard: revenue, expenses, profit and cash on hand"
+
+gallery:
+  - src: "/projects/finboard/transactions.webp"
+    caption: "Every operation: search, filters, categories and signed amounts"
+    span: 4
+  - src: "/projects/finboard/mobile.webp"
+    caption: "Financial steering, available on mobile"
+    device: phone
+    span: 2
+  - src: "/projects/finboard/imports.webp"
+    caption: "CSV/XLSX statement import: parse, review line by line, then confirm"
+    span: 3
+  - src: "/projects/finboard/login.webp"
+    caption: "A reliable space to centralise financial flows"
+    span: 3
 ---

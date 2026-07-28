@@ -68,7 +68,7 @@
     "svc_1_t": "Full-stack application architecture",
     "svc_1_p": "An application that grows quickly becomes hard to evolve, test and maintain.",
 
-    "svc_1_d": "The answer lies in a clear, layered architecture, from front-end to back-end — Vue on the front, Python or TypeScript/Node on the server — tested, documented, built to last and to be picked up by a whole team.",
+    "svc_1_d": "The answer lies in a clear, layered architecture, from front-end to back-end — Vuejs on the front, Python or TypeScript/Nodejs on the server — tested, documented, built to last and to be picked up by a whole team.",
     "svc_2_t": "Data Engineering",
     "svc_2_p": "Data scattered across sources, with no common model, stays impossible to use with confidence.",
 
@@ -139,6 +139,10 @@
   "case": {
     "highlights": "Key features",
     "gallery": "In pictures",
+    "enlarge": "Enlarge",
+    "lb_close": "Close",
+    "lb_prev": "Previous image",
+    "lb_next": "Next image",
     "layer_frontend": "Front-end",
     "layer_backend": "Back-end",
     "layer_database": "Database",

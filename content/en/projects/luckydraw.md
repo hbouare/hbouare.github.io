@@ -19,4 +19,23 @@ highlights:
   - "Ticket purchase and participation history"
   - "Back-office: results, transactions, analytics, exports"
 tags: ["Node.js","Express","TypeScript","Vue 3","MongoDB","Redis"]
+
+cover:
+  src: "/projects/luckydraw/hero.webp"
+  alt: "The lottery catalogue: prize pots, categories and live status"
+
+gallery:
+  - src: "/projects/luckydraw/verify.webp"
+    caption: "Every draw is cryptographically verifiable (commit-reveal): hash published upfront, seed revealed, result replayable"
+    span: 4
+  - src: "/projects/luckydraw/mobile.webp"
+    caption: "Browse the lotteries and play, on mobile too"
+    device: phone
+    span: 2
+  - src: "/projects/luckydraw/detail.webp"
+    caption: "Lottery page: prize, ticket price, scheduled draw and rules"
+    span: 3
+  - src: "/projects/luckydraw/landing.webp"
+    caption: "Try your luck, with full confidence"
+    span: 3
 ---

@@ -19,4 +19,23 @@ highlights:
   - "Modèle de données commun : identifiants UUID, horodatages UTC, migrations réversibles"
   - "Chaîne qualité complète et bloquante (lint, typage strict, tests) en CI"
 tags: ["FastAPI","Vue 3","TypeScript","PostgreSQL","SQLAlchemy"]
+
+cover:
+  src: "/projects/finboard/hero.webp"
+  alt: "Pilotis — tableau de bord : chiffre d’affaires, dépenses, bénéfice et trésorerie"
+
+gallery:
+  - src: "/projects/finboard/transactions.webp"
+    caption: "Toutes les opérations : recherche, filtres, catégories et montants signés"
+    span: 4
+  - src: "/projects/finboard/mobile.webp"
+    caption: "Pilotage financier accessible depuis mobile"
+    device: phone
+    span: 2
+  - src: "/projects/finboard/imports.webp"
+    caption: "Import de relevés CSV/XLSX : analyse, contrôle ligne à ligne, puis confirmation"
+    span: 3
+  - src: "/projects/finboard/login.webp"
+    caption: "Un espace fiable pour centraliser les flux financiers"
+    span: 3
 ---
