@@ -6,11 +6,11 @@
 <template>
   <section id="experience" class="exp gutter" aria-labelledby="exp-title">
     <div class="editorial exp-head">
-      <div class="editorial__key eyebrow">{{ $t("experience.section") }}</div>
-      <h2 id="exp-title" class="editorial__body t-h2">{{ $t("experience.title") }}</h2>
+      <div v-reveal.fade class="editorial__key eyebrow">{{ $t("experience.section") }}</div>
+      <h2 id="exp-title" v-reveal.lines class="editorial__body t-h2">{{ $t("experience.title") }}</h2>
     </div>
 
-    <div>
+    <div v-reveal.stagger>
       <article v-for="job in jobs" :key="job.id" class="rule-row exp-row">
         <div class="exp-key">
           <div class="exp-tags">

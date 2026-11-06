@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Personal portfolio site for Hamed Bouare. **Nuxt 4** + **Nuxt Content v3** + **@nuxtjs/i18n**, plain CSS (no UI framework, no animation library), statically generated (SSG) and deployed to **GitHub Pages** at `hamedbouare.me`. Package manager is **yarn** (1.22.22) — the README mentions npm but CI and deploy use yarn.
+Personal portfolio site for Hamed Bouare. **Nuxt 4** + **Nuxt Content v3** + **@nuxtjs/i18n**, plain CSS (no UI framework; GSAP only for the title line splits), statically generated (SSG) and deployed to **GitHub Pages** at `hamedbouare.me`. Package manager is **yarn** (1.22.22) — the README mentions npm but CI and deploy use yarn.
 
 ## Commands
 
@@ -207,7 +207,10 @@ Contact), `<UiWaveField>`, `<UiThemeLabel>`.
 
 ## Motion
 
-No animation library. Six things move, all honouring
+Motion follows master's `config/motion.ts`: short, decisive, no overshoot
+(power3.out ≈ `--ease-out`). Durations and distances are tokens in
+tokens.css. GSAP is used for one thing only, splitting titles into lines;
+everything else is CSS or canvas. Seven things move, all honouring
 `prefers-reduced-motion`:
 
 - **Hero wave field** — [useWaveField.ts](app/composables/useWaveField.ts),
@@ -219,7 +222,14 @@ No animation library. Six things move, all honouring
 - **Key figures count-up** — SSR renders the **final** values; the client
   rewinds to 0 only when motion is allowed, then counts up at 30%
   visibility. Never ship a "0".
-- **Page transitions** — CSS (`.page-*` in base.css): 250ms fade + 8px.
+- **Page transitions** — CSS (`.page-*` in base.css), master's values: the
+  old page leaves in 250ms (12px up), the new one enters in 600ms (from 12px
+  below, `--ease-out`).
+- **Scroll reveal** — the `v-reveal` directive
+  ([plugins/reveal.ts](app/plugins/reveal.ts)): `.fade`, `.scale`,
+  `.stagger` (on a list container) and `.lines` (section titles rise line by
+  line behind a mask, GSAP SplitText, desktop only). One shared
+  IntersectionObserver, fires once, as the element starts to enter.
 - **Handwritten logo** — the header name is an SVG `<text>` traced, inked
   and erased on a 10s CSS loop (TopBar.vue); a visually-hidden span carries
   the link's name. Its **rest state is the written name**, and reduced
@@ -236,13 +246,36 @@ No animation library. Six things move, all honouring
   whole tree at once; a theme flip repaints, it does not regrow.
 - **Theme reveal** — `toggleTheme(event)` runs the swap inside a View
   Transition and grows a clip-path circle from the click (the button centre
-  for a keyboard press). The CSS colour fades (`--theme-fade`) are disabled
+  for a keyboard press) with Vuetify 4's values, as on the old site:
+  `circle(0% → 150%)`, 500ms ease-in-out. The CSS colour fades (`--theme-fade`) are disabled
   during it. No View Transitions or reduced motion: a plain swap.
 
-There are no scroll reveals. Do not add a mechanism that rests content at
-opacity 0 and relies on JS to show it: that is how content once ended up in
-the DOM but invisible. The "no content is left invisible" e2e test walks
-every page in both motion modes.
+Content once ended up in the DOM but invisible: a reveal rested it at
+opacity 0 and never fired. The scroll reveal is built so that cannot recur;
+keep these invariants:
+
+- **The server renders nothing hidden** (`getSSRProps` is empty). Without
+  JS, or before hydration, every page is complete.
+- **Only what is still below the viewport is hidden**, on mount. Never hide
+  content already on screen (it would flicker) — this is why the hero and
+  page intros have no reveal.
+- **The observer's root extends far above the viewport**, so content
+  scrolled past or jumped over (anchor, End key, restored scroll) counts as
+  seen. It fires on entry, not at 85%: something in the last 15% of a page
+  could never reach that line.
+- **A stagger container also handles children added after mount**: data
+  fetched on client navigation arrives later (the /en redirect does this).
+- **`.lines` splits a CLONE of the title.** SplitText's `revert()` rebuilds
+  children from innerHTML, which would orphan the nodes Vue patches; the
+  originals are put back once the lines have risen.
+- **Duration tokens are read with their unit**: the CSS minifier rewrites
+  `900ms` as `.9s`.
+- **Never animate a `.cells` child**: its hairlines are the `--rule`
+  background showing through the gap, and a hidden cell leaves a solid
+  block. Reveal the whole grid.
+
+The "no content is left invisible" test jumps to the bottom of every page in
+both motion modes; "without JavaScript" checks the SSR output.
 
 ## Avoiding regressions
 

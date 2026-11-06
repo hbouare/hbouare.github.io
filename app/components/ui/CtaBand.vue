@@ -6,9 +6,9 @@
 -->
 <template>
   <section class="cta-band gutter" :aria-labelledby="headingId">
-    <div class="eyebrow cta-eyebrow">{{ $t("cta.eyebrow") }}</div>
-    <h2 :id="headingId" class="t-cta cta-title">{{ title }}</h2>
-    <div class="cta-foot">
+    <div v-reveal.fade class="eyebrow cta-eyebrow">{{ $t("cta.eyebrow") }}</div>
+    <h2 :id="headingId" v-reveal.lines class="t-cta cta-title">{{ title }}</h2>
+    <div v-reveal class="cta-foot">
       <p v-if="text" class="t-intro cta-text">{{ text }}</p>
       <NuxtLink :to="to" class="btn btn--inverse">
         {{ button }} <span aria-hidden="true">→</span>

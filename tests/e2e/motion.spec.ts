@@ -92,35 +92,101 @@ test.describe("motion enabled", () => {
 })
 
 // The silent failure this whole file guards: content in the DOM, indexed,
-// but stuck at opacity 0 (a reveal that never fired). Walk every page to the
-// bottom, in both motion modes, and assert no text is left invisible.
+// but stuck at opacity 0 (a reveal that never fired). Walk every page,
+// JUMPING to the bottom — the scroll reveal must also show what was skipped
+// over — in both motion modes, and assert no text is left invisible once
+// the reveals have played.
 const PAGES = ["/", "/services", "/projects", "/projects/fleetops", "/research", "/blog", "/blog/fastapi-architecture", "/contact"]
+const invisibleText = (page: Page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll("main *")]
+      .filter((el) => el.childElementCount === 0 && el.textContent?.trim())
+      .filter((el) => {
+        for (let n: Element | null = el; n; n = n.parentElement) {
+          if (getComputedStyle(n).opacity === "0") return true
+        }
+        return false
+      })
+      .map((el) => el.textContent?.trim().slice(0, 40)),
+  )
 for (const motion of ["no-preference", "reduce"] as const) {
   test(`no content is left invisible (${motion})`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: motion })
     for (const path of PAGES) {
       await page.goto(path)
-      // The anti-flash style holds <body> at opacity 0 until hydration.
       await page.waitForSelector("html.hydrated")
-      await page.evaluate(() =>
-        window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
-      )
-      await page.waitForTimeout(300)
-      const hidden = await page.evaluate(() =>
-        [...document.querySelectorAll("main *")]
-          .filter((el) => el.childElementCount === 0 && el.textContent?.trim())
-          .filter((el) => {
-            for (let n: Element | null = el; n; n = n.parentElement) {
-              if (getComputedStyle(n).opacity === "0") return true
-            }
-            return false
-          })
-          .map((el) => el.textContent?.trim().slice(0, 40)),
-      )
-      expect(hidden, `invisible text on ${path}`).toEqual([])
+      // Jump again on every poll: data fetched after a client redirect (/en)
+      // can lengthen the page under the first jump.
+      await expect
+        .poll(
+          async () => {
+            await page.evaluate(() =>
+              window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
+            )
+            return invisibleText(page)
+          },
+          { message: `invisible text on ${path}` },
+        )
+        .toEqual([])
     }
   })
 }
+
+test.describe("scroll reveal", () => {
+  // The reveal must actually run: content below the fold starts hidden on
+  // the client and is shown, for good, once scrolled to.
+  test("below-the-fold content is revealed on scroll", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" })
+    await page.goto("/")
+    await page.waitForSelector("html.hydrated")
+    const row = page.locator(".exp-row").last()
+    await expect(row).toHaveClass(/reveal-hidden/)
+    await row.scrollIntoViewIfNeeded()
+    await expect(row).not.toHaveClass(/reveal-hidden/)
+    await expect(row).toHaveCSS("opacity", "1")
+    // Scrolling back up does not hide it again.
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }))
+    await expect(row).toHaveCSS("opacity", "1")
+  })
+
+  // Titles rise line by line (GSAP SplitText) on a CLONE of their content;
+  // the nodes Vue rendered are put back afterwards. The title must end up
+  // exactly as rendered, with no split wrappers or stray aria-label left.
+  test("title line reveal leaves the heading as rendered", async ({ page, isMobile }) => {
+    test.skip(isMobile, "no line split below 760px")
+    await page.emulateMedia({ reducedMotion: "no-preference" })
+    await page.goto("/")
+    await page.waitForSelector("html.hydrated")
+    const title = page.locator("#exp-title")
+    await expect(title).toHaveClass(/reveal-hidden/)
+    const before = await title.innerHTML()
+    await title.scrollIntoViewIfNeeded()
+    await expect(title).not.toHaveClass(/reveal-hidden/)
+    await expect.poll(() => title.innerHTML(), { timeout: 5_000 }).toBe(before)
+    await expect(title).not.toHaveAttribute("aria-label")
+  })
+
+  test("nothing is hidden under reduced motion", async ({ page }) => {
+    await reduce(page)
+    await page.goto("/")
+    await page.waitForSelector("html.hydrated")
+    await expect(page.locator(".reveal-hidden")).toHaveCount(0)
+  })
+})
+
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false })
+
+  // The server never renders the hidden state: without JS, every page is
+  // complete and visible.
+  test("every page renders its content visible", async ({ page }) => {
+    for (const path of PAGES) {
+      await page.goto(path)
+      await expect(page.locator(".reveal-hidden")).toHaveCount(0)
+      expect(await invisibleText(page), `invisible text on ${path}`).toEqual([])
+    }
+  })
+})
 
 test.describe("page transitions", () => {
   // The JS transition hooks must always call done(); a hook that forgets it

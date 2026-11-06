@@ -32,7 +32,7 @@
       </div>
     </UiPageIntro>
 
-    <section class="posts gutter" :aria-label="$t('nav.blog')">
+    <section v-reveal.stagger class="posts gutter" :aria-label="$t('nav.blog')">
       <NuxtLink
         v-for="post in visible"
         :key="post.slug"

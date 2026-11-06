@@ -10,7 +10,7 @@
       <template #title>{{ $t("services.title") }}</template>
     </UiPageIntro>
 
-    <section class="services gutter" :aria-label="$t('nav.services')">
+    <section v-reveal.stagger class="services gutter" :aria-label="$t('nav.services')">
       <article v-for="s in services" :key="s.n" class="rule-row is-interactive svc-row">
         <div class="svc-head">
           <span class="svc-num">{{ s.n }}</span>

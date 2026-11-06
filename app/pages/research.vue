@@ -23,7 +23,7 @@
       </div>
     </section>
 
-    <div class="cells r-facts">
+    <div v-reveal class="cells r-facts">
       <div v-for="(f, i) in facts" :key="f" class="r-fact">
         <span class="r-num">{{ String(i + 1).padStart(2, "0") }}</span>
         <span class="r-fact-text">{{ f }}</span>
@@ -32,11 +32,11 @@
 
     <section class="section gutter" aria-labelledby="pubs-title">
       <div class="editorial r-head">
-        <div class="editorial__key eyebrow">{{ $t("research.pubs_label") }}</div>
-        <h2 id="pubs-title" class="editorial__body t-h2">{{ $t("research.pubs_title") }}</h2>
+        <div v-reveal.fade class="editorial__key eyebrow">{{ $t("research.pubs_label") }}</div>
+        <h2 id="pubs-title" v-reveal.lines class="editorial__body t-h2">{{ $t("research.pubs_title") }}</h2>
       </div>
 
-      <article v-for="pub in publications" :key="pub.key" class="rule-row pub-card">
+      <article v-for="pub in publications" :key="pub.key" v-reveal class="rule-row pub-card">
         <div class="pub-key">
           <span class="pub-year tabular">{{ pub.year }}</span>
           <span class="tag tag--caps">{{ $t(`research.type_${pub.type}`) }}</span>
@@ -70,13 +70,13 @@
 
     <section class="r-impact gutter" aria-labelledby="impact-title">
       <div class="editorial r-head">
-        <div class="editorial__key eyebrow r-impact-key">{{ $t("research.impact_label") }}</div>
+        <div v-reveal.fade class="editorial__key eyebrow r-impact-key">{{ $t("research.impact_label") }}</div>
         <div class="editorial__body r-impact-intro">
-          <h2 id="impact-title" class="t-h2">{{ $t("research.impact_title") }}</h2>
-          <p class="r-impact-lead muted">{{ $t("research.impact_lead") }}</p>
+          <h2 id="impact-title" v-reveal.lines class="t-h2">{{ $t("research.impact_title") }}</h2>
+          <p v-reveal.fade class="r-impact-lead muted">{{ $t("research.impact_lead") }}</p>
         </div>
       </div>
-      <div class="cells r-impact-grid">
+      <div v-reveal class="cells r-impact-grid">
         <div v-for="n in 8" :key="n" class="impact-item">
           <span class="r-num">{{ String(n).padStart(2, "0") }}</span>
           <span class="impact-title">{{ $t(`research.impact_${n}_t`) }}</span>

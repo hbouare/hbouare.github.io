@@ -86,4 +86,16 @@ html[data-theme="dark"] {
   --radius-img: 6px;
 
   --theme-fade: background-color 0.35s, color 0.35s;
+
+  /* ── Motion (master's config/motion.ts values) ─────────────────────── */
+  /* GSAP power3.out ≈ this bezier: decisive settle, no overshoot. */
+  --ease-out: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  /* Scroll reveal (v-reveal, plugins/reveal.ts). */
+  --reveal-dur: 600ms;
+  --reveal-line-dur: 900ms; /* masked title lines (read by JS) */
+  --reveal-ease: var(--ease-out);
+  --reveal-y: 24px;
+  --reveal-scale: 0.97;
+  --reveal-stagger: 80ms; /* also between title lines (read by JS) */
 }

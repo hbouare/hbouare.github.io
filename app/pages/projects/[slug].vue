@@ -40,7 +40,7 @@
       </div>
     </section>
 
-    <figure v-if="project.cover" class="case-hero gutter">
+    <figure v-if="project.cover" v-reveal.scale class="case-hero gutter">
       <img
         :src="project.cover.src"
         :alt="project.cover.alt ?? project.title"
@@ -63,7 +63,7 @@
       </aside>
 
       <article class="case-article">
-        <section v-for="s in sections" :id="s.id" :key="s.id" class="case-section">
+        <section v-for="s in sections" :id="s.id" :key="s.id" v-reveal class="case-section">
           <template v-if="s.title">
             <div class="eyebrow case-marker">{{ s.num }} — {{ s.name }}</div>
             <h2 class="case-h2">{{ s.title }}</h2>
@@ -86,14 +86,14 @@
           </ul>
 
           <div v-if="s.figures.length" class="case-figures">
-            <figure v-for="f in s.figures" :key="f.src" :class="{ 'is-phone': f.device === 'phone' }">
+            <figure v-for="f in s.figures" :key="f.src" v-reveal.scale :class="{ 'is-phone': f.device === 'phone' }">
               <img :src="f.src" :alt="f.alt ?? f.caption ?? ''" class="shot" loading="lazy" decoding="async">
               <figcaption v-if="f.caption">{{ f.caption }}</figcaption>
             </figure>
           </div>
         </section>
 
-        <div class="case-encart">
+        <div v-reveal class="case-encart">
           <div class="label">{{ $t("case.access_title") }}</div>
           <p>{{ $t("case.access_note") }}</p>
           <NuxtLink :to="localePath('/contact')" class="btn btn--secondary">

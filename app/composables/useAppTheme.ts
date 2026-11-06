@@ -80,10 +80,11 @@ export const useAppTheme = () => {
       x = r.left + r.width / 2
       y = r.top + r.height / 2
     }
-    const radius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y),
-    )
+    // Vuetify 4's values, as on the pre-refonte site: origin in % of the
+    // viewport, radius 0% → 150% (of the viewport's diagonal / √2), 500ms
+    // ease-in-out. The radius overshoots the far corner, so the front keeps
+    // its speed across the whole screen instead of easing out at the edge.
+    const at = `${((x / window.innerWidth) * 100).toFixed(2)}% ${((y / window.innerHeight) * 100).toFixed(2)}%`
 
     // The callback must leave the DOM in the new theme: wait for the
     // theme → DOM watcher to flush.
@@ -94,7 +95,7 @@ export const useAppTheme = () => {
     transition.ready
       .then(() => {
         document.documentElement.animate(
-          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+          { clipPath: [`circle(0% at ${at})`, `circle(150% at ${at})`] },
           { duration: 500, easing: "ease-in-out", pseudoElement: "::view-transition-new(root)" },
         )
       })

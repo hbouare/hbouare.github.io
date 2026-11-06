@@ -350,19 +350,25 @@ textarea::placeholder {
 }
 
 /* ── Page transitions (Nuxt <NuxtPage> "page", mode out-in) ────────── */
-.page-enter-active,
+/* Master's GSAP hooks, in CSS: the old page lifts away fast (250ms, 12px
+   up), the new one settles in from below (600ms, power3.out). */
 .page-leave-active {
   transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
+    opacity 0.25s var(--ease-in-out),
+    transform 0.25s var(--ease-in-out);
+}
+.page-enter-active {
+  transition:
+    opacity 0.6s var(--ease-out),
+    transform 0.6s var(--ease-out);
 }
 .page-enter-from {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(12px);
 }
 .page-leave-to {
   opacity: 0;
-  transform: translateY(-8px);
+  transform: translateY(-12px);
 }
 
 /* ── Code highlighting (Shiki, dual theme) ─────────────────────────── */
@@ -380,6 +386,33 @@ html:not([data-theme="dark"]) .shiki span {
   font-style: var(--shiki-default-font-style);
   font-weight: var(--shiki-default-font-weight);
   text-decoration: var(--shiki-default-text-decoration);
+}
+
+/* ── Scroll reveal (v-reveal, plugins/reveal.ts) ───────────────────── */
+/* Only the client ever adds .reveal-hidden, and only below the viewport.
+   .reveal-in carries the transition while it plays, then is removed. */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(var(--reveal-y));
+}
+.reveal-hidden.reveal--fade,
+.reveal-hidden.reveal--lines {
+  transform: none;
+}
+.reveal-hidden.reveal--scale {
+  transform: scale(var(--reveal-scale));
+}
+.reveal-in {
+  transition:
+    opacity var(--reveal-dur) ease-out,
+    transform var(--reveal-dur) var(--reveal-ease);
+  transition-delay: calc(var(--reveal-i, 0) * var(--reveal-stagger));
+}
+@media print {
+  .reveal-hidden {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ── Theme reveal (View Transition, see toggleTheme) ───────────────── */

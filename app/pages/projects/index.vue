@@ -9,7 +9,7 @@
       <template #title>{{ $t("projects.title") }}</template>
     </UiPageIntro>
 
-    <section class="projects gutter" :aria-label="$t('nav.projects')">
+    <section v-reveal.stagger class="projects gutter" :aria-label="$t('nav.projects')">
       <NuxtLink
         v-for="(p, i) in projects"
         :key="p.slug"
