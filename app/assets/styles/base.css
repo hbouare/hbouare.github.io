@@ -1,0 +1,397 @@
+/* app/assets/styles/base.css
+ *
+ * Element defaults and the shared primitives of the « Sismogramme » system.
+ * Reach for these classes before writing component CSS. Values come from
+ * tokens.css; the only breakpoint in the system is 760px.
+ *
+ * The only !important in the stylesheet is the reduced-motion block: an
+ * accessibility override that must beat everything.
+ */
+
+/* ── Reset (zero specificity: any class wins) ──────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+:where(body, h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
+  margin: 0;
+}
+:where(ul, ol)[role="list"] {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where(button, input, textarea, select) {
+  font: inherit;
+  color: inherit;
+}
+:where(img, svg, canvas) {
+  max-width: 100%;
+}
+
+/* ── Elements ──────────────────────────────────────────────────────── */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  transition: var(--theme-fade);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+
+/* How text breaks, once for the whole site: headings balance, prose avoids
+   orphans, and an over-long token (URL, identifier) wraps instead of
+   widening its box — which also protects the no-overflow e2e guarantee. */
+:where(h1, h2, h3, h4, h5, h6) {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+:where(p, li, dd, dt, blockquote, figcaption) {
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+/* ── Type roles ────────────────────────────────────────────────────── */
+.t-hero,
+.t-h1,
+.t-h2,
+.t-cta {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 300;
+  text-wrap: balance;
+}
+.t-hero {
+  font-size: var(--fs-hero);
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+}
+.t-h1 {
+  font-size: var(--fs-h1);
+  line-height: 1;
+  letter-spacing: -0.033em;
+}
+.t-h2 {
+  font-size: var(--fs-h2);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+.t-cta {
+  font-size: var(--fs-cta);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.t-h3 {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: var(--fs-h3);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.t-list {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: var(--fs-list);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.t-lead {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.t-intro {
+  margin: 0;
+  font-size: var(--fs-intro);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+.t-hero em,
+.t-h1 em,
+.t-h2 em,
+.t-cta em {
+  font-style: italic;
+}
+/* The one accented word of a title. */
+.em-accent {
+  color: var(--accent);
+}
+
+/* Mono eyebrow / section marker — 12px. */
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* Mono label — 11px (form fields, cells, strips). */
+.label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.muted {
+  color: var(--muted);
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Buttons & links ───────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-family: var(--f-sans);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    background-color 0.2s,
+    color 0.2s;
+}
+.btn--primary {
+  min-height: 52px;
+  padding: 0 24px;
+  background: var(--ink);
+  color: var(--bg);
+}
+.btn--primary:hover {
+  opacity: 0.86;
+}
+.btn--secondary {
+  min-height: 48px;
+  padding: 0 20px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.btn--secondary:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+/* On the inverted (ink) CTA band. */
+.btn--inverse {
+  min-height: 56px;
+  padding: 0 28px;
+  gap: 12px;
+  font-size: 16px;
+  background: var(--bg);
+  color: var(--ink);
+}
+.btn--inverse:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.link-text {
+  display: inline-block;
+  padding: 4px 0;
+  font-size: 15px;
+  font-weight: 500;
+  border-bottom: 1px solid currentColor;
+}
+
+/* ── Tags, chips, status ───────────────────────────────────────────── */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+}
+.tag--caps {
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.tag--accent {
+  border-color: var(--accent);
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 0 14px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.status::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ── Layout ────────────────────────────────────────────────────────── */
+.gutter {
+  padding-inline: var(--gutter);
+}
+.section {
+  padding-block: var(--section-y);
+}
+
+/* Editorial grid: a mono marker column and a content column. Wraps on its
+   own below ~760px — no media query needed. */
+.editorial {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+}
+.editorial__key {
+  flex: 1 1 200px;
+}
+.editorial__body {
+  flex: 999 1 620px;
+  min-width: 0;
+}
+
+/* Cell grid: 1px gaps over a rule-coloured background give perfect
+   hairlines between cells. */
+.cells {
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+}
+.cells > * {
+  background: var(--bg);
+  transition: background-color 0.35s;
+}
+
+/* Hairline row; add .is-interactive for the surface hover. */
+.rule-row {
+  border-top: 1px solid var(--rule);
+}
+.rule-row.is-interactive {
+  transition: background-color 0.2s;
+}
+.rule-row.is-interactive:hover {
+  background: var(--surface);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The skip link focuses <main>; that programmatic focus needs no ring. */
+#main:focus {
+  outline: none;
+}
+
+/* ── Page transitions (Nuxt <NuxtPage> "page", mode out-in) ────────── */
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* ── Code highlighting (Shiki, dual theme) ─────────────────────────── */
+/* Nuxt Content emits each token's colours as custom properties; these two
+   rules are the only ones painting them, keyed on data-theme. Token
+   backgrounds are deliberately not applied: blocks sit on --surface. */
+html[data-theme="dark"] .shiki span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+html:not([data-theme="dark"]) .shiki span {
+  color: var(--shiki-default);
+  font-style: var(--shiki-default-font-style);
+  font-weight: var(--shiki-default-font-weight);
+  text-decoration: var(--shiki-default-text-decoration);
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────── */
+/* The !important here is deliberate: an accessibility override must win.
+   JS motion (wave field, count-up) checks the media query itself. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

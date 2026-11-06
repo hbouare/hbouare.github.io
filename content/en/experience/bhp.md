@@ -5,6 +5,8 @@ role: "Full-Stack Developer"
 company: "BHP"
 sector: "Mining"
 period: "June 2022 — December 2022"
+start: 2022.42
+end: 2022.95
 location: "Paris, France"
 flag: "🇫🇷"
 tags:

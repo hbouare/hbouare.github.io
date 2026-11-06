@@ -1,358 +1,324 @@
 <!-- app/components/navigation/TopBar.vue -->
+<!--
+  Sticky header, laid out in CSS so the SSR markup is right for every width:
+  wide shows the nav, FR/EN, theme and CTA; narrow shows the short CTA and a
+  Menu button that unfolds the panel below.
+  Its breakpoint is 1024px, not the system's 760px: the full bar needs ~900px
+  of content (measured, FR), so at 760–985px it overflowed by up to 200px.
+  The language switch is a real link (not a button) so Nitro's crawler finds
+  every /en route from any page.
+-->
 <template>
-  <!--
-    No `color` prop: it emits an inline background-color that only
-    !important could beat. Leaving it off lets plain author CSS own the
-    background — see the unscoped block below.
-  -->
-  <v-app-bar
-    :elevation="0"
-    :class="['app-nav', { 'nav-scrolled': scrolled }]"
-    height="72"
-    flat
-  >
-    <v-container class="d-flex align-center px-6 px-md-10 h-100" fluid>
-      <!-- Logo with handwriting animation -->
-      <NuxtLink :to="localePath('/')" class="nav-logo text-decoration-none">
-        <svg
-          class="logo-svg"
-          viewBox="0 0 44 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <!-- H -->
-          <path
-            class="logo-letter letter-1"
-            d="M4 4 L4 28 M4 16 L16 16 M16 4 L16 28"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <!-- B -->
-          <path
-            class="logo-letter letter-2"
-            d="M24 4 L24 28 M24 4 L34 4 Q40 4 40 10 Q40 16 34 16 L24 16 L34 16 Q42 16 42 22 Q42 28 34 28 L24 28"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </NuxtLink>
+  <header class="app-nav" :class="{ 'is-open': menuOpen }">
+    <a href="#main" class="skip-link">{{ $t("header.skip") }}</a>
 
-      <v-spacer />
+    <div class="bar gutter">
+      <NuxtLink :to="localePath('/')" class="logo">Hamed Bouare</NuxtLink>
 
-      <!-- Desktop nav links -->
-      <nav class="d-none d-md-flex align-center ga-8 mr-6">
+      <nav class="desk-nav" :aria-label="$t('header.primary_nav')">
         <NuxtLink
           v-for="item in navItems"
           :key="item.key"
           :to="localePath(item.to)"
-          :class="[
-            'nav-link type-micro-cap',
-            {
-              'router-link-exact-active':
-                item.exact && route.path === localePath(item.to),
-            },
-          ]"
-          :exact="item.exact"
+          class="nav-link"
+          :class="{ 'is-active': item.key === activeKey }"
+          :aria-current="item.key === activeKey ? 'page' : undefined"
         >
           {{ $t(`nav.${item.key}`) }}
         </NuxtLink>
       </nav>
 
-      <!-- Compact lang toggle -->
-      <button
-        class="nav-icon-btn lang-toggle"
-        @click="switchLocale(locale === 'fr' ? 'en' : 'fr')"
-      >
-        {{ locale === "fr" ? "EN" : "FR" }}
-      </button>
+      <div class="desk-tools">
+        <NuxtLink :to="switchLocalePath(otherLocale)" class="lang-switch">
+          <span aria-hidden="true" :class="{ 'is-on': locale === 'fr' }">FR</span>
+          <span aria-hidden="true" class="muted">/</span>
+          <span aria-hidden="true" :class="{ 'is-on': locale === 'en' }">EN</span>
+          <span class="visually-hidden">{{ $t("header.switch_locale") }}</span>
+        </NuxtLink>
+        <button
+          type="button"
+          class="pill theme-toggle"
+          @click="toggleTheme"
+        >
+          <UiThemeLabel />
+        </button>
+        <NuxtLink :to="localePath('/contact')" class="header-cta">
+          {{ $t("header.cta") }}
+        </NuxtLink>
+      </div>
 
-      <!-- Theme toggle -->
-      <button
-        class="nav-icon-btn nav-icon-btn--square theme-toggle"
-        :aria-label="
-          isDark ? $t('theme.toggle_light') : $t('theme.toggle_dark')
-        "
-        @click="toggleTheme($event)"
-      >
-        <v-icon
-          :icon="isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'"
-          size="18"
-        />
-      </button>
+      <div class="mob-tools">
+        <NuxtLink :to="localePath('/contact')" class="header-cta header-cta--mob">
+          {{ $t("header.cta_short") }}
+        </NuxtLink>
+        <button
+          type="button"
+          class="pill pill--tall menu-toggle"
+          aria-controls="mobile-menu"
+          :aria-expanded="menuOpen ? 'true' : 'false'"
+          @click="menuOpen = !menuOpen"
+        >
+          {{ menuOpen ? $t("header.close") : $t("header.menu") }}
+        </button>
+      </div>
+    </div>
 
-      <!--
-        Mobile menu — rendered only below md, gated by v-if like the drawer.
-        Vuetify's display utilities (d-md-none) CANNOT hide it: `.nav-icon-btn`
-        is unlayered scoped CSS with `display: inline-flex`, and unlayered
-        author CSS beats Vuetify's layered utilities, so d-md-none is inert
-        here. v-if sidesteps the cascade entirely and keeps this consistent
-        with the drawer's smAndDown gate.
-      -->
-      <button
-        v-if="smAndDown"
-        class="nav-icon-btn nav-icon-btn--square menu-toggle ml-1"
-        :aria-label="$t('nav.menu')"
-        :aria-expanded="mobileMenu"
-        @click="mobileMenu = !mobileMenu"
-      >
-        <v-icon icon="mdi-menu" size="18" />
-      </button>
-    </v-container>
-  </v-app-bar>
-
-  <!--
-    Mobile drawer — rendered only below the md breakpoint (< 960px), the
-    same switch the nav links/button use in CSS. On desktop it is not in the
-    DOM at all rather than merely hidden.
-
-    SSR-safe: with `ssr: true` (createVuetify), useDisplay reports the same
-    assumed breakpoint on the server and on first client render, so this
-    v-if produces no hydration mismatch; the real viewport is measured in
-    onMounted and the drawer appears after hydration on mobile. The menu
-    button stays CSS-driven, so mobile users see it immediately with no flash
-    — the drawer only needs to exist once they tap, well after hydration.
-  -->
-  <v-navigation-drawer
-    v-if="smAndDown"
-    v-model="mobileMenu"
-    location="right"
-    width="280"
-    temporary
-    color="surface-2"
-  >
-    <v-list class="pt-8 px-4">
-      <v-list-item
-        v-for="item in navItems"
-        :key="item.key"
-        :to="localePath(item.to)"
-        class="type-micro-cap mb-2"
-        @click="mobileMenu = false"
-      >
-        {{ $t(`nav.${item.key}`) }}
-      </v-list-item>
-    </v-list>
-  </v-navigation-drawer>
+    <div v-show="menuOpen" id="mobile-menu" class="mob-menu">
+      <nav class="mob-nav" :aria-label="$t('header.primary_nav')">
+        <NuxtLink
+          v-for="item in navItems"
+          :key="item.key"
+          :to="localePath(item.to)"
+          class="mob-link"
+          :class="{ 'is-active': item.key === activeKey }"
+          :aria-current="item.key === activeKey ? 'page' : undefined"
+        >
+          <span>{{ $t(`nav.${item.key}`) }}</span>
+          <span class="mob-num" aria-hidden="true">{{ item.num }}</span>
+        </NuxtLink>
+      </nav>
+      <div class="mob-actions">
+        <NuxtLink :to="switchLocalePath(otherLocale)" class="pill pill--block lang-switch">
+          <span aria-hidden="true" :class="{ 'is-on': locale === 'fr' }">FR</span>
+          <span aria-hidden="true" class="muted">/</span>
+          <span aria-hidden="true" :class="{ 'is-on': locale === 'en' }">EN</span>
+          <span class="visually-hidden">{{ $t("header.switch_locale") }}</span>
+        </NuxtLink>
+        <button
+          type="button"
+          class="pill pill--block theme-toggle"
+          @click="toggleTheme"
+        >
+          <UiThemeLabel />
+        </button>
+      </div>
+    </div>
+  </header>
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from "vuetify"
-
 const { locale } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
-const { isDark, toggleTheme } = useAppTheme()
-
-// Matches the md switch used by the nav links/button CSS (d-md-flex /
-// d-md-none). Gates the drawer's presence so it never renders on desktop.
-const { smAndDown } = useDisplay()
-
-const scrolled = ref(false)
-const mobileMenu = ref(false)
-
-// If the viewport grows past the breakpoint while the drawer is open, close
-// it: the v-if unmounts the drawer, and without this mobileMenu would stay
-// true and re-open it on a later shrink back to mobile.
-watch(smAndDown, (isMobile) => {
-  if (!isMobile) mobileMenu.value = false
-})
-
 const route = useRoute()
+const { toggleTheme } = useAppTheme()
 
 const navItems = [
-  { key: "about", to: "/", exact: true },
-  { key: "services", to: "/services" },
-  { key: "projects", to: "/projects" },
-  { key: "research", to: "/research" },
-  { key: "blog", to: "/blog" },
-  { key: "contact", to: "/contact" },
-]
+  { key: "about", to: "/", num: "01" },
+  { key: "services", to: "/services", num: "03" },
+  { key: "projects", to: "/projects", num: "04" },
+  { key: "research", to: "/research", num: "05" },
+  { key: "blog", to: "/blog", num: "06" },
+  { key: "contact", to: "/contact", num: "07" },
+] as const
 
-type AppLocale = "fr" | "en"
+const otherLocale = computed(() => (locale.value === "fr" ? "en" : "fr"))
 
-const switchLocale = async (code: AppLocale) => {
-  const path = switchLocalePath(code)
-  await navigateTo(path, { external: false })
+// Active section follows the route, so a case study lights up Projects and
+// an article lights up Blog.
+const activeKey = computed(() => {
+  const path = route.path.replace(/^\/en(?=\/|$)/, "") || "/"
+  if (path === "/") return "about"
+  return navItems.find((i) => i.to !== "/" && path.startsWith(i.to))?.key
+})
+
+const menuOpen = ref(false)
+watch(() => route.fullPath, () => (menuOpen.value = false))
+
+const onKey = (e: KeyboardEvent) => {
+  if (e.key === "Escape") menuOpen.value = false
 }
-
-const onScroll = () => {
-  scrolled.value = window.scrollY > 40
+// Growing past the breakpoint hides the mobile tools; close the panel so it
+// does not reappear on a later shrink.
+let desktop: MediaQueryList | undefined
+const onDesktop = (e: MediaQueryListEvent) => {
+  if (e.matches) menuOpen.value = false
 }
 
 onMounted(() => {
-  window.addEventListener("scroll", onScroll, { passive: true })
+  window.addEventListener("keydown", onKey)
+  desktop = window.matchMedia("(min-width: 1024px)")
+  desktop.addEventListener("change", onDesktop)
 })
-
 onUnmounted(() => {
-  window.removeEventListener("scroll", onScroll)
+  window.removeEventListener("keydown", onKey)
+  desktop?.removeEventListener("change", onDesktop)
 })
 </script>
 
-<style scoped lang="scss">
-.nav-logo {
+<style scoped>
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  transition: background-color 0.35s;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100px;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  z-index: 30;
+}
+.skip-link:focus-visible {
+  top: 12px;
+}
+
+.bar {
   display: flex;
   align-items: center;
-  transition: opacity 0.2s;
-  &:hover {
-    opacity: 0.8;
-  }
-}
-.logo-svg {
-  width: 40px;
-  height: 28px;
-  color: rgb(var(--v-theme-primary));
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 44px;
+  padding-block: 16px;
 }
 
-// Handwriting draw + reverse-erase animation
-// Draw: H then B | Erase: B then H (exact reverse)
-// Erase retraces the stroke backward (0 → 150), not forward (-150)
-.logo-letter {
-  fill: none;
-  stroke-dasharray: 150;
-  stroke-dashoffset: 150;
-}
-.letter-1 {
-  animation: drawH 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-.letter-2 {
-  animation: drawB 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-@keyframes drawH {
-  //         Draw H first
-  0% {
-    stroke-dashoffset: 150;
-  }
-  15% {
-    stroke-dashoffset: 0;
-  }
-  //         Stay visible while B draws + pause
-  62% {
-    stroke-dashoffset: 0;
-  }
-  //         Erase H last (reverse direction: 0 → 150)
-  78% {
-    stroke-dashoffset: 150;
-  }
-  100% {
-    stroke-dashoffset: 150;
-  }
-}
-@keyframes drawB {
-  //         Wait for H to draw
-  0% {
-    stroke-dashoffset: 150;
-  }
-  15% {
-    stroke-dashoffset: 150;
-  }
-  //         Draw B second
-  30% {
-    stroke-dashoffset: 0;
-  }
-  //         Stay visible (pause)
-  48% {
-    stroke-dashoffset: 0;
-  }
-  //         Erase B first (reverse direction: 0 → 150)
-  62% {
-    stroke-dashoffset: 150;
-  }
-  100% {
-    stroke-dashoffset: 150;
-  }
+.logo {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
-// Size and tracking come from .type-micro-cap; only state is local.
+.desk-nav {
+  display: flex;
+  gap: 30px;
+  font-size: 14px;
+}
 .nav-link {
-  color: rgb(var(--v-theme-muted));
-  text-decoration: none;
+  padding: 6px 0;
+  color: var(--muted);
+  border-bottom: 1px solid transparent;
   transition: color 0.2s;
-  &:hover,
-  &:focus-visible,
-  &.router-link-active,
-  &.router-link-exact-active {
-    color: rgb(var(--v-theme-on-background));
-  }
+}
+.nav-link:hover,
+.nav-link.is-active {
+  color: var(--ink);
+}
+.nav-link.is-active {
+  border-bottom-color: var(--accent);
 }
 
-.nav-icon-btn {
-  display: inline-flex;
+.desk-tools,
+.mob-tools {
+  display: flex;
   align-items: center;
-  justify-content: center;
+}
+.desk-tools {
+  gap: 16px;
+}
+.mob-tools {
+  gap: 8px;
+}
+
+.lang-switch {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 4px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.lang-switch .is-on {
+  color: var(--ink);
+}
+
+.pill {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--ink);
   background: none;
-  border: 1px solid transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  padding: 7px 12px;
   cursor: pointer;
-  border-radius: 4px;
-  color: rgb(var(--v-theme-muted));
-  transition:
-    color 0.25s,
-    border-color 0.25s;
-  &:hover,
-  &:focus-visible {
-    color: rgb(var(--v-theme-on-background));
-    border-color: rgb(var(--v-theme-border));
+}
+.pill--tall {
+  height: 44px;
+  padding: 0 14px;
+}
+.pill--block {
+  flex: 1;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-cta {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  transition: opacity 0.2s;
+}
+.header-cta:hover {
+  opacity: 0.86;
+}
+.header-cta--mob {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.mob-menu {
+  border-top: 1px solid var(--rule);
+  padding: 12px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.mob-nav {
+  display: flex;
+  flex-direction: column;
+}
+.mob-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: 34px;
+  letter-spacing: -0.02em;
+  color: var(--muted);
+}
+.mob-link.is-active {
+  color: var(--ink);
+}
+.mob-num {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.mob-actions {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 1023.98px) {
+  .desk-nav,
+  .desk-tools {
+    display: none;
   }
 }
-
-// Square 34px icon affordance, shared by the theme and menu toggles.
-.nav-icon-btn--square {
-  width: 34px;
-  height: 34px;
-  padding: 0;
-}
-
-.lang-toggle {
-  font-size: var(--type-micro-cap);
-  letter-spacing: 0.96px;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  margin-right: 4px;
-}
-</style>
-
-<!--
-  Unscoped: the app bar background and the teleported drawer both live
-  outside this component's scope.
-
-  Vuetify 4 wraps its own CSS in @layer, so unlayered author styles like
-  these win on cascade order alone — no !important and no doubled selectors
-  needed. Dropping the `color` prop removed the last inline style that
-  would have required one.
--->
-<style lang="scss">
-.v-app-bar.app-nav {
-  background: transparent;
-  transition: box-shadow 0.3s ease;
-}
-
-// Scrolled state: the nav leaves overlay mode and takes the canvas.
-// The system has no shadow tier, so separation is a hairline, not a shadow.
-.v-app-bar.app-nav.nav-scrolled {
-  background: rgb(var(--v-theme-background));
-  border-bottom: 1px solid rgb(var(--v-theme-border));
-
-  @supports (backdrop-filter: blur(1px)) {
-    background: rgba(var(--v-theme-background), 0.92);
-    backdrop-filter: blur(12px);
-  }
-}
-
-// Mobile drawer — teleported to body, so scoped styles can't reach it.
-.v-navigation-drawer {
-  .v-list-item {
-    color: rgb(var(--v-theme-muted));
-    transition: color 0.25s;
-
-    &:hover,
-    &:focus-visible,
-    &.router-link-active {
-      color: rgb(var(--v-theme-on-background));
-    }
-  }
-  .v-list-item__overlay {
+@media (min-width: 1024px) {
+  .mob-tools,
+  .mob-menu {
     display: none;
   }
 }

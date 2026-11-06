@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Literata:ital,opsz,wght@0,7..72,300;0,7..72,400;1,7..72,300;1,7..72,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--f-display:'Newsreader',Georgia,serif;--f-sans:'Instrument Sans',system-ui,sans-serif;--f-mono:'IBM Plex Mono',ui-monospace,monospace}
+[data-f="literata"]{--f-display:'Literata',Georgia,serif;--f-sans:var(--f-sans);--f-mono:'Geist Mono',ui-monospace,monospace}
+[data-f="plex"]{--f-display:'Source Serif 4',Georgia,serif;--f-sans:'IBM Plex Sans',system-ui,sans-serif;--f-mono:'IBM Plex Mono',ui-monospace,monospace}
+:root{--bg:#F3F0E8;--surface:#EBE6DA;--ink:#17150F;--muted:#5C574C;--rule:#D8D2C4;--accent:#C2441A}
+[data-t="dark"]{--bg:#13120F;--surface:#1C1A16;--ink:#EEEAE0;--muted:#A39E91;--rule:#2E2B25;--accent:#F07A48}
+body{margin:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+::selection{background:var(--accent);color:var(--bg)}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" data-t="{{ theme }}" data-f="{{ fonts }}" lang="{{ lang }}" style="container-type:inline-size;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--f-sans);transition:background-color .35s,color .35s">
+
+  <header style="position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--rule);transition:background-color .35s">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px clamp(20px,4.4cqw,64px);min-height:44px">
+      <a href="#" onClick="{{ go.home }}" style="font-family:var(--f-display);font-style:italic;font-size:21px;letter-spacing:-0.01em;white-space:nowrap">Hamed Bouare</a>
+      <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
+        <nav style="display:flex;gap:30px;font-size:14px">
+          <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+            <a href="#" onClick="{{ item.go }}" style="color:{{ item.color }};border-bottom:1px solid {{ item.bc }};padding:6px 0" style-hover="color:var(--ink)">{{ item.label }}</a>
+          </sc-for>
+        </nav>
+        <div style="display:flex;align-items:center;gap:16px">
+          <button onClick="{{ toggleLang }}" aria-label="Langue" style="display:flex;gap:6px;background:none;border:none;padding:8px 4px;cursor:pointer;font-family:var(--f-mono);font-size:12px;color:var(--ink)"><span style="color:{{ frC }}">FR</span><span style="color:var(--muted)">/</span><span style="color:{{ enC }}">EN</span></button>
+          <button onClick="{{ toggleTheme }}" style="font-family:var(--f-mono);font-size:12px;background:none;border:1px solid var(--rule);color:var(--ink);padding:7px 12px;border-radius:999px;cursor:pointer">{{ themeLabel }}</button>
+          <a href="#" onClick="{{ go.contact }}" style="font-size:14px;font-weight:500;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;white-space:nowrap" style-hover="opacity:.86">{{ t.cta }}</a>
+        </div>
+      </sc-if>
+      <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:8px;align-items:center">
+          <a href="#" onClick="{{ go.contact }}" style="height:44px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:500;background:var(--ink);color:var(--bg);border-radius:999px">{{ t.ctaShort }}</a>
+          <button onClick="{{ toggleMenu }}" aria-expanded="{{ menu }}" style="height:44px;padding:0 14px;font-family:var(--f-mono);font-size:12px;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:999px;cursor:pointer">{{ menuLabel }}</button>
+        </div>
+      </sc-if>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="border-top:1px solid var(--rule);padding:12px 20px 28px;display:flex;flex-direction:column;gap:20px">
+        <nav style="display:flex;flex-direction:column">
+          <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+            <a href="#" onClick="{{ item.go }}" style="font-family:var(--f-display);font-weight:300;font-size:34px;letter-spacing:-0.02em;padding:10px 0;border-bottom:1px solid var(--rule);color:{{ item.color }};display:flex;justify-content:space-between;align-items:baseline"><span>{{ item.label }}</span><span style="font-family:var(--f-mono);font-size:11px;color:var(--muted)">{{ item.num }}</span></a>
+          </sc-for>
+        </nav>
+        <div style="display:flex;gap:10px">
+          <button onClick="{{ toggleLang }}" style="flex:1;height:48px;display:flex;gap:6px;justify-content:center;align-items:center;background:none;border:1px solid var(--rule);border-radius:999px;cursor:pointer;font-family:var(--f-mono);font-size:12px;color:var(--ink)"><span style="color:{{ frC }}">FR</span><span style="color:var(--muted)">/</span><span style="color:{{ enC }}">EN</span></button>
+          <button onClick="{{ toggleTheme }}" style="flex:1;height:48px;font-family:var(--f-mono);font-size:12px;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:999px;cursor:pointer">{{ themeLabel }}</button>
+        </div>
+      </div>
+    </sc-if>
+  </header>
+
+  <main>
+  <sc-if value="{{ is.home }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Accueil" style="position:relative;height:clamp(640px,56cqw,800px);border-bottom:1px solid var(--rule);overflow:hidden;cursor:crosshair">
+      <canvas ref="{{ canvasRef }}" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;-webkit-mask-image:{{ heroMask }};mask-image:{{ heroMask }}"></canvas>
+      <div style="position:relative;height:100%;box-sizing:border-box;padding:clamp(24px,4cqw,56px) clamp(20px,4.4cqw,64px) clamp(28px,3.6cqw,52px);display:flex;flex-direction:column;justify-content:space-between;gap:24px;pointer-events:none">
+        <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);line-height:1.6;max-width:720px">Architecte logiciel · IA &amp; Data Engineering · R&amp;D · Conseil technique</div>
+        <div style="display:flex;flex-direction:column;gap:clamp(24px,3.4cqw,48px)">
+          <h1 style="margin:0;max-width:1100px;font-family:var(--f-display);font-weight:300;font-size:clamp(46px,9.2cqw,132px);line-height:.96;letter-spacing:-0.035em;text-wrap:balance">Des problèmes complexes, des logiciels <em style="font-style:italic;color:var(--accent)">fiables</em></h1>
+          <div style="display:flex;flex-wrap:wrap;gap:24px 48px;align-items:flex-end;justify-content:space-between">
+            <div style="flex:1 1 480px;max-width:580px;display:flex;flex-direction:column;gap:28px">
+              <p style="margin:0;font-size:clamp(16px,1.3cqw,18px);line-height:1.6;text-wrap:pretty">Architecte logiciel et docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes — data, IA, du front-end au back-end. Du calcul scientifique au logiciel de production : une même méthode de chercheur, appliquée à des problèmes d’ingénierie concrets.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;pointer-events:auto">
+                <a href="#" onClick="{{ go.contact }}" style="min-height:52px;box-sizing:border-box;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;background:var(--ink);color:var(--bg);padding:0 24px;border-radius:999px" style-hover="opacity:.86">{{ t.cta }} <span aria-hidden="true">→</span></a>
+                <a href="#" onClick="{{ go.projects }}" style="font-size:15px;font-weight:500;border-bottom:1px solid currentColor;padding:4px 0">Études de cas</a>
+              </div>
+            </div>
+            <sc-if value="{{ showReadout }}" hint-placeholder-val="{{ true }}">
+              <div aria-hidden="true" style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;font-family:var(--f-mono);font-size:11px;color:var(--muted);text-align:right">
+                <div>Champ d’ondes · déplacez, cliquez pour émettre</div>
+                <div ref="{{ readoutRef }}" style="font-variant-numeric:tabular-nums">t = 000.00 s</div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 28px;align-items:baseline;padding:22px clamp(20px,4.4cqw,64px);border-bottom:1px solid var(--rule)">
+      <span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Ils m’ont confié des systèmes</span>
+      <sc-for list="{{ refs }}" as="r" hint-placeholder-count="6">
+        <span style="font-family:var(--f-display);font-size:clamp(18px,1.6cqw,22px);letter-spacing:-0.01em">{{ r }}</span>
+      </sc-for>
+    </div>
+    <div ref="{{ statsRef }}" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--rule);border-bottom:1px solid var(--rule)">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="background:var(--bg);padding:clamp(22px,3cqw,40px) clamp(20px,3.4cqw,48px);display:flex;flex-direction:column;gap:10px;transition:background-color .35s">
+          <div style="font-family:var(--f-display);font-weight:300;font-size:clamp(48px,6cqw,88px);line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">{{ s.v }}</div>
+          <div style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">{{ s.l }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <section style="display:flex;flex-wrap:wrap;gap:24px 48px;padding:clamp(64px,9cqw,136px) clamp(20px,4.4cqw,64px)">
+      <div style="flex:1 1 200px;font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding-top:12px">01 — À propos</div>
+      <div style="flex:999 1 620px;display:flex;flex-direction:column;gap:clamp(28px,3.4cqw,48px)">
+        <h2 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(36px,4.8cqw,68px);line-height:1.04;letter-spacing:-0.03em;text-wrap:balance">La rigueur du chercheur, la précision de <em style="font-style:italic">l’ingénieur</em></h2>
+        <p style="margin:0;font-family:var(--f-display);font-size:clamp(19px,1.7cqw,24px);line-height:1.5;max-width:860px;text-wrap:pretty">Un doctorat en modélisation numérique m’a appris à traiter des problèmes mal posés : les décomposer, les modéliser, les résoudre avec rigueur, puis confronter les résultats au réel. C’est cette démarche que j’applique aux systèmes que je conçois — d’autant plus quand les enjeux sont techniques et incertains.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px 40px;font-size:16px;line-height:1.65;color:var(--muted)">
+          <p style="margin:0;text-wrap:pretty">Je juge un logiciel à son utilité et à sa robustesse, pas à sa sophistication. Une bonne architecture n’a pas besoin d’être spectaculaire : elle doit rester fiable, lisible et maintenable par toute une équipe — y compris plusieurs années après sa mise en production, sans dépendre de la personne qui l’a conçue.</p>
+          <p style="margin:0;text-wrap:pretty">J’ai conçu et livré des systèmes en France comme au Royaume-Uni, dans des contextes techniques et humains très différents. J’en tire une conviction : aucune solution ne vaut sans une compréhension précise du problème, des contraintes et de l’objectif. C’est par là que je commence, toujours.</p>
+        </div>
+      </div>
+    </section>
+    <section style="padding:0 clamp(20px,4.4cqw,64px) clamp(64px,9cqw,136px)">
+      <div style="display:flex;flex-wrap:wrap;gap:16px 48px;align-items:baseline;padding-bottom:clamp(28px,3.4cqw,48px)">
+        <div style="flex:1 1 200px;font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">02 — Parcours</div>
+        <h2 style="flex:999 1 620px;margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(36px,4.8cqw,68px);line-height:1.04;letter-spacing:-0.03em">Où j’ai construit</h2>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ timeline }}" as="job" hint-placeholder-count="6">
+          <article style="display:flex;flex-wrap:wrap;gap:16px 48px;padding:clamp(24px,2.8cqw,40px) 0;border-top:1px solid var(--rule)">
+            <div style="flex:1 1 200px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--rule);border-radius:999px;padding:4px 10px">{{ job.sector }}</span>
+                <sc-if value="{{ job.current }}" hint-placeholder-val="{{ false }}"><span style="display:flex;gap:6px;align-items:center;font-family:var(--f-mono);font-size:11px;color:var(--accent)"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent)"></span>En cours</span></sc-if>
+              </div>
+              <div style="font-family:var(--f-mono);font-size:12px;color:var(--muted)">{{ job.dates }}</div>
+              <div aria-hidden="true" style="display:flex;flex-direction:column;gap:4px;max-width:240px">
+                <div style="position:relative;height:5px;border-top:1px solid var(--rule)"><span style="position:absolute;top:-2px;height:3px;left:{{ job.left }};width:{{ job.width }};background:var(--accent)"></span></div>
+                <div style="display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10px;color:var(--muted)"><span>2018</span><span>2026</span></div>
+              </div>
+            </div>
+            <div style="flex:2 1 280px;display:flex;flex-direction:column;gap:8px">
+              <h3 style="margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(28px,2.8cqw,40px);line-height:1.08;letter-spacing:-0.02em">{{ job.org }}</h3>
+              <div style="font-size:14px;line-height:1.5;color:var(--muted)">{{ job.role }}</div>
+            </div>
+            <div style="flex:3 1 380px;display:flex;flex-direction:column;gap:14px;font-size:16px;line-height:1.65">
+              <sc-for list="{{ job.desc }}" as="d" hint-placeholder-count="1"><p style="margin:0;text-wrap:pretty">{{ d }}</p></sc-for>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ is.services }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Services" style="padding:clamp(56px,8cqw,120px) clamp(20px,4.4cqw,64px) clamp(40px,5cqw,72px);display:flex;flex-direction:column;gap:clamp(20px,2.4cqw,32px)">
+      <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">03 — Services</div>
+      <h1 style="margin:0;max-width:1100px;font-family:var(--f-display);font-weight:300;font-size:clamp(44px,7.2cqw,104px);line-height:1;letter-spacing:-0.033em;text-wrap:balance">Ce que je peux prendre en charge</h1>
+      <p style="margin:0;max-width:640px;font-size:clamp(17px,1.4cqw,19px);line-height:1.6;color:var(--muted);text-wrap:pretty">Concevoir, fiabiliser ou débloquer un système — là où les enjeux techniques sont élevés. En mission ponctuelle, en accompagnement au long cours, ou sur un point précis.</p>
+    </section>
+    <section style="padding:0 clamp(20px,4.4cqw,64px) clamp(64px,9cqw,136px)">
+      <sc-for list="{{ services }}" as="sv" hint-placeholder-count="6">
+        <article style="display:flex;flex-wrap:wrap;gap:16px 48px;padding:clamp(28px,3.2cqw,48px) 0;border-top:1px solid var(--rule)" style-hover="background:var(--surface)">
+          <div style="flex:1 1 200px;display:flex;gap:16px;align-items:baseline">
+            <span style="font-family:var(--f-mono);font-size:12px;color:var(--accent)">{{ sv.n }}</span>
+            <h2 style="margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.6cqw,36px);line-height:1.12;letter-spacing:-0.02em;text-wrap:balance">{{ sv.title }}</h2>
+          </div>
+          <div style="flex:2 1 460px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px 40px">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Constat</div>
+              <p style="margin:0;font-family:var(--f-display);font-style:italic;font-size:19px;line-height:1.45;text-wrap:pretty">{{ sv.problem }}</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Réponse</div>
+              <p style="margin:0;font-size:16px;line-height:1.65;text-wrap:pretty">{{ sv.answer }}</p>
+            </div>
+          </div>
+        </article>
+      </sc-for>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ is.projects }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Projets" style="padding:clamp(56px,8cqw,120px) clamp(20px,4.4cqw,64px) clamp(40px,5cqw,72px);display:flex;flex-direction:column;gap:clamp(20px,2.4cqw,32px)">
+      <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">04 — Projets</div>
+      <h1 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(44px,7.2cqw,104px);line-height:1;letter-spacing:-0.033em">Ce que j’ai bâti</h1>
+      <p style="margin:0;max-width:640px;font-size:clamp(17px,1.4cqw,19px);line-height:1.6;color:var(--muted);text-wrap:pretty">Le code source de ces projets n’est pas public. Sur demande, je fournis un accès en lecture au dépôt, ou une présentation détaillée de l’architecture et des choix techniques.</p>
+    </section>
+    <section style="padding:0 clamp(20px,4.4cqw,64px) clamp(64px,9cqw,136px);display:flex;flex-direction:column">
+      <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
+        <a href="#" onClick="{{ go.case }}" style="display:flex;flex-wrap:wrap;gap:24px 48px;padding:clamp(28px,3.4cqw,52px) 0;border-top:1px solid var(--rule)" style-hover="background:var(--surface)">
+          <div style="flex:1 1 200px;display:flex;flex-direction:column;gap:12px">
+            <span style="font-family:var(--f-mono);font-size:12px;color:var(--accent)">{{ p.n }}</span>
+            <sc-if value="{{ p.featured }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:4px 10px">Projet phare</span></sc-if>
+          </div>
+          <div style="flex:999 1 560px;display:flex;flex-direction:column;gap:18px">
+            <sc-if value="{{ p.img }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ p.img }}" alt="{{ p.imgAlt }}" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:top;border:1px solid var(--rule);border-radius:6px;background:var(--surface);margin-bottom:8px">
+            </sc-if>
+            <div style="font-family:var(--f-mono);font-size:12px;color:var(--muted)">{{ p.ctx }}</div>
+            <h2 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(32px,3.8cqw,54px);line-height:1.04;letter-spacing:-0.025em">{{ p.title }}</h2>
+            <p style="margin:0;font-family:var(--f-display);font-size:clamp(18px,1.5cqw,21px);line-height:1.5;max-width:680px;text-wrap:pretty">{{ p.sum }}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center">
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ p.tags }}" as="tg" hint-placeholder-count="5"><span style="font-family:var(--f-mono);font-size:11px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px">{{ tg }}</span></sc-for>
+              </div>
+              <span style="font-size:15px;font-weight:500;border-bottom:1px solid currentColor;padding:2px 0">Voir l’étude de cas →</span>
+            </div>
+          </div>
+        </a>
+      </sc-for>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ is.case }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Étude de cas" style="padding:clamp(40px,6cqw,88px) clamp(20px,4.4cqw,64px) clamp(32px,4cqw,56px);display:flex;flex-direction:column;gap:clamp(20px,2.4cqw,32px)">
+      <a href="#" onClick="{{ go.projects }}" style="align-self:flex-start;font-family:var(--f-mono);font-size:12px;color:var(--muted);padding:6px 0" style-hover="color:var(--ink)">← Retour aux projets</a>
+      <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Étude de cas 001 · Projet personnel — transport &amp; services</div>
+      <h1 style="margin:0;max-width:1100px;font-family:var(--f-display);font-weight:300;font-size:clamp(44px,7.2cqw,104px);line-height:1;letter-spacing:-0.033em">Gestion de flotte automobile</h1>
+      <p style="margin:0;max-width:760px;font-family:var(--f-display);font-size:clamp(20px,2cqw,28px);line-height:1.4;text-wrap:pretty">Piloter tout un parc de véhicules depuis un seul écran, et ne plus laisser passer une échéance.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:8px">
+        <div style="background:var(--bg);padding:16px 20px;display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Contexte</span><span style="font-size:15px">Projet personnel — transport &amp; services</span></div>
+        <div style="background:var(--bg);padding:16px 20px;display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Stack</span><span style="font-size:15px">FastAPI · Vue 3 · TypeScript · PostgreSQL · SQLAlchemy</span></div>
+        <div style="background:var(--bg);padding:16px 20px;display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Code</span><span style="font-size:15px">Accès en lecture sur demande</span></div>
+      </div>
+    </section>
+    <figure style="margin:0 clamp(20px,4.4cqw,64px);display:flex;flex-direction:column;gap:10px">
+      <img src="{{ img.hero }}" alt="Tableau de bord FleetOps — vue d’ensemble opérationnelle du parc" style="display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)">
+      <figcaption style="font-family:var(--f-mono);font-size:12px;color:var(--muted)">Tableau de bord FleetOps — vue d’ensemble opérationnelle du parc</figcaption>
+    </figure>
+    <div style="display:flex;flex-wrap:wrap;gap:32px 64px;padding:clamp(56px,7cqw,112px) clamp(20px,4.4cqw,64px)">
+      <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
+        <aside style="flex:1 1 200px">
+          <nav style="position:sticky;top:96px;display:flex;flex-direction:column;gap:2px;font-family:var(--f-mono);font-size:12px">
+            <div style="letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding-bottom:10px">Sommaire</div>
+            <a href="#cs-1" style="padding:8px 0;border-top:1px solid var(--rule);display:flex;gap:10px"><span style="color:var(--accent)">01</span>Problème</a>
+            <a href="#cs-2" style="padding:8px 0;border-top:1px solid var(--rule);display:flex;gap:10px"><span style="color:var(--accent)">02</span>Contraintes</a>
+            <a href="#cs-3" style="padding:8px 0;border-top:1px solid var(--rule);display:flex;gap:10px"><span style="color:var(--accent)">03</span>Démarche</a>
+            <a href="#cs-4" style="padding:8px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);display:flex;gap:10px"><span style="color:var(--accent)">04</span>Résultat</a>
+          </nav>
+        </aside>
+      </sc-if>
+      <article style="flex:999 1 620px;max-width:780px;display:flex;flex-direction:column;gap:clamp(56px,6cqw,88px)">
+        <section id="cs-1" style="display:flex;flex-direction:column;gap:20px">
+          <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)">01 — Problème</div>
+          <h2 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(30px,3.2cqw,44px);line-height:1.1;letter-spacing:-0.02em">Un suivi éclaté, des échéances qui passent</h2>
+          <p style="margin:0;font-size:18px;line-height:1.7;text-wrap:pretty">Une application de gestion de flotte qui remplace un suivi éclaté — tableurs, e-mails, rappels manuels — par un poste unique.</p>
+        </section>
+        <section id="cs-2" style="display:flex;flex-direction:column;gap:20px">
+          <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)">02 — Contraintes</div>
+          <h2 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(30px,3.2cqw,44px);line-height:1.1;letter-spacing:-0.02em">Trois sources d’échéances, deux rôles</h2>
+          <p style="margin:0;font-size:18px;line-height:1.7;text-wrap:pretty">Elle surveille trois sources d’échéances (permis, documents réglementaires, entretiens), par date ou par kilométrage.</p>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;border-top:1px solid var(--rule)">
+            <li style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);font-size:16px;line-height:1.55"><span style="font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-top:3px">a.</span>Alertes sur trois domaines : permis, documents réglementaires et entretiens (par date ou par kilométrage)</li>
+            <li style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);font-size:16px;line-height:1.55"><span style="font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-top:3px">b.</span>Rôles admin / gestionnaire appliqués côté serveur, JWT en cookie httpOnly et hachage Argon2</li>
+          </ul>
+        </section>
+        <section id="cs-3" style="display:flex;flex-direction:column;gap:20px">
+          <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)">03 — Démarche</div>
+          <h2 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(30px,3.2cqw,44px);line-height:1.1;letter-spacing:-0.02em">Sous le capot</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)">
+            <div style="background:var(--bg);padding:20px;display:flex;flex-direction:column;gap:8px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Front-end</span><span style="font-size:15px;line-height:1.55">Un poste unique pour suivre véhicules, conducteurs, documents et entretiens.</span></div>
+            <div style="background:var(--bg);padding:20px;display:flex;flex-direction:column;gap:8px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Back-end</span><span style="font-size:15px;line-height:1.55">Le cœur du système : un moteur qui détecte et hiérarchise chaque échéance.</span></div>
+            <div style="background:var(--bg);padding:20px;display:flex;flex-direction:column;gap:8px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Base de données</span><span style="font-size:15px;line-height:1.55">Toutes les données du parc, centralisées et historisées.</span></div>
+          </div>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;border-top:1px solid var(--rule)">
+            <li style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);font-size:16px;line-height:1.55"><span style="font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-top:3px">—</span>Sévérité avertissement / critique, avec acquittement puis résolution par le gestionnaire</li>
+            <li style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);font-size:16px;line-height:1.55"><span style="font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-top:3px">—</span>Listes paginées et filtrables (recherche, statut, tri) et suivi des coûts</li>
+          </ul>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px">
+            <figure style="margin:0;display:flex;flex-direction:column;gap:8px"><img src="{{ img.vehicles }}" alt="Le parc : recherche, filtres et statut de chaque véhicule" loading="lazy" style="display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)"><figcaption style="font-family:var(--f-mono);font-size:12px;line-height:1.5;color:var(--muted)">Le parc : recherche, filtres et statut de chaque véhicule</figcaption></figure>
+            <figure style="margin:0;display:flex;flex-direction:column;gap:8px"><img src="{{ img.form }}" alt="Fiche véhicule : identification et données d’exploitation" loading="lazy" style="display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)"><figcaption style="font-family:var(--f-mono);font-size:12px;line-height:1.5;color:var(--muted)">Fiche véhicule : identification et données d’exploitation</figcaption></figure>
+          </div>
+        </section>
+        <section id="cs-4" style="display:flex;flex-direction:column;gap:20px">
+          <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)">04 — Résultat</div>
+          <h2 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(30px,3.2cqw,44px);line-height:1.1;letter-spacing:-0.02em">Chaque échéance devient une alerte traitée</h2>
+          <p style="margin:0;font-size:18px;line-height:1.7;text-wrap:pretty">Chaque échéance proche est transformée en alerte hiérarchisée qu’un gestionnaire acquitte puis résout.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px">
+            <figure style="margin:0;display:flex;flex-direction:column;gap:8px"><img src="{{ img.analytics }}" alt="Répartition du parc et coûts du mois en un coup d’œil" loading="lazy" style="display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)"><figcaption style="font-family:var(--f-mono);font-size:12px;line-height:1.5;color:var(--muted)">Répartition du parc et coûts du mois en un coup d’œil</figcaption></figure>
+            <figure style="margin:0;display:flex;flex-direction:column;gap:8px"><img src="{{ img.costs }}" alt="Suivi des coûts par véhicule, catégorie et fournisseur" loading="lazy" style="display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)"><figcaption style="font-family:var(--f-mono);font-size:12px;line-height:1.5;color:var(--muted)">Suivi des coûts par véhicule, catégorie et fournisseur</figcaption></figure>
+          </div>
+          <figure style="margin:0;display:flex;flex-direction:column;gap:8px;max-width:420px"><img src="{{ img.mobile }}" alt="Interface responsive, pensée pour le terrain" loading="lazy" style="display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)"><figcaption style="font-family:var(--f-mono);font-size:12px;line-height:1.5;color:var(--muted)">Interface responsive, pensée pour le terrain</figcaption></figure>
+        </section>
+        <div style="display:flex;flex-direction:column;gap:14px;padding:28px;border:1px solid var(--rule);border-radius:6px">
+          <div style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Accès au code</div>
+          <p style="margin:0;font-size:16px;line-height:1.6;text-wrap:pretty">Le code de ce projet n’est pas public. Sur demande, je fournis un accès en lecture au dépôt, ou une présentation détaillée de l’architecture et des choix techniques.</p>
+          <a href="#" onClick="{{ go.contact }}" style="align-self:flex-start;min-height:48px;box-sizing:border-box;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;border:1px solid var(--ink);padding:0 20px;border-radius:999px" style-hover="background:var(--ink);color:var(--bg)">Demander l’accès au dépôt <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    </div>
+    <a href="#" onClick="{{ go.case }}" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px 32px;padding:clamp(32px,4cqw,56px) clamp(20px,4.4cqw,64px);border-top:1px solid var(--rule)" style-hover="background:var(--surface)">
+      <span style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Projet suivant — 002</span>
+      <span style="font-family:var(--f-display);font-weight:300;font-size:clamp(28px,3.6cqw,52px);letter-spacing:-0.02em">Socle d’un SaaS de suivi financier →</span>
+    </a>
+  </sc-if>
+
+  <sc-if value="{{ is.research }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Recherche" style="padding:clamp(56px,8cqw,120px) clamp(20px,4.4cqw,64px) clamp(48px,6cqw,88px);display:flex;flex-direction:column;gap:clamp(20px,2.4cqw,32px)">
+      <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">05 — Recherche</div>
+      <h1 style="margin:0;max-width:1200px;font-family:var(--f-display);font-weight:300;font-size:clamp(40px,6.4cqw,96px);line-height:1.02;letter-spacing:-0.033em;text-wrap:balance">Docteur en mécanique, algorithmes &amp; <em style="font-style:italic">modélisation numérique</em></h1>
+      <div style="display:flex;flex-wrap:wrap;gap:24px 48px;margin-top:clamp(8px,2cqw,32px)">
+        <p style="flex:1 1 300px;margin:0;font-family:var(--f-display);font-style:italic;font-size:clamp(22px,2.2cqw,30px);line-height:1.3;text-wrap:balance">Avant de concevoir des logiciels, j’ai fait de la recherche.</p>
+        <div style="flex:2 1 480px;display:flex;flex-direction:column;gap:18px;font-size:17px;line-height:1.65">
+          <p style="margin:0;text-wrap:pretty">Mon doctorat portait sur un défi d’ingénierie : comprendre et prédire la réponse des ouvrages souterrains — tunnels, cavités — lorsqu’ils sont soumis à des ondes mécaniques et sismiques. Un sujet au cœur de la conception, de la fiabilité et de la sécurité de ces infrastructures.</p>
+          <p style="margin:0;color:var(--muted);text-wrap:pretty">Ces travaux m’ont amené à croiser plusieurs disciplines : mécanique des milieux continus, propagation d’ondes, modélisation mathématique et méthodes numériques. Mais ils m’ont surtout appris une méthode : décomposer un problème complexe, construire un modèle fiable, le résoudre avec rigueur, puis confronter les résultats à la réalité. Une démarche que j’applique aujourd’hui à chaque projet d’ingénierie logicielle.</p>
+        </div>
+      </div>
+    </section>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:1px;background:var(--rule);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)">
+      <div style="background:var(--bg);padding:clamp(22px,2.8cqw,36px) clamp(20px,4.4cqw,64px);display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--f-mono);font-size:12px;color:var(--accent)">01</span><span style="font-family:var(--f-display);font-size:clamp(22px,2.2cqw,30px);line-height:1.2">Docteur en mécanique</span></div>
+      <div style="background:var(--bg);padding:clamp(22px,2.8cqw,36px) clamp(20px,3cqw,40px);display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--f-mono);font-size:12px;color:var(--accent)">02</span><span style="font-family:var(--f-display);font-size:clamp(22px,2.2cqw,30px);line-height:1.2">5 publications évaluées par des pairs</span></div>
+      <div style="background:var(--bg);padding:clamp(22px,2.8cqw,36px) clamp(20px,3cqw,40px);display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--f-mono);font-size:12px;color:var(--accent)">03</span><span style="font-family:var(--f-display);font-size:clamp(22px,2.2cqw,30px);line-height:1.2">Revues &amp; conférences internationales</span></div>
+    </div>
+    <section style="padding:clamp(64px,9cqw,136px) clamp(20px,4.4cqw,64px)">
+      <div style="display:flex;flex-wrap:wrap;gap:16px 48px;align-items:baseline;padding-bottom:clamp(28px,3.4cqw,48px)">
+        <div style="flex:1 1 200px;font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Publications</div>
+        <h2 style="flex:999 1 620px;margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(36px,4.8cqw,68px);line-height:1.04;letter-spacing:-0.03em">Travaux publiés</h2>
+      </div>
+      <sc-for list="{{ pubs }}" as="pub" hint-placeholder-count="5">
+        <article style="display:flex;flex-wrap:wrap;gap:16px 48px;padding:clamp(28px,3.4cqw,52px) 0;border-top:1px solid var(--rule)">
+          <div style="flex:1 1 200px;display:flex;flex-direction:row;flex-wrap:wrap;gap:12px 16px;align-items:baseline;align-content:flex-start">
+            <span style="font-family:var(--f-display);font-weight:300;font-size:clamp(44px,4.4cqw,64px);line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">{{ pub.year }}</span>
+            <span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--rule);border-radius:999px;padding:4px 10px">{{ pub.type }}</span>
+          </div>
+          <div style="flex:999 1 620px;display:flex;flex-direction:column;gap:16px;max-width:900px">
+            <div style="font-family:var(--f-mono);font-size:12px;color:var(--muted)">{{ pub.venue }}</div>
+            <h3 style="margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(22px,2.2cqw,30px);line-height:1.25;letter-spacing:-0.01em;text-wrap:pretty">{{ pub.title }}</h3>
+            <p style="margin:0;font-size:16px;line-height:1.7;text-wrap:pretty">{{ pub.sum }}</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px 40px;padding-top:6px">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Thèmes de recherche</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ pub.themes }}" as="th" hint-placeholder-count="3"><span style="font-family:var(--f-mono);font-size:11px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px">{{ th }}</span></sc-for></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Compétences mobilisées</div>
+                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.5;color:var(--muted)"><sc-for list="{{ pub.skills }}" as="sk" hint-placeholder-count="3"><li>— {{ sk }}</li></sc-for></ul>
+              </div>
+            </div>
+            <a href="{{ pub.url }}" target="_blank" rel="noopener" style="align-self:flex-start;font-size:15px;font-weight:500;border-bottom:1px solid var(--accent);padding:4px 0" style-hover="color:var(--accent)">Consulter la publication ↗</a>
+          </div>
+        </article>
+      </sc-for>
+    </section>
+    <section style="padding:0 clamp(20px,4.4cqw,64px) clamp(64px,9cqw,136px)">
+      <div style="display:flex;flex-wrap:wrap;gap:16px 48px;padding-bottom:clamp(28px,3.4cqw,48px)">
+        <div style="flex:1 1 200px;font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding-top:12px">Impact</div>
+        <div style="flex:999 1 620px;display:flex;flex-direction:column;gap:16px">
+          <h2 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(36px,4.8cqw,68px);line-height:1.04;letter-spacing:-0.03em">De la recherche à l’ingénierie</h2>
+          <p style="margin:0;max-width:620px;font-size:17px;line-height:1.6;color:var(--muted);text-wrap:pretty">C’est cette rigueur que j’apporte à vos projets les plus exigeants — ceux où l’incertitude est forte et l’erreur coûteuse.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)">
+        <sc-for list="{{ impact }}" as="im" hint-placeholder-count="8">
+          <div style="background:var(--bg);padding:24px;display:flex;flex-direction:column;gap:10px;transition:background-color .35s">
+            <span style="font-family:var(--f-mono);font-size:11px;color:var(--accent)">{{ im.n }}</span>
+            <span style="font-family:var(--f-display);font-size:21px;line-height:1.25">{{ im.t }}</span>
+            <span style="font-size:15px;line-height:1.55;color:var(--muted);text-wrap:pretty">{{ im.d }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ is.blog }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Blog" style="padding:clamp(56px,8cqw,120px) clamp(20px,4.4cqw,64px) clamp(32px,4cqw,56px);display:flex;flex-direction:column;gap:clamp(20px,2.4cqw,32px)">
+      <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">06 — Blog</div>
+      <h1 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(44px,7.2cqw,104px);line-height:1;letter-spacing:-0.033em">Pensées &amp; <em style="font-style:italic">articles</em></h1>
+      <div role="group" aria-label="Filtrer par sujet" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+        <sc-for list="{{ chips }}" as="c" hint-placeholder-count="7">
+          <button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="min-height:40px;padding:0 14px;font-family:var(--f-mono);font-size:12px;border-radius:999px;cursor:pointer;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="padding:0 clamp(20px,4.4cqw,64px) clamp(64px,9cqw,136px);display:flex;flex-direction:column">
+      <sc-for list="{{ posts }}" as="po" hint-placeholder-count="9">
+        <a href="#" onClick="{{ go.article }}" style="display:flex;flex-wrap:wrap;gap:10px 48px;align-items:baseline;padding:clamp(22px,2.4cqw,32px) 0;border-top:1px solid var(--rule)" style-hover="background:var(--surface)">
+          <div style="flex:1 1 200px;font-family:var(--f-mono);font-size:12px;color:var(--muted);display:flex;gap:12px"><span>{{ po.date }}</span><span>·</span><span>{{ po.read }}</span></div>
+          <div style="flex:999 1 620px;display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;align-items:baseline">
+            <h2 style="flex:1 1 420px;margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(22px,2.2cqw,30px);line-height:1.2;letter-spacing:-0.015em;text-wrap:pretty">{{ po.title }}</h2>
+            <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ po.tags }}" as="tg" hint-placeholder-count="3"><span style="font-family:var(--f-mono);font-size:11px;color:var(--muted)">#{{ tg }}</span></sc-for></div>
+          </div>
+        </a>
+      </sc-for>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ is.article }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Article" style="padding:clamp(40px,6cqw,88px) clamp(20px,4.4cqw,64px) clamp(32px,4cqw,56px);display:flex;flex-direction:column;gap:clamp(18px,2.2cqw,28px);border-bottom:1px solid var(--rule)">
+      <a href="#" onClick="{{ go.blog }}" style="align-self:flex-start;font-family:var(--f-mono);font-size:12px;color:var(--muted);padding:6px 0" style-hover="color:var(--ink)">← Voir tous les articles</a>
+      <div style="font-family:var(--f-mono);font-size:12px;color:var(--muted);display:flex;gap:12px"><span>1 mars 2025</span><span>·</span><span>10 min de lecture</span></div>
+      <h1 style="margin:0;max-width:1100px;font-family:var(--f-display);font-weight:300;font-size:clamp(38px,5.6cqw,80px);line-height:1.04;letter-spacing:-0.03em;text-wrap:balance">Mettre en place une architecture FastAPI évolutive et durable</h1>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span style="font-family:var(--f-mono);font-size:11px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px">FastAPI</span>
+        <span style="font-family:var(--f-mono);font-size:11px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px">Python</span>
+        <span style="font-family:var(--f-mono);font-size:11px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px">Architecture</span>
+        <span style="font-family:var(--f-mono);font-size:11px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px">Clean Code</span>
+      </div>
+    </section>
+    <div style="display:flex;flex-wrap:wrap;gap:32px 64px;padding:clamp(48px,6cqw,96px) clamp(20px,4.4cqw,64px)">
+      <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
+        <aside style="flex:1 1 220px">
+          <nav style="position:sticky;top:96px;display:flex;flex-direction:column;font-family:var(--f-mono);font-size:12px;line-height:1.45">
+            <div style="letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding-bottom:10px">Sommaire</div>
+            <sc-for list="{{ toc }}" as="h" hint-placeholder-count="8"><a href="{{ h.href }}" style="padding:8px 0;border-top:1px solid var(--rule);display:flex;gap:10px" style-hover="color:var(--accent)"><span style="color:var(--accent)">{{ h.n }}</span><span>{{ h.t }}</span></a></sc-for>
+          </nav>
+        </aside>
+      </sc-if>
+      <article style="flex:999 1 620px;max-width:720px;display:flex;flex-direction:column;gap:22px;font-size:18px;line-height:1.75">
+        <p style="margin:0;font-family:var(--f-display);font-size:clamp(20px,1.8cqw,24px);line-height:1.5;text-wrap:pretty">La plupart des tutoriels FastAPI mettent tout dans <code style="font-family:var(--f-mono);font-size:.8em;background:var(--surface);padding:2px 6px;border-radius:3px">main.py</code>. Ça marche pour un exemple, pas pour une application maintenue par une équipe sur plusieurs années. Voici l’architecture que j’applique sur les projets qui durent, avec les raisons de chaque décision.</p>
+        <h2 id="a-1" style="margin:24px 0 0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.4cqw,34px);line-height:1.2;letter-spacing:-0.015em">La structure de projet</h2>
+        <pre style="margin:0;font-family:var(--f-mono);font-size:13px;line-height:1.6;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:20px;overflow-x:auto"><code>app/
+├── api/
+│   ├── dependencies.py       # Dépendances injectées (auth, db, etc.)
+│   ├── routers/
+│   │   ├── certificates.py
+│   │   └── accounts.py
+│   └── schemas/
+│       ├── certificate.py    # Pydantic models — entrée/sortie API
+│       └── account.py
+├── core/
+│   ├── config.py             # Settings (pydantic-settings)
+│   └── security.py           # JWT, hashing, etc.
+├── domain/
+│   ├── models.py             # Dataclasses — objets métier internes
+│   └── exceptions.py         # Exceptions métier
+├── infrastructure/
+│   ├── database.py           # Session SQLAlchemy
+│   └── repositories/
+├── services/
+└── main.py</code></pre>
+        <p style="margin:0;text-wrap:pretty">Cette structure sépare quatre couches : API (HTTP), domaine (logique métier), infrastructure (base de données, services externes), et services (orchestration entre les deux).</p>
+        <h2 id="a-2" style="margin:24px 0 0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.4cqw,34px);line-height:1.2;letter-spacing:-0.015em">La couche API : routers et schémas</h2>
+        <pre style="margin:0;font-family:var(--f-mono);font-size:13px;line-height:1.6;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:20px;overflow-x:auto"><code><span style="color:var(--muted)"># app/api/routers/certificates.py</span>
+router = APIRouter(prefix="/certificates", tags=["certificates"])
+
+@router.post("/", response_model=CertificateResponse, status_code=status.HTTP_201_CREATED)
+async def create_certificate(
+    payload: CertificateCreate,
+    service: CertificateService = Depends(get_certificate_service),
+    current_user: str = Depends(get_current_user),
+):
+    try:
+        certificate = await service.create(payload, owner=current_user)
+        return CertificateResponse.model_validate(certificate)
+    except InsufficientVolume as e:
+        raise HTTPException(status_code=422, detail=str(e))</code></pre>
+        <p style="margin:0;text-wrap:pretty">Le router ne contient aucune logique métier — seulement du mapping HTTP : désérialisation de la requête, appel au service, sérialisation de la réponse, et conversion des exceptions métier en codes HTTP.</p>
+        <h2 id="a-3" style="margin:24px 0 0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.4cqw,34px);line-height:1.2;letter-spacing:-0.015em">La couche service : logique métier</h2>
+        <p style="margin:0;text-wrap:pretty">La couche service est testable sans base de données ni HTTP — il suffit de mocker le repository. C’est là que réside la valeur de cette séparation.</p>
+        <blockquote style="margin:8px 0;padding:4px 0 4px 24px;border-left:2px solid var(--accent);font-family:var(--f-display);font-style:italic;font-size:clamp(22px,2cqw,26px);line-height:1.4">C’est là que réside la valeur de cette séparation.</blockquote>
+        <h2 id="a-4" style="margin:24px 0 0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.4cqw,34px);line-height:1.2;letter-spacing:-0.015em">La couche repository : accès aux données</h2>
+        <p style="margin:0;text-wrap:pretty">Le repository est la seule couche qui connaît SQLAlchemy. Le reste du code travaille avec des objets domaine (<code style="font-family:var(--f-mono);font-size:.8em;background:var(--surface);padding:2px 6px;border-radius:3px">Certificate</code> dataclass) — pas avec des modèles ORM. Ce découplage permet de changer l’ORM ou la base de données sans toucher à la logique métier.</p>
+        <h2 id="a-5" style="margin:24px 0 0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.4cqw,34px);line-height:1.2;letter-spacing:-0.015em">L’injection de dépendances</h2>
+        <p style="margin:0;text-wrap:pretty">FastAPI résout les dépendances automatiquement et gère leur cycle de vie. <code style="font-family:var(--f-mono);font-size:.8em;background:var(--surface);padding:2px 6px;border-radius:3px">get_db_session</code> crée une session par requête et la ferme proprement après — même en cas d’exception.</p>
+        <h2 id="a-6" style="margin:24px 0 0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.4cqw,34px);line-height:1.2;letter-spacing:-0.015em">Les exceptions métier</h2>
+        <p style="margin:0;text-wrap:pretty">Les exceptions métier ne dépendent pas de FastAPI — elles expriment ce qui peut mal tourner dans le domaine. La conversion en codes HTTP appartient au router.</p>
+        <h2 id="a-7" style="margin:24px 0 0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.4cqw,34px);line-height:1.2;letter-spacing:-0.015em">Tester les services sans infrastructure</h2>
+        <p style="margin:0;text-wrap:pretty">Les tests de service sont rapides, déterministes, et ne nécessitent pas de base de données. L’<code style="font-family:var(--f-mono);font-size:.8em;background:var(--surface);padding:2px 6px;border-radius:3px">AsyncMock</code> remplace le repository — on teste la logique, pas l’infrastructure.</p>
+        <h2 id="a-8" style="margin:24px 0 0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,2.4cqw,34px);line-height:1.2;letter-spacing:-0.015em">Ce que cette architecture apporte</h2>
+        <p style="margin:0;text-wrap:pretty">La séparation en couches n’est pas de la complexité gratuite. Elle répond à des problèmes concrets sur un projet qui dure :</p>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;border-top:1px solid var(--rule);font-size:16px;line-height:1.6">
+          <li style="padding:14px 0;border-bottom:1px solid var(--rule)"><strong style="font-weight:600">Testabilité</strong> — les services se testent sans base de données, les routers avec un client HTTP</li>
+          <li style="padding:14px 0;border-bottom:1px solid var(--rule)"><strong style="font-weight:600">Lisibilité</strong> — un nouveau développeur sait où chercher : logique métier dans services/, accès aux données dans repositories/, HTTP dans routers/</li>
+          <li style="padding:14px 0;border-bottom:1px solid var(--rule)"><strong style="font-weight:600">Évolutivité</strong> — remplacer PostgreSQL par une autre base de données ne touche que repositories/</li>
+          <li style="padding:14px 0;border-bottom:1px solid var(--rule)"><strong style="font-weight:600">Séparation des responsabilités</strong> — un bug HTTP reste dans le router, un bug métier reste dans le service</li>
+        </ul>
+        <p style="margin:0;text-wrap:pretty">Le coût : plus de fichiers, plus de couches à traverser pour une fonctionnalité simple. Sur un projet jetable d’une semaine, c’est surdimensionné. Sur un projet maintenu par une équipe pendant des mois, c’est la différence entre un code qu’on comprend encore à six mois et un code spaghetti qu’on a peur de toucher.</p>
+      </article>
+    </div>
+    <a href="#" onClick="{{ go.article }}" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px 32px;padding:clamp(32px,4cqw,56px) clamp(20px,4.4cqw,64px);border-top:1px solid var(--rule)" style-hover="background:var(--surface)">
+      <span style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Article suivant</span>
+      <span style="font-family:var(--f-display);font-weight:300;font-size:clamp(24px,3cqw,44px);letter-spacing:-0.02em">Le pattern BFF avec FastAPI : un backend devant le frontend →</span>
+    </a>
+  </sc-if>
+
+  <sc-if value="{{ is.contact }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Contact" style="display:flex;flex-wrap:wrap;gap:48px 80px;padding:clamp(56px,8cqw,120px) clamp(20px,4.4cqw,64px) clamp(64px,9cqw,136px)">
+      <div style="flex:1 1 380px;display:flex;flex-direction:column;gap:clamp(20px,2.4cqw,32px)">
+        <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">07 — Contact</div>
+        <h1 style="margin:0;font-family:var(--f-display);font-weight:300;font-size:clamp(44px,7.2cqw,104px);line-height:1;letter-spacing:-0.033em">Travaillons <em style="font-style:italic;color:var(--accent)">ensemble</em></h1>
+        <p style="margin:0;max-width:520px;font-size:clamp(17px,1.4cqw,19px);line-height:1.6;text-wrap:pretty">Un projet à cadrer, un système à fiabiliser, un problème technique à forte incertitude ? Décrivez votre besoin en quelques lignes, je vous réponds rapidement.</p>
+        <div style="display:flex;gap:8px;align-items:center;font-family:var(--f-mono);font-size:12px"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>{{ t.avail }}</div>
+        <div style="display:flex;flex-direction:column;gap:0;margin-top:12px;border-top:1px solid var(--rule)">
+          <div style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:14px 0 6px">Me retrouver</div>
+          <a href="https://github.com/hamedbouare9" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--rule);font-size:16px" style-hover="color:var(--accent)"><span>GitHub</span><span style="font-family:var(--f-mono);font-size:12px;color:var(--muted)">hamedbouare9 ↗</span></a>
+          <a href="https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--rule);font-size:16px" style-hover="color:var(--accent)"><span>LinkedIn</span><span style="font-family:var(--f-mono);font-size:12px;color:var(--muted)">hamed-bouare-phd ↗</span></a>
+        </div>
+      </div>
+      <div style="flex:1.3 1 420px">
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ submit }}" style="display:flex;flex-direction:column;gap:28px;padding:clamp(24px,3.4cqw,48px);border:1px solid var(--rule);border-radius:8px;background:var(--surface);transition:background-color .35s">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:28px">
+              <label style="display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Nom</span><input required name="name" autocomplete="name" placeholder="Nom" style="font:inherit;font-size:18px;color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--ink);padding:10px 0;min-height:44px;outline-offset:4px"></label>
+              <label style="display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Adresse e-mail</span><input required type="email" name="email" autocomplete="email" placeholder="Adresse e-mail" style="font:inherit;font-size:18px;color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--ink);padding:10px 0;min-height:44px;outline-offset:4px"></label>
+            </div>
+            <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px">
+              <legend style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:0 0 10px">Sujet (facultatif)</legend>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ topics }}" as="tp" hint-placeholder-count="7">
+                  <button type="button" onClick="{{ tp.pick }}" aria-pressed="{{ tp.on }}" style="min-height:40px;padding:0 14px;font-family:var(--f-sans);font-size:14px;border-radius:999px;cursor:pointer;border:1px solid {{ tp.bd }};background:{{ tp.bg }};color:{{ tp.fg }}">{{ tp.label }}</button>
+                </sc-for>
+              </div>
+            </fieldset>
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Message</span><textarea required name="message" rows="6" placeholder="Message" style="font:inherit;font-size:18px;line-height:1.55;color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--ink);padding:10px 0;resize:vertical;outline-offset:4px"></textarea></label>
+            <button type="submit" style="align-self:flex-start;min-height:52px;display:flex;align-items:center;gap:10px;font:inherit;font-size:15px;font-weight:500;background:var(--ink);color:var(--bg);border:none;padding:0 26px;border-radius:999px;cursor:pointer" style-hover="opacity:.86">Envoyer le message <span aria-hidden="true">→</span></button>
+          </form>
+        </sc-if>
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="display:flex;flex-direction:column;gap:16px;padding:clamp(24px,3.4cqw,48px);border:1px solid var(--rule);border-radius:8px;background:var(--surface)">
+            <div style="font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)">Message envoyé</div>
+            <div style="font-family:var(--f-display);font-weight:300;font-size:clamp(28px,3cqw,40px);line-height:1.15">Merci. Je vous réponds rapidement.</div>
+            <button onClick="{{ reset }}" style="align-self:flex-start;font:inherit;font-size:15px;background:none;border:none;border-bottom:1px solid currentColor;color:var(--ink);padding:4px 0;cursor:pointer">Écrire un autre message</button>
+          </div>
+        </sc-if>
+      </div>
+    </section>
+  </sc-if>
+  </main>
+
+  <sc-if value="{{ hasCta }}" hint-placeholder-val="{{ true }}">
+    <section style="background:var(--ink);color:var(--bg);padding:clamp(72px,10cqw,152px) clamp(20px,4.4cqw,64px);display:flex;flex-direction:column;gap:clamp(24px,3cqw,40px);transition:background-color .35s,color .35s">
+      <div style="font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--rule)">{{ cta.eyebrow }}</div>
+      <h2 style="margin:0;max-width:1100px;font-family:var(--f-display);font-weight:300;font-size:clamp(42px,7.6cqw,112px);line-height:1;letter-spacing:-0.035em;text-wrap:balance">{{ cta.title }}</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:24px 48px;align-items:center;justify-content:space-between">
+        <p style="margin:0;max-width:520px;font-size:clamp(17px,1.4cqw,19px);line-height:1.6;color:var(--rule);text-wrap:pretty">{{ cta.text }}</p>
+        <a href="#" onClick="{{ go.contact }}" style="min-height:56px;box-sizing:border-box;display:flex;align-items:center;gap:12px;font-size:16px;font-weight:500;background:var(--bg);color:var(--ink);padding:0 28px;border-radius:999px" style-hover="background:var(--accent);color:var(--bg)">{{ cta.btn }} <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </sc-if>
+
+  <footer style="display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:center;padding:28px clamp(20px,4.4cqw,64px);border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:12px;color:var(--muted)">
+    <span>{{ t.rights }}</span>
+    <span style="display:flex;gap:8px;align-items:center;color:var(--ink)"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>{{ t.avail }}</span>
+    <span style="display:flex;gap:20px"><a href="https://github.com/hamedbouare9" target="_blank" rel="noopener" style="padding:8px 0" style-hover="color:var(--ink)">GitHub</a><a href="https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/" target="_blank" rel="noopener" style="padding:8px 0" style-hover="color:var(--ink)">LinkedIn</a></span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;page&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;services&quot;,&quot;projects&quot;,&quot;case&quot;,&quot;research&quot;,&quot;blog&quot;,&quot;article&quot;,&quot;contact&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Navigation&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Navigation&quot;},&quot;fonts&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;newsreader&quot;,&quot;literata&quot;,&quot;plex&quot;],&quot;default&quot;:&quot;newsreader&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Typographie&quot;},&quot;intensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Interaction signature&quot;},&quot;showReadout&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Interaction signature&quot;}}">
+const PAL = { light: { trace: 'rgba(23,21,15,.30)', accent: '#C2441A' }, dark: { trace: 'rgba(238,234,224,.24)', accent: '#F07A48' } };
+const PAGES = ['home', 'services', 'projects', 'case', 'research', 'blog', 'article', 'contact'];
+const NAV = [['home', '01'], ['services', '03'], ['projects', '04'], ['research', '05'], ['blog', '06'], ['contact', '07']];
+const ACTIVE = { home: 'home', services: 'services', projects: 'projects', case: 'projects', research: 'research', blog: 'blog', article: 'blog', contact: 'contact' };
+const T = {
+  fr: { nav: ['À propos', 'Services', 'Projets', 'Recherche', 'Blog', 'Contact'], cta: 'Discuter d’un projet', ctaShort: 'Discuter', dark: 'Sombre', light: 'Clair', menu: 'Menu', close: 'Fermer', rights: '© 2026 Hamed Bouare — Tous droits réservés', avail: 'Disponible pour de nouveaux projets' },
+  en: { nav: ['About', 'Services', 'Projects', 'Research', 'Blog', 'Contact'], cta: 'Discuss a project', ctaShort: 'Talk', dark: 'Dark', light: 'Light', menu: 'Menu', close: 'Close', rights: '© 2026 Hamed Bouare — All rights reserved', avail: 'Available for new projects' }
+};
+const CTA_HOME = { eyebrow: 'Contact', title: 'Un projet, un doute technique ?', text: 'Décrivez votre besoin en quelques lignes — je vous réponds rapidement.', btn: 'Travaillons ensemble' };
+const CTA = {
+  home: CTA_HOME, projects: CTA_HOME, case: CTA_HOME, blog: CTA_HOME, article: CTA_HOME,
+  services: { eyebrow: 'Contact', title: 'Un de ces sujets correspond à votre besoin ?', text: 'Décrivez-le en quelques lignes, je vous réponds rapidement.', btn: 'Décrire votre besoin' },
+  research: { eyebrow: 'Contact', title: 'Un problème complexe, à forte incertitude ?', text: 'C’est exactement le terrain où cette méthode fait la différence.', btn: 'Discuter d’un projet exigeant' }
+};
+const span = (a, b) => ({ left: ((a - 2018) / 9 * 100).toFixed(1) + '%', width: (Math.max(0.12, b - a) / 9 * 100).toFixed(1) + '%' });
+const TIMELINE = [
+  { sector: 'Énergie', dates: 'Juin 2024 — Présent', current: true, org: 'EDF', role: 'Data Engineer & Développeur Full-Stack · Saint-Denis, France · Temps plein', ...span(2024.42, 2026.85), desc: ['Au sein de l’équipe DevCo, je développe des applications et des outils de traitement de données énergétiques. Je travaille directement avec les équipes métier pour cadrer leurs besoins, puis concevoir les traitements qui fiabilisent les données dont dépendent leurs processus.'] },
+  { sector: 'Recherche', dates: 'Avril 2024 — Février 2026', org: 'Institut d’études avancées', role: 'Développeur Full-Stack · Paris, France · Temps partiel (4 jours par mois)', ...span(2024.25, 2026.1), desc: ['J’ai participé à la refonte du site de l’Institut d’études avancées, un centre qui accueille des chercheurs du monde entier. J’y ai développé les nouvelles fonctionnalités et repris l’interface pour mieux mettre en valeur les programmes de recherche, les activités de l’institut et les chercheurs invités.'] },
+  { sector: 'Santé', dates: 'Janvier 2023 — Janvier 2024', org: 'GE HealthCare', role: 'Développeur Front-end · Buc, France', ...span(2023, 2024), desc: ['Au sein de l’équipe AI DReAM, j’ai développé des applications web intégrant des modèles d’intelligence artificielle pour l’analyse et le suivi de pathologies complexes, en particulier le glioblastome, un cancer du cerveau parmi les plus agressifs. L’enjeu : exploiter les données médicales pour aider les cliniciens et les chercheurs à étudier et à suivre la maladie.'] },
+  { sector: 'Minier', dates: 'Juin 2022 — Décembre 2022', org: 'BHP', role: 'Développeur Full-Stack · Paris, France', ...span(2022.42, 2022.95), desc: ['J’ai contribué au développement d’une application web d’analyse de l’activité des sites d’exploitation de BHP, groupe minier international présent dans de nombreux pays. Mon travail consistait à centraliser leurs données opérationnelles afin de les rendre réellement exploitables.'] },
+  { sector: 'Ferroviaire', dates: 'Septembre 2021 — Juin 2022', org: 'SNCF', role: 'Développeur Back-end · Paris, France', ...span(2021.67, 2022.42), desc: ['J’ai développé, pour la section DGII-VA-I de la SNCF, une application web d’analyse des interactions entre les trains et la voie. Elle s’appuie sur des simulations numériques pour aider les équipes de maintenance à repérer les zones à risque du réseau et à anticiper leurs interventions.'] },
+  { sector: 'Recherche', dates: 'Avril 2018 — Septembre 2021', org: 'LSBB & Avignon Université', role: 'Ingénieur de recherche & Développeur Back-end · Avignon, France & Édimbourg, Royaume-Uni', ...span(2018.25, 2021.67), desc: ['Le Laboratoire Souterrain à Bas Bruit, situé à Rustrel (Vaucluse, France), est un site de recherche interdisciplinaire installé dans une ancienne base militaire reconvertie. Il comprend un réseau de galeries souterraines creusées dans un massif karstique fortement hétérogène, dont les caractéristiques influencent la propagation des ondes mécaniques et la distribution des contraintes alentour.', 'J’y ai conçu et développé une application de simulation numérique pour étudier la propagation des ondes dans ces galeries et analyser la réponse dynamique du tunnel et de son environnement, en régime harmonique comme transitoire.'] }
+];
+const SERVICES = [
+  ['Architecture applicative full-stack', 'Une application qui grossit devient vite difficile à faire évoluer, à tester et à maintenir.', 'La réponse tient dans une architecture claire et en couches, du front-end au back-end — Vuejs côté front-end, Python ou TypeScript/Nodejs côté serveur — testée, documentée, pensée pour durer et pour être reprise par toute une équipe.'],
+  ['Data Engineering', 'Des données éparpillées entre les sources, sans modèle commun, restent impossibles à exploiter en confiance.', 'Un modèle propre et des pipelines fiables, versionnés et vérifiables, leur redonnent une base sur laquelle produits et décisions peuvent réellement s’appuyer.'],
+  ['IA appliquée', 'Intégrer l’IA à un produit réel, c’est passer du prototype à quelque chose de fiable, évalué et maîtrisé.', 'Cela suppose de cadrer les cas d’usage qui comptent, de mesurer ce qui fonctionne vraiment, et de livrer en production sans fragiliser l’existant.'],
+  ['Audit technique & performance', 'Une application lente, coûteuse ou fragile — sans cause clairement identifiée.', 'Un diagnostic priorisé (architecture, base de données, points de contention) en révèle l’origine et débouche sur un plan d’action concret, ordonné par impact.'],
+  ['Modernisation & mise en production', 'Un système hérité finit par freiner chaque évolution.', 'Plutôt qu’une réécriture, une modernisation par étapes — conteneurisation, intégration continue, garde-fous de production — pour retrouver de la vitesse sans tout casser.'],
+  ['Conseil technique & R&D', 'Un problème mal posé, un choix d’architecture structurant, un sujet à forte incertitude.', 'Une méthode de chercheur — analyser, modéliser, arbitrer — permet de trancher sur des bases solides plutôt que sur des intuitions.']
+].map((s, i) => ({ n: String(i + 1).padStart(2, '0'), title: s[0], problem: s[1], answer: s[2] }));
+const PROJECTS = [
+  { n: '001', featured: true, img: 'IMG_HERO', imgAlt: 'Tableau de bord FleetOps', title: 'Gestion de flotte automobile', ctx: 'Projet personnel — transport & services', sum: 'Piloter tout un parc de véhicules depuis un seul écran, et ne plus laisser passer une échéance.', tags: ['FastAPI', 'Vue 3', 'TypeScript', 'PostgreSQL', 'SQLAlchemy'] },
+  { n: '002', title: 'Socle d’un SaaS de suivi financier', ctx: 'Projet personnel — PME, secteur financier', sum: 'Les fondations d’un SaaS de suivi financier pour PME : une base technique carrée, posée avant les fonctionnalités.', tags: ['FastAPI', 'Vue 3', 'TypeScript', 'PostgreSQL', 'SQLAlchemy'] },
+  { n: '003', title: 'Plateforme de loterie en ligne', ctx: 'Projet personnel — plateforme grand public', sum: 'Des tirages au sort en ligne dont l’équité se prouve, au lieu de se promettre.', tags: ['Node.js', 'Express', 'TypeScript', 'Vue 3', 'MongoDB', 'Redis'] },
+  { n: '004', title: 'Gestionnaire de mots de passe sécurisé', ctx: 'Projet personnel / R&D sécurité', sum: 'Un coffre à mots de passe où même une fuite de base ne révèle rien.', tags: ['FastAPI', 'Vue 3', 'TypeScript', 'MongoDB', 'AES-256-GCM'] }
+];
+const PUBS = [
+  { year: '2022', type: 'Revue', venue: 'Soil Dynamics and Earthquake Engineering · mars 2022', title: 'Stress and displacement fields around an arbitrary shape tunnel surrounded by a multilayered elastic medium subjected to harmonic waves under plane strain conditions', sum: 'Lorsqu’une onde sismique traverse le sol, comment se répartissent les contraintes et les déplacements autour d’un tunnel de forme quelconque, creusé dans un terrain composé de plusieurs couches ? Ce travail développe une méthode semi-analytique capable de traiter des géométries arbitraires — pas seulement des cercles — dans un milieu multicouche. Il fournit un outil de calcul précis et rapide, essentiel pour dimensionner des ouvrages souterrains capables de résister aux séismes.', themes: ['Élastodynamique', 'Propagation d’ondes', 'Génie parasismique', 'Ouvrages souterrains'], skills: ['Modélisation mathématique', 'Méthodes semi-analytiques', 'Analyse dans le domaine fréquentiel', 'Programmation scientifique'], url: 'https://doi.org/10.1016/j.soildyn.2022.107158' },
+  { year: '2021', type: 'Thèse', venue: 'Thèse de doctorat · septembre 2021', title: 'Réponse dynamique d’un tunnel enterré soumis à des ondes mécaniques', sum: 'Ma thèse de doctorat, qui rassemble et prolonge l’ensemble de ces travaux. Objectif : comprendre et prédire la manière dont un tunnel enterré réagit au passage d’ondes mécaniques — séismes, vibrations. Elle construit les modèles mathématiques et les méthodes de calcul qui permettent d’évaluer les contraintes et déplacements induits, avec des applications directes au dimensionnement et à la sûreté des ouvrages souterrains.', themes: ['Modélisation numérique', 'Mécanique des milieux continus', 'Interaction sol-structure', 'Dynamique'], skills: ['Recherche doctorale', 'Modélisation numérique avancée', 'Résolution de problèmes complexes', 'Communication scientifique'], url: 'https://theses.hal.science/tel-03467875v1' },
+  { year: '2019', type: 'Conférence', venue: 'Congrès Français de Mécanique · août 2019', title: 'Réponse dynamique d’une cavité circulaire double dans un milieu rocheux infini', sum: 'Deux cavités circulaires voisines, creusées dans un massif rocheux, ne réagissent pas indépendamment au passage d’ondes : chacune perturbe le champ ressenti par l’autre. Ce travail analyse leur réponse dynamique couplée et quantifie cette influence mutuelle — un point clé pour comprendre le comportement de galeries ou tunnels rapprochés.', themes: ['Élastodynamique', 'Diffraction d’ondes', 'Cavités souterraines'], skills: ['Modélisation analytique', 'Analyse dynamique', 'Interprétation physique'], url: 'https://cfm2019.sciencesconf.org/254442/H_BOUARE_CFM_2019.pdf' },
+  { year: '2019', type: 'Conférence', venue: 'Eccomas Procedia · juin 2019', title: 'Transient response of a tunnel embedded in a heterogeneous elastic full space', sum: 'Que se passe-t-il, instant après instant, lorsqu’une onde atteint un tunnel enfoui dans un sol dont les propriétés varient d’un point à l’autre ? Au-delà du régime harmonique idéalisé, ce travail modélise la réponse transitoire — la réaction réelle dans le temps — d’un tunnel dans un milieu hétérogène, plus proche des conditions rencontrées sur le terrain.', themes: ['Régime transitoire', 'Milieux hétérogènes', 'Propagation d’ondes'], skills: ['Analyse dans le domaine temporel', 'Modélisation numérique', 'Milieux hétérogènes'], url: 'https://research.amanote.com/publication/eYoG0HMBKQvf0Bhi9fnQ/transient-response-of-a-tunnel-embedded-in-a-heterogeneous-elastic-full-space' },
+  { year: '2019', type: 'Conférence', venue: 'E3S Web of Conferences · février 2019', title: 'Contribution to the modeling and the mechanical characterization of the subsoil in the LSBB environment', sum: 'Avant de modéliser la propagation des ondes, il faut connaître le milieu qui les porte. Ce travail caractérise mécaniquement le sous-sol du LSBB (Laboratoire Souterrain à Bas Bruit), en combinant modélisation et mesures pour décrire un environnement géologique complexe. Il pose les bases physiques réalistes sur lesquelles s’appuient les modèles de réponse dynamique.', themes: ['Caractérisation mécanique', 'Géophysique', 'LSBB'], skills: ['Modélisation & mesure', 'Validation expérimentale', 'Analyse de données'], url: 'https://www.e3s-conferences.org/articles/e3sconf/abs/2019/14/e3sconf_i-dust2018_06001/e3sconf_i-dust2018_06001.html' }
+];
+const IMPACT = [
+  ['Résolution de problèmes complexes', 'Décomposer un problème mal posé, le formuler, puis le résoudre méthodiquement.'],
+  ['Modélisation', 'Traduire un problème réel en un modèle exploitable, sans en trahir la physique.'],
+  ['Analyse algorithmique', 'Raisonner en termes de coût, de précision et de convergence avant d’écrire la moindre ligne.'],
+  ['Rigueur scientifique', 'Hypothèses explicites, résultats reproductibles, conclusions vérifiables.'],
+  ['Traitement de données', 'Manipuler des volumes importants et en extraire le signal utile.'],
+  ['Validation expérimentale', 'Confronter systématiquement le modèle à la mesure, et douter des deux.'],
+  ['Communication scientifique', 'Rendre une idée complexe claire pour un public non spécialiste.'],
+  ['Gestion de projet au long cours', 'Mener un travail exigeant et autonome sur plusieurs années, jusqu’au bout.']
+].map((x, i) => ({ n: String(i + 1).padStart(2, '0'), t: x[0], d: x[1] }));
+const POSTS = [
+  ['9 juin 2025', '8 min', 'TypeScript : interfaces hiérarchiques sur une vraie API', ['TypeScript', 'Vue.js', 'API', 'Frontend']],
+  ['13 mars 2025', '10 min', 'WebSockets : état partagé, authentification et déconnexions', ['FastAPI', 'WebSockets', 'Python', 'Temps réel']],
+  ['1 mars 2025', '10 min', 'Mettre en place une architecture FastAPI évolutive et durable', ['FastAPI', 'Python', 'Architecture', 'Clean Code']],
+  ['13 février 2025', '9 min', 'Le pattern BFF avec FastAPI : un backend devant le frontend', ['FastAPI', 'Vue.js', 'Azure B2C', 'Architecture', 'OAuth2']],
+  ['13 janvier 2025', '10 min', 'VueUse : les composables qui changent le quotidien', ['Vue.js', 'VueUse', 'Composition API', 'Frontend']],
+  ['6 janvier 2025', '7 min', 'Dataclasses, Pydantic, TypedDict : lequel choisir et pourquoi', ['Python', 'Pydantic', 'Typage', 'FastAPI']],
+  ['10 décembre 2024', '7 min', 'Nuxt 4 : ce que ça change concrètement pour les développeurs', ['Nuxt', 'Vue.js', 'Frontend', 'SSR']],
+  ['19 août 2024', '9 min', 'asyncio en production : les pièges que les tutoriels ne montrent pas', ['Python', 'asyncio', 'FastAPI', 'Concurrence']],
+  ['3 janvier 2024', '9 min', 'Playwright comme outil de scraping métier : au-delà des tests E2E', ['Playwright', 'Python', 'Scraping', 'Automatisation']]
+].map(p => ({ date: p[0], read: p[1] + ' de lecture', title: p[2], tags: p[3] }));
+const CHIPS = ['Tous', 'FastAPI', 'Python', 'Vue.js', 'Architecture', 'Frontend', 'TypeScript'];
+const TOPICS = ['Architecture full-stack', 'Data Engineering', 'IA appliquée', 'Audit & performance', 'Modernisation', 'Conseil & R&D', 'Autre'];
+const TOC = ['La structure de projet', 'La couche API : routers et schémas', 'La couche service : logique métier', 'La couche repository : accès aux données', 'L’injection de dépendances', 'Les exceptions métier', 'Tester les services sans infrastructure', 'Ce que cette architecture apporte'].map((t, i) => ({ n: String(i + 1).padStart(2, '0'), t, href: '#a-' + (i + 1) }));
+const IMG_URL = n => { const u = 'https://hamedbouare.me/projects/fleetops/' + n + '.webp'; const r = (typeof window !== 'undefined' && window.__resources) || {}; return r['fleet_' + n] || u; };
+const REFS = ['EDF', 'GE HealthCare', 'SNCF', 'BHP', 'Institut d’études avancées', 'LSBB · Avignon Université'];
+
+function waveSim(cv, getRo, pal, isMob, gain, still) {
+  const ctx = cv.getContext('2d'); let W = 0, H = 0, dpr = 1;
+  const src = []; let cur = null, lp = null, lastEmit = -1, lastAmb = -10, t = 0; const T0 = performance.now();
+  const h = cv.parentElement;
+  const loc = e => { const r = cv.getBoundingClientRect(); const s = cv.offsetWidth / (r.width || 1); return { x: (e.clientX - r.left) * s, y: (e.clientY - r.top) * s }; };
+  const mv = e => { const p = loc(e); cur = p; if (!lp || (Math.hypot(p.x - lp.x, p.y - lp.y) > 36 && t - lastEmit > 0.12)) { src.push({ x: p.x, y: p.y, t, a: 0.45 }); lp = p; lastEmit = t; } };
+  const dn = e => { const p = loc(e); src.push({ x: p.x, y: p.y, t, a: 1.4 }); };
+  const lv = () => { cur = null; };
+  h.addEventListener('pointermove', mv); h.addEventListener('pointerdown', dn); h.addEventListener('pointerleave', lv);
+  let vis = true; const io = new IntersectionObserver(([e]) => { vis = e.isIntersecting; }); io.observe(cv);
+  const frame = now => {
+    if (!vis) return;
+    const w = cv.offsetWidth, hh = cv.offsetHeight;
+    if (w !== W || hh !== H) { W = w; H = hh; dpr = Math.min(window.devicePixelRatio || 1, 2); cv.width = W * dpr; cv.height = H * dpr; }
+    if (!W) return;
+    const mobile = isMob();
+    t = still ? 1.7 : (now - T0) / 1000;
+    const ax = W * (mobile ? 0.72 : 0.78), ay = H * (mobile ? 0.24 : 0.5);
+    if (still) { if (!src.length) src.push({ x: ax, y: ay, t: 0, a: 1 }); }
+    else if (t - lastAmb > 2.8) { src.push({ x: ax, y: ay, t, a: 1 }); lastAmb = t; }
+    while (!still && src.length && t - src[0].t > 5.5) src.shift();
+    if (src.length > 18) src.splice(0, src.length - 18);
+    const c = pal(), g = gain();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    const sp = mobile ? 11 : 15, step = mobile ? 5 : 7, C = mobile ? 160 : 230, wid = mobile ? 24 : 34, k = mobile ? 0.14 : 0.1, w2 = 2 * wid * wid, lim = 3 * wid;
+    const base = new Path2D(), hi = new Path2D();
+    for (let y0 = sp * 0.5; y0 < H + sp; y0 += sp) {
+      let px = 0, py = y0, pd = 0;
+      for (let x = 0; x <= W + step; x += step) {
+        let d = 0;
+        for (let i = 0; i < src.length; i++) {
+          const s = src[i], dx = x - s.x, dy = y0 - s.y, r = Math.sqrt(dx * dx + dy * dy), age = t - s.t, dr = r - C * age;
+          if (dr > -lim && dr < lim) d += s.a * Math.exp(-dr * dr / w2) * Math.cos(dr * k) * Math.exp(-age / 2.4) / (1 + r / 420);
+        }
+        d *= g; const y = y0 + d * sp * 1.1;
+        if (x === 0) base.moveTo(x, y); else { base.lineTo(x, y); if (Math.abs(d) > 0.28 || Math.abs(pd) > 0.28) { hi.moveTo(px, py); hi.lineTo(x, y); } }
+        px = x; py = y; pd = d;
+      }
+    }
+    ctx.lineWidth = 1; ctx.strokeStyle = c.trace; ctx.stroke(base);
+    ctx.lineWidth = 1.4; ctx.strokeStyle = c.accent; ctx.stroke(hi);
+    ctx.fillStyle = c.accent; ctx.beginPath(); ctx.arc(ax, ay, 3, 0, 7); ctx.fill();
+    if (cur) { ctx.strokeStyle = c.accent; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cur.x - 9, cur.y); ctx.lineTo(cur.x + 9, cur.y); ctx.moveTo(cur.x, cur.y - 9); ctx.lineTo(cur.x, cur.y + 9); ctx.stroke(); }
+    const ro = getRo(); if (ro) ro.textContent = 't = ' + t.toFixed(2).padStart(6, '0') + ' s · ' + src.length + ' source' + (src.length > 1 ? 's' : '');
+  };
+  return { frame, destroy: () => { io.disconnect(); h.removeEventListener('pointermove', mv); h.removeEventListener('pointerdown', dn); h.removeEventListener('pointerleave', lv); } };
+}
+
+class Component extends DCLogic {
+  state = { page: PAGES.includes(this.props.page) ? this.props.page : 'home', theme: this.props.theme === 'dark' ? 'dark' : 'light', lang: 'fr', w: 1440, menu: false, k: 1, filter: 'Tous', sent: false, topics: [] };
+  still = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  go = Object.fromEntries(PAGES.map(p => [p, e => { if (e && e.preventDefault) e.preventDefault(); this.nav(p); }]));
+
+  nav(p) {
+    this.setState({ page: p, menu: false });
+    if (this._root && !this.props.page) { const top = this._root.getBoundingClientRect().top + window.scrollY; if (window.scrollY > top) window.scrollTo({ top }); }
+  }
+  rootRef = el => {
+    if (this._ro) this._ro.disconnect();
+    this._root = el;
+    if (el) { this._ro = new ResizeObserver(([e]) => { const w = e.contentRect.width; if (Math.abs(w - this.state.w) > 1) this.setState({ w }); }); this._ro.observe(el); }
+  };
+  canvasRef = el => {
+    if (this.sim) { this.sim.destroy(); this.sim = null; }
+    if (el) this.sim = waveSim(el, () => this._readout, () => PAL[this.state.theme], () => this.state.w < 760, () => this.props.intensity ?? 1, this.still);
+  };
+  readoutRef = el => { this._readout = el; };
+  statsRef = el => {
+    if (this._sio) { this._sio.disconnect(); this._sio = null; }
+    if (!el) return;
+    if (this.still) { this.setState({ k: 1 }); return; }
+    this.setState({ k: 0 });
+    this._sio = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return; this._sio.disconnect();
+      const t0 = performance.now();
+      const step = now => { const p = Math.min(1, (now - t0) / 1600); this.setState({ k: 1 - Math.pow(1 - p, 3) }); if (p < 1) this._craf = requestAnimationFrame(step); };
+      this._craf = requestAnimationFrame(step);
+    }, { threshold: 0.3 });
+    this._sio.observe(el);
+  };
+  componentDidMount() {
+    const loop = now => { if (this.sim) this.sim.frame(now); this._raf = requestAnimationFrame(loop); };
+    this._raf = requestAnimationFrame(loop);
+  }
+  componentDidUpdate(pp) {
+    if (pp.page !== this.props.page && PAGES.includes(this.props.page)) this.setState({ page: this.props.page });
+    if (pp.theme !== this.props.theme && this.props.theme) this.setState({ theme: this.props.theme });
+  }
+  componentWillUnmount() { cancelAnimationFrame(this._raf); cancelAnimationFrame(this._craf); if (this.sim) this.sim.destroy(); if (this._ro) this._ro.disconnect(); if (this._sio) this._sio.disconnect(); }
+
+  renderVals() {
+    const { page, theme, lang, w, menu, k, filter, sent, topics } = this.state;
+    const t = T[lang], desk = w >= 760, act = ACTIVE[page];
+    const is = Object.fromEntries(PAGES.map(p => [p, p === page]));
+    const navItems = NAV.map(([p, num], i) => ({ label: t.nav[i], num, go: this.go[p], color: p === act ? 'var(--ink)' : 'var(--muted)', bc: p === act ? 'var(--accent)' : 'transparent' }));
+    const pill = on => ({ bd: on ? 'var(--ink)' : 'var(--rule)', bg: on ? 'var(--ink)' : 'transparent', fg: on ? 'var(--bg)' : 'var(--ink)' });
+    return {
+      theme, fonts: this.props.fonts ?? 'newsreader', lang, t, desk, mob: !desk, is, go: this.go, navItems, menu,
+      menuOpen: menu && !desk, menuLabel: menu ? t.close : t.menu,
+      themeLabel: theme === 'light' ? t.dark : t.light,
+      frC: lang === 'fr' ? 'var(--ink)' : 'var(--muted)', enC: lang === 'en' ? 'var(--ink)' : 'var(--muted)',
+      toggleTheme: () => this.setState(s => ({ theme: s.theme === 'light' ? 'dark' : 'light' })),
+      toggleLang: () => this.setState(s => ({ lang: s.lang === 'fr' ? 'en' : 'fr' })),
+      toggleMenu: () => this.setState(s => ({ menu: !s.menu })),
+      rootRef: this.rootRef, canvasRef: this.canvasRef, readoutRef: this.readoutRef, statsRef: this.statsRef,
+      heroMask: desk ? 'linear-gradient(90deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.3) 35%,#000 62%)' : 'linear-gradient(180deg,#000 0%,#000 28%,rgba(0,0,0,.12) 58%)',
+      showReadout: (this.props.showReadout ?? true) && desk,
+      refs: REFS,
+      stats: [
+        { v: Math.round(8 * k) + '+', l: 'Années d’expérience' },
+        { v: String(Math.round(5 * k)), l: 'Secteurs' },
+        { v: String(Math.round(5 * k)), l: 'Publications évaluées' },
+        { v: 'FR · UK', l: 'Expérience internationale' }
+      ],
+      img: Object.fromEntries(['hero','vehicles','form','analytics','costs','mobile'].map(n => [n, IMG_URL(n)])),
+      timeline: TIMELINE, services: SERVICES, projects: PROJECTS.map(x => x.img === 'IMG_HERO' ? { ...x, img: IMG_URL('hero') } : x), pubs: PUBS, impact: IMPACT, toc: TOC,
+      chips: CHIPS.map(c => ({ label: c, on: c === filter, pick: () => this.setState({ filter: c }), ...pill(c === filter) })),
+      posts: filter === 'Tous' ? POSTS : POSTS.filter(p => p.tags.includes(filter)),
+      topics: TOPICS.map(c => { const on = topics.includes(c); return { label: c, on, pick: () => this.setState(s => ({ topics: on ? s.topics.filter(x => x !== c) : [...s.topics, c] })), ...pill(on) }; }),
+      sent, notSent: !sent,
+      submit: e => { e.preventDefault(); this.setState({ sent: true }); },
+      reset: () => this.setState({ sent: false, topics: [] }),
+      cta: CTA[page] || CTA_HOME, hasCta: page !== 'contact'
+    };
+  }
+}
+</script>
+</body>
+</html>

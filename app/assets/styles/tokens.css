@@ -1,0 +1,85 @@
+/* app/assets/styles/tokens.css
+ *
+ * « Sismogramme » design tokens — the single source of truth for colour,
+ * type and spacing (design_handoff_portfolio_refonte/README.md).
+ *
+ * Theme is keyed on `data-theme` on <html>, set before paint by the inline
+ * head script (nuxt.config.ts) and kept in sync by useAppTheme. Never hardcode a hex in a component: use these variables.
+ */
+
+:root,
+html[data-theme="light"] {
+  --bg: #f3f0e8;
+  --surface: #ebe6da;
+  --ink: #17150f;
+  --muted: #5c574c;
+  --rule: #d8d2c4;
+  /* Rare by rule: one word of a title, numbers, wave fronts, status. Never
+     a background fill. The handoff's #c2441a measures 4.46:1 on --bg (not
+     the ≈5:1 it claims) and 4.08:1 on --surface: below AA for the 11–12px
+     mono uses. #b53f18 is the nearest hue that holds 5.0:1 / 4.57:1. */
+  --accent: #b53f18;
+  /* Functional only (form errors). 5.4:1 on --surface. */
+  --error: #b0261f;
+  /* Wave-field traces: ink at reduced alpha (read by useWaveField). */
+  --wave-trace: rgba(23, 21, 15, 0.3);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --bg: #13120f;
+  --surface: #1c1a16;
+  --ink: #eeeae0;
+  --muted: #a39e91;
+  --rule: #2e2b25;
+  --accent: #f07a48;
+  --error: #f2877c;
+  --wave-trace: rgba(238, 234, 224, 0.24);
+  color-scheme: dark;
+}
+
+:root {
+  /* ── Families ─────────────────────────────────────────────────────── */
+  --f-display: "Newsreader", Georgia, serif;
+  --f-sans: "Instrument Sans", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* ── Fluid type scale ─────────────────────────────────────────────── */
+  --fs-hero: clamp(46px, 9.2vw, 132px);
+  --fs-h1: clamp(44px, 7.2vw, 104px);
+  --fs-h2: clamp(36px, 4.8vw, 68px);
+  --fs-cta: clamp(42px, 7.6vw, 112px);
+  --fs-h3: clamp(26px, 2.8vw, 40px);
+  --fs-list: clamp(22px, 2.2vw, 30px);
+  --fs-lead: clamp(19px, 1.7vw, 24px);
+  --fs-intro: clamp(17px, 1.4vw, 19px);
+  --fs-figure: clamp(48px, 6vw, 88px);
+
+  /* ── Spacing (4px base) ───────────────────────────────────────────── */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-14: 56px;
+  --sp-16: 64px;
+  --sp-24: 96px;
+  --sp-34: 136px;
+
+  /* ── Layout ───────────────────────────────────────────────────────── */
+  --gutter: clamp(20px, 4.4vw, 64px);
+  --section-y: clamp(64px, 9vw, 136px);
+  --block-gap: clamp(28px, 3.4vw, 48px);
+  --header-h: 77px;
+
+  --radius-pill: 999px;
+  --radius-card: 8px;
+  --radius-img: 6px;
+
+  --theme-fade: background-color 0.35s, color 0.35s;
+}

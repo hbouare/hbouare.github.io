@@ -1,23 +1,18 @@
 <!-- app/components/ui/CtaBand.vue -->
 <!--
-  Reusable conversion block. A page that ends without one is a dead-end — and
-  the most-engaged reader (the one who scrolled to the bottom) is exactly who
-  should be invited to reach out. Same sober hairline-surface idiom as the
-  Services conversion block; the copy and CTA verb are passed in so each
-  context can address its own intent (demanding R&D, a home-closing invite…).
+  End-of-page conversion block, on every page except Contact. Inverted:
+  --ink background, --bg text, --rule for secondary text. The copy varies per
+  page and is passed in, so each context addresses its own intent.
 -->
 <template>
-  <section class="cta-band section-v-pad px-6 px-md-10" :aria-label="title">
-    <div class="cta-inner">
-      <UiRevealBlock>
-        <div class="cta-box section-surface">
-          <h2 class="cta-title type-title">{{ title }}</h2>
-          <p v-if="text" class="cta-text type-body-md text-muted mt-2">{{ text }}</p>
-          <v-btn :to="to" size="large" append-icon="mdi-arrow-right" class="mt-8">
-            {{ button }}
-          </v-btn>
-        </div>
-      </UiRevealBlock>
+  <section class="cta-band gutter" :aria-labelledby="headingId">
+    <div class="eyebrow cta-eyebrow">{{ $t("cta.eyebrow") }}</div>
+    <h2 :id="headingId" class="t-cta cta-title">{{ title }}</h2>
+    <div class="cta-foot">
+      <p v-if="text" class="t-intro cta-text">{{ text }}</p>
+      <NuxtLink :to="to" class="btn btn--inverse">
+        {{ button }} <span aria-hidden="true">→</span>
+      </NuxtLink>
     </div>
   </section>
 </template>
@@ -29,18 +24,35 @@ defineProps<{
   button: string
   to: string
 }>()
+
+const headingId = useId()
 </script>
 
-<style scoped lang="scss">
-.cta-inner {
-  max-width: 1080px;
-  margin: 0 auto;
+<style scoped>
+.cta-band {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 3vw, 40px);
+  padding-block: clamp(72px, 10vw, 152px);
+  background: var(--ink);
+  color: var(--bg);
+  transition: var(--theme-fade);
 }
-.cta-box {
-  border: 1px solid rgb(var(--v-theme-border));
-  padding: var(--space-huge);
+.cta-eyebrow,
+.cta-text {
+  color: var(--rule);
 }
 .cta-title {
-  color: rgb(var(--v-theme-on-background));
+  max-width: 1100px;
+}
+.cta-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+  align-items: center;
+  justify-content: space-between;
+}
+.cta-text {
+  max-width: 520px;
 }
 </style>

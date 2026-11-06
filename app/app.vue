@@ -1,59 +1,19 @@
 <template>
   <NuxtLayout>
-    <NuxtPage :transition="pageTransition" />
+    <NuxtPage />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-import { gsap } from "gsap"
-import { DURATION, EASE } from "~/config/motion"
+// Page transitions are plain CSS (`.page-*` in base.css, configured in
+// nuxt.config): a 250ms fade + 8px translate. CSS cannot hang the router the
+// way a JS hook that forgets done() can, and the global reduced-motion rule
+// neutralises it.
 
 const { syncTheme } = useAppTheme()
-
-// ── Page transition (GSAP JS hooks) ───────────────────────────────────
-// css: false hands full control to GSAP. `mode: out-in` (from config) means
-// leave completes before enter starts, so a short fade+lift on each side
-// reads as one continuous motion without the two pages ever overlapping.
-//
-// Reduced motion: resolve the hooks instantly so navigation is never held
-// up and nothing moves.
-const prefersReduced = () =>
-  import.meta.client &&
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
-const pageTransition = {
-  mode: "out-in" as const,
-  css: false,
-  onLeave(el: Element, done: () => void) {
-    if (prefersReduced()) return done()
-    gsap.to(el, {
-      autoAlpha: 0,
-      y: -12,
-      duration: DURATION.fast,
-      ease: EASE.inOut,
-      onComplete: done,
-    })
-  },
-  onEnter(el: Element, done: () => void) {
-    if (prefersReduced()) return done()
-    gsap.fromTo(
-      el,
-      { autoAlpha: 0, y: 12 },
-      {
-        autoAlpha: 1,
-        y: 0,
-        duration: DURATION.base,
-        ease: EASE.out,
-        clearProps: "transform",
-        onComplete: done,
-      },
-    )
-  },
-}
+useThemeDomSync()
 
 // SEO: hreflang, canonical, og:locale, html lang.
-// `lang`, `dir` and `seo` all default to true — the old
-// addDirAttribute/addSeoAttributes options were renamed and no longer exist.
 const head = useLocaleHead()
 useHead(() => ({
   htmlAttrs: {
@@ -65,33 +25,15 @@ useHead(() => ({
   meta: [...(head.value.meta || [])],
 }))
 
-// Fix #4: attendre que Vuetify ait peint les bonnes CSS variables avant de révéler.
 onMounted(() => {
-  // Restore the saved theme AFTER hydration. Doing it in the Vuetify plugin
-  // instead races hydration, which re-patches .v-application back to the
-  // SSR theme — the DOM ends up light while Vuetify stays dark.
   syncTheme()
+  // Readiness marker: e2e tests wait on it before measuring.
+  document.documentElement.classList.add("hydrated")
 
-  nextTick(() => {
-    requestAnimationFrame(() => {
-      document.documentElement.classList.add('hydrated')
-    })
-  })
-
-  // Fix bfcache: Firefox (et d'autres navigateurs) restaurent la page depuis le cache
-  // mémoire lors d'un retour arrière. L'état DOM est intact mais Vue/Vuetify peut être
-  // désynchronisé. On re-synchronise le thème à chaque restauration bfcache.
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
-      syncTheme()
-    }
-  })
-
-  // Sync multi-onglets : si le thème change dans un autre onglet, on met à jour ici.
-  window.addEventListener('storage', (event) => {
-    if (event.key === 'portfolio-theme' && event.newValue) {
-      syncTheme()
-    }
-  })
+  // bfcache restore, another tab's choice, or an OS change (when no choice
+  // is saved) all re-run the same sync.
+  window.addEventListener("pageshow", (e) => e.persisted && syncTheme())
+  window.addEventListener("storage", (e) => e.key === "portfolio-theme" && syncTheme())
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", syncTheme)
 })
 </script>

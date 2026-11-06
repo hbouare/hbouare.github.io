@@ -1,11 +1,20 @@
 <template>
-  <v-app>
+  <div class="app-shell">
     <NavigationTopBar />
-    <v-main>
+    <main id="main" tabindex="-1">
       <slot />
-    </v-main>
+    </main>
     <NavigationFooter />
-    <NavigationScrollToTop />
-  </v-app>
+  </div>
 </template>
-<script setup lang="ts"></script>
+
+<style scoped>
+.app-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1;
+}
+</style>

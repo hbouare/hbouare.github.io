@@ -5,6 +5,8 @@ role: "Développeur Front-end"
 company: "GE HealthCare"
 sector: "Santé"
 period: "Janvier 2023 — Janvier 2024"
+start: 2023
+end: 2024
 location: "Buc, France"
 flag: "🇫🇷"
 tags:

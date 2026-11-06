@@ -5,10 +5,10 @@ Portfolio personnel, généré en statique (SSG) et déployé sur GitHub Pages �
 ## Stack
 
 - **Framework** : Nuxt 4 (SSG → GitHub Pages)
-- **UI** : Vuetify 4 — design system monochrome, thème sombre/clair
+- **UI** : CSS natif, design system « Sismogramme » (tokens, clair/sombre) — voir `design_handoff_portfolio_refonte/`
 - **Contenu** : Nuxt Content v3 (Markdown, collections découpées par langue)
 - **i18n** : @nuxtjs/i18n — Français (par défaut) / English (`/en`)
-- **Animation** : GSAP, centralisé via le composable `useMotion`
+- **Animation** : aucune bibliothèque — champ d'ondes en canvas (`useWaveField`), transitions CSS
 - **Formulaire** : EmailJS (identifiants injectés au build par les secrets CI)
 - **Tests** : Playwright (e2e) + `vue-tsc` (typecheck)
 - **Déploiement** : GitHub Pages via GitHub Actions
@@ -33,17 +33,17 @@ Après un premier clone, installer le navigateur de test une fois :
 
 ```
 ├── app/
-│   ├── app.vue                    # racine — restauration du thème après hydratation
-│   ├── assets/styles/main.scss    # SCSS global, tokens (--space-*, --type-*)
+│   ├── app.vue                    # racine — synchro du thème, transitions de page
+│   ├── assets/styles/
+│   │   ├── tokens.css             # couleurs (clair/sombre), polices, tailles, espacements
+│   │   └── base.css               # reset, rôles typo, boutons, tags, grilles, rangées
 │   ├── components/
-│   │   ├── navigation/            # TopBar, Footer, ScrollToTop
-│   │   ├── sections/              # Hero, About, Services, Experience, Contact
-│   │   ├── case/                  # blocs des études de cas /projects/[slug]
-│   │   └── ui/                    # primitives : Eyebrow, DisplayTitle, SectionHeader, RevealBlock…
-│   ├── composables/               # useAppTheme, useMotion, useGsap, useJsonLd…
-│   ├── config/                    # motion.ts (timings), publications.ts (données /research)
-│   ├── pages/                     # index, contact, research, blog/[slug], projects/[slug]
-│   └── plugins/vuetify.ts         # thèmes + defaults du design system
+│   │   ├── navigation/            # TopBar, Footer
+│   │   ├── sections/              # sections de l'accueil (Hero, KeyFigures, Experience…)
+│   │   └── ui/                    # PageIntro, CtaBand, WaveField, ThemeLabel
+│   ├── composables/               # useAppTheme, useWaveField, useJsonLd…
+│   ├── config/                    # publications.ts (données /research)
+│   └── pages/                     # index, services, projects, research, blog, contact
 ├── content/
 │   ├── fr/{experience,projects,blog}/*.md
 │   └── en/{experience,projects,blog}/*.md

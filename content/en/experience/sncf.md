@@ -5,6 +5,8 @@ role: "Back-End Developer"
 company: "SNCF"
 sector: "Rail"
 period: "September 2021 — June 2022"
+start: 2021.67
+end: 2022.42
 location: "Paris, France"
 flag: "🇫🇷"
 tags:

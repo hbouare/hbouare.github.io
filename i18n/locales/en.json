@@ -7,48 +7,62 @@
     "research": "Research",
     "blog": "Blog",
     "contact": "Contact",
-    "scroll_top": "Back to top",
     "menu": "Open menu"
+  },
+  "header": {
+    "cta": "Discuss a project",
+    "cta_short": "Talk",
+    "menu": "Menu",
+    "close": "Close",
+    "theme_dark": "Dark",
+    "theme_light": "Light",
+    "switch_locale": "Lire en français",
+    "skip": "Skip to content",
+    "primary_nav": "Main navigation"
   },
   "hero": {
     "tag": "Software Architect · AI & Data Engineering · R&D · Technical Consulting",
-    "title_1": "Complex problems,",
-    "title_em": "reliable software",
-    "title_3": "",
+    "title_em": "reliable",
     "subtitle": "Software architect and PhD in numerical modelling, I design and harden complex systems — data, AI, front-end to back-end. From scientific computing to production software: one researcher’s method, applied to real engineering problems.",
     "cta_projects": "Case studies",
     "cta_contact": "Discuss a project",
-    "scroll": "Scroll",
     "intl_label": "International experience",
     "stat_years": "Years of experience",
     "stat_sectors": "Sectors",
     "stat_pubs": "Peer-reviewed publications",
-    "country_france": "🇫🇷 France",
-    "country_uk": "🇬🇧 United Kingdom"
+    "title": "Complex problems, {em} software",
+    "readout_hint": "Wave field · move, click to emit"
   },
   "home": {
     "cta_title": "A project, a technical doubt?",
     "cta_text": "Describe your need in a few lines — I’ll get back to you quickly.",
-    "cta_button": "Let’s work together"
+    "cta_button": "Let’s work together",
+    "refs_label": "They trusted me with their systems",
+    "refs": [
+      "EDF",
+      "GE HealthCare",
+      "SNCF",
+      "BHP",
+      "Paris Institute for Advanced Study",
+      "LSBB · Avignon University"
+    ],
+    "figures_label": "Key figures"
   },
   "about": {
     "section": "01 — About",
-    "title_1": "The rigour of a",
-    "title_em": "researcher,",
-    "title_3": "the precision of an engineer",
+    "title_em": "engineer",
     "p1": "A PhD in numerical modelling taught me to tackle ill-posed problems: break them down, model them, solve them rigorously, then test the results against reality. That is the method I bring to the systems I design — all the more when the stakes are technical and uncertain.",
     "p2": "I judge software by its usefulness and its robustness, not its sophistication. A good architecture doesn’t need to be spectacular: it needs to stay reliable, readable and maintainable by a whole team — even years after it goes into production, without depending on whoever designed it.",
-    "p3": "I’ve designed and delivered systems in both France and the United Kingdom, across very different technical and human contexts. It left me with one conviction: no solution is worth anything without a precise understanding of the problem, the constraints and the goal. That is always where I start."
+    "p3": "I’ve designed and delivered systems in both France and the United Kingdom, across very different technical and human contexts. It left me with one conviction: no solution is worth anything without a precise understanding of the problem, the constraints and the goal. That is always where I start.",
+    "title": "The rigour of a researcher, the precision of an {em}"
   },
   "experience": {
     "section": "02 — Experience",
-    "title_1": "Where I’ve",
-    "title_em": "built"
+    "title": "Where I’ve built",
+    "current": "Current"
   },
   "projects": {
     "section": "04 — Projects",
-    "title_1": "What I’ve",
-    "title_em": "shipped",
     "featured": "Featured",
     "view_all": "View all projects",
     "meta_desc": "Projects and achievements in full-stack development, data engineering and DevOps.",
@@ -57,47 +71,41 @@
     "request_access": "Request access",
     "view_case": "View case study",
     "back": "Back to projects",
-    "not_found": "Project not found."
+    "not_found": "Project not found.",
+    "title": "What I’ve shipped"
   },
   "services": {
     "section": "03 — Services",
-    "title_1": "What I can",
-    "title_em": "take on",
     "meta_desc": "Backend architecture, data engineering, applied AI, technical audits and consulting — to design, harden and evolve complex systems.",
     "intro": "Designing, hardening or unblocking a system — where the technical stakes are high. As a one-off mission, ongoing support, or focused expertise on a single point.",
     "svc_1_t": "Full-stack application architecture",
     "svc_1_p": "An application that grows quickly becomes hard to evolve, test and maintain.",
-
     "svc_1_d": "The answer lies in a clear, layered architecture, from front-end to back-end — Vuejs on the front, Python or TypeScript/Nodejs on the server — tested, documented, built to last and to be picked up by a whole team.",
     "svc_2_t": "Data Engineering",
     "svc_2_p": "Data scattered across sources, with no common model, stays impossible to use with confidence.",
-
     "svc_2_d": "A clean data model and reliable, versioned, verifiable pipelines give it a footing that products and decisions can genuinely rely on.",
     "svc_3_t": "Applied AI",
     "svc_3_p": "Bringing AI into a real product means moving from prototype to something reliable, measured and under control.",
-
     "svc_3_d": "That means framing the use cases that matter, measuring what actually works, and shipping to production without destabilising what exists.",
     "svc_4_t": "Technical & performance audit",
     "svc_4_p": "An application that is slow, costly or fragile — with no clearly identified cause.",
-
     "svc_4_d": "A prioritised diagnosis (architecture, database, contention points) surfaces the root cause and leads to a concrete action plan, ordered by impact.",
     "svc_5_t": "Modernisation & delivery",
     "svc_5_p": "A legacy system ends up slowing every change.",
-
     "svc_5_d": "Rather than a rewrite, a step-by-step modernisation — containerisation, continuous integration, production safeguards — to regain speed without breaking everything.",
     "svc_6_t": "Technical consulting & R&D",
     "svc_6_p": "An ill-posed problem, a structuring architecture choice, a topic with high uncertainty.",
-
     "svc_6_d": "A researcher’s method — analyse, model, decide — makes it possible to choose on solid ground rather than intuition.",
     "cta_title": "Does one of these match your need?",
     "cta_text": "Describe it in a few lines and I’ll get back to you quickly.",
-    "cta_button": "Describe your need"
+    "cta_button": "Describe your need",
+    "title": "What I can take on",
+    "problem_label": "The problem",
+    "answer_label": "The response"
   },
   "blog": {
     "section": "06 — Blog",
-    "title_1": "Thoughts &",
     "title_em": "articles",
-    "read_more": "Read article",
     "view_all": "View all articles",
     "min_read": "min read",
     "no_posts": "No articles available yet.",
@@ -105,28 +113,37 @@
     "toc": "Table of contents",
     "copied": "Copied!",
     "copy_code": "Copy",
-    "not_found": "Article not found."
+    "not_found": "Article not found.",
+    "title": "Thoughts & {em}",
+    "filter_all": "All",
+    "filter_label": "Filter by topic",
+    "next": "Next article"
   },
   "contact": {
     "section": "07 — Contact",
-    "title_1": "Let’s work",
     "title_em": "together",
     "desc": "A project to scope, a system to harden, a technical problem with high uncertainty? Describe your need in a few lines and I’ll get back to you quickly.",
     "form_name": "Name",
     "form_email": "Email address",
     "form_message": "Message",
     "form_send": "Send message",
-    "form_success": "Thanks, your message has been sent!",
-    "form_name_required": "Name is required",
-    "form_email_required": "Email address is required",
-    "form_email_invalid": "This email address is not valid",
-    "form_message_required": "Message cannot be empty",
     "form_error": "Something went wrong. Please try again.",
-    "confirm_title": "Confirm your message",
-    "confirm_text": "Do you want to send this message?",
-    "confirm_cancel": "Cancel",
-    "confirm_send": "Send",
-    "socials": "Find me"
+    "socials": "Find me",
+    "title": "Let’s work {em}",
+    "form_subject": "Subject (optional)",
+    "form_sending": "Sending…",
+    "sent_label": "Message sent",
+    "sent_text": "Thank you. I’ll get back to you quickly.",
+    "sent_again": "Write another message",
+    "topics": [
+      "Full-stack architecture",
+      "Data Engineering",
+      "Applied AI",
+      "Audit & performance",
+      "Modernisation",
+      "Consulting & R&D",
+      "Other"
+    ]
   },
   "footer": {
     "available": "Available for new projects",
@@ -137,27 +154,27 @@
     "toggle_light": "Switch to light mode"
   },
   "case": {
-    "highlights": "Key features",
-    "gallery": "In pictures",
-    "enlarge": "Enlarge",
-    "lb_close": "Close",
-    "lb_prev": "Previous image",
-    "lb_next": "Next image",
     "layer_frontend": "Front-end",
     "layer_backend": "Back-end",
     "layer_database": "Database",
-    "section_overview": "Overview",
-    "section_technical": "Under the hood",
     "access_title": "Source access",
     "access_note": "The code for this project is not public. On request, I provide read access to the repository, or a detailed walkthrough of the architecture and its design choices.",
     "access_cta": "Request repository access",
-    "next_project": "Next project"
+    "next_project": "Next project",
+    "eyebrow": "Case study",
+    "meta_context": "Context",
+    "meta_stack": "Stack",
+    "meta_code": "Code",
+    "meta_code_value": "Read access on request",
+    "toc": "Contents",
+    "s_problem": "Problem",
+    "s_constraints": "Constraints",
+    "s_approach": "Approach",
+    "s_result": "Result"
   },
   "research": {
     "section": "05 — Research",
-    "title_1": "PhD in",
-    "title_em": "mechanics, algorithms",
-    "title_3": "& numerical modelling",
+    "title_em": "numerical modelling",
     "meta_desc": "Peer-reviewed scientific publications: mechanics, wave propagation and numerical modelling applied to underground structures.",
     "lead": "Before I designed software, I did research.",
     "intro_1": "My doctorate addressed an engineering challenge: understanding and predicting how underground structures — tunnels, cavities — respond when subjected to mechanical and seismic waves. A subject at the heart of how such infrastructure is designed, made reliable and kept safe.",
@@ -166,8 +183,6 @@
     "stat_pubs": "5 peer-reviewed publications",
     "stat_venues": "International journals & conferences",
     "pubs_label": "Publications",
-    "pubs_title_1": "Published",
-    "pubs_title_em": "work",
     "themes_label": "Research themes",
     "skills_label": "Skills applied",
     "view_publication": "View publication",
@@ -175,8 +190,6 @@
     "type_conference": "Conference",
     "type_thesis": "Thesis",
     "impact_label": "Impact",
-    "impact_title_1": "From research",
-    "impact_title_em": "to engineering",
     "impact_lead": "It’s that rigour I bring to your most demanding projects — the ones where uncertainty is high and mistakes are expensive.",
     "impact_1_t": "Complex problem solving",
     "impact_1_d": "Break down an ill-posed problem, frame it, then solve it methodically.",
@@ -196,6 +209,15 @@
     "impact_8_d": "Sustain demanding, self-directed work over several years and see it through.",
     "cta_title": "A complex problem, with high uncertainty?",
     "cta_text": "That is exactly where this method makes the difference.",
-    "cta_button": "Discuss a demanding project"
+    "cta_button": "Discuss a demanding project",
+    "title": "PhD in mechanics, algorithms & {em}",
+    "pubs_title": "Published work",
+    "impact_title": "From research to engineering"
+  },
+  "cta": {
+    "eyebrow": "Contact"
+  },
+  "seo": {
+    "role": "Software Architect · AI & Data Engineering"
   }
 }

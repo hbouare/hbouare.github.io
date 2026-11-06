@@ -1,135 +1,129 @@
 <!-- app/pages/projects/[slug].vue -->
 <!--
-  Project case study.
+  Project case study, told as an article:
 
-  A lean, progressive read:
+    header  — back link, eyebrow, H1, hook, then a 3-cell meta grid
+              (context / stack / code access)
+    hero    — the cover, full width, with a mono caption
+    body    — sticky contents (desktop) + a 780px article:
+              01 Problème · 02 Contraintes · 03 Démarche · 04 Résultat
+    foot    — "code access" box, then the full-width next-project link
 
-    1. Hero + meta   — title, one-line hook, the stack and run status. A
-                       recruiter gets the essentials in ~15 seconds.
-    2. Overview      — one paragraph (problem + response) and the key features.
-    3. Under the hood — the architecture in three plain layers (front-end,
-                       back-end, database), described by what each one does.
-
-  Then a way forward: source access on request, and the next project.
-
-  Rendering stays DATA-DRIVEN (`tierDefs` below): the tiers are one loop, not
-  a dozen copied blocks, so every project renders only the fields it has.
+  Sections come from `story` in the frontmatter. Without it, a project falls
+  back to content it already has — `intro` as the problem, `highlights` as
+  the approach, its gallery as figures — so nothing is ever invented. Any
+  value starting with TODO is dropped (`isFilled`); a section left with no
+  content disappears, and the numbering closes up.
 -->
 <template>
-  <v-container class="case px-6 px-md-10 section-v-pad" fluid>
-    <div v-if="project" class="case-inner">
-      <NuxtLink :to="localePath('/projects')" class="back-link type-micro-cap text-muted">
-        <v-icon size="14" class="mr-1">mdi-arrow-left</v-icon>
-        {{ $t("projects.back") }}
-      </NuxtLink>
-
-      <!-- ── 1. The summit ─────────────────────────────────────────────── -->
-      <CaseHero
-        :context="project.context"
-        :title="project.title"
-        :hook="project.hook"
-      />
-
-      <!-- Hero screenshot — the big shot that makes the product tangible. -->
-      <UiRevealBlock v-if="project.cover">
-        <CaseShot
-          class="case-cover"
-          :src="project.cover.src"
-          :alt="project.cover.alt || project.title"
-          device="browser"
-          featured
-          @open="lightboxIndex = 0"
-        />
-      </UiRevealBlock>
-
-      <!-- Hero meta: the stack (what a technical reader scans first) and how
-           the project runs, hoisted directly under the hook instead of buried
-           at the foot. Replaces the old role/team/status facts strip. -->
-      <UiRevealBlock v-if="project.tags?.length || isFilled(project.status)">
-        <div class="case-meta">
-          <div v-if="project.tags?.length" class="case-tech d-flex flex-wrap ga-2">
-            <v-chip v-for="tag in project.tags" :key="tag" size="small">
-              {{ tag }}
-            </v-chip>
-          </div>
+  <div v-if="project">
+    <section class="case-head gutter">
+      <NuxtLink :to="localePath('/projects')" class="back-link">← {{ $t("projects.back") }}</NuxtLink>
+      <div class="eyebrow">
+        {{ $t("case.eyebrow") }} {{ number }}<template v-if="project.context"> · {{ project.context }}</template>
+      </div>
+      <h1 class="t-h1 case-title">{{ project.title }}</h1>
+      <p v-if="project.hook" class="case-hook">{{ project.hook }}</p>
+      <div class="cells case-meta">
+        <div v-if="project.context" class="case-meta-cell">
+          <span class="label">{{ $t("case.meta_context") }}</span>
+          <span>{{ project.context }}</span>
         </div>
-      </UiRevealBlock>
+        <div class="case-meta-cell case-tech">
+          <span class="label">{{ $t("case.meta_stack") }}</span>
+          <span>{{ project.tags.join(" · ") }}</span>
+        </div>
+        <div class="case-meta-cell">
+          <span class="label">{{ $t("case.meta_code") }}</span>
+          <span>{{ $t("case.meta_code_value") }}</span>
+        </div>
+      </div>
+    </section>
 
-      <!-- ── 2. Overview ────────────────────────────────────────────────── -->
-      <section v-for="tier in tiers" :key="tier.id" class="case-tier">
-        <header class="case-tier-head">
-          <UiDisplayTitle tag="h2" level="lg" reveal>
-            {{ tier.heading }}
-          </UiDisplayTitle>
-          <UiRevealBlock v-if="tier.note">
-            <p class="case-tier-note type-micro-cap text-muted mt-3">
-              {{ tier.note }}
-            </p>
-          </UiRevealBlock>
-        </header>
+    <figure v-if="project.cover" class="case-hero gutter">
+      <img
+        :src="project.cover.src"
+        :alt="project.cover.alt ?? project.title"
+        class="shot"
+        width="1600"
+        height="900"
+        fetchpriority="high"
+      >
+      <figcaption>{{ project.cover.alt ?? project.title }}</figcaption>
+    </figure>
 
-        <UiRevealBlock
-          v-for="(sec, i) in tier.sections"
-          :key="sec.label"
-          :delay="i * 80"
-        >
-          <div class="case-section" :class="{ 'case-section--full': !sec.label }">
-            <UiEyebrow v-if="sec.label" :rule="false" class="case-label">{{ sec.label }}</UiEyebrow>
+    <div class="case-body gutter">
+      <aside class="case-aside">
+        <nav class="case-toc" :aria-label="$t('case.toc')">
+          <div class="label case-toc-label">{{ $t("case.toc") }}</div>
+          <a v-for="s in sections" :key="s.id" :href="`#${s.id}`">
+            <span class="num">{{ s.num }}</span>{{ s.name }}
+          </a>
+        </nav>
+      </aside>
 
-            <div class="case-section-body">
-              <p v-if="sec.kind === 'prose'" class="case-prose type-body-lg">
-                {{ sec.text }}
-              </p>
+      <article class="case-article">
+        <section v-for="s in sections" :id="s.id" :key="s.id" class="case-section">
+          <template v-if="s.title">
+            <div class="eyebrow case-marker">{{ s.num }} — {{ s.name }}</div>
+            <h2 class="case-h2">{{ s.title }}</h2>
+          </template>
+          <h2 v-else class="eyebrow case-marker">{{ s.num }} — {{ s.name }}</h2>
 
-              <ul v-else class="case-list">
-                <li v-for="item in sec.items" :key="item" class="type-body-md">
-                  {{ item }}
-                </li>
-              </ul>
+          <p v-if="s.text" class="case-text">{{ s.text }}</p>
+
+          <div v-if="s.layers.length" class="cells case-layers">
+            <div v-for="l in s.layers" :key="l.label" class="case-layer">
+              <span class="label">{{ l.label }}</span>
+              <span>{{ l.text }}</span>
             </div>
           </div>
-        </UiRevealBlock>
-      </section>
 
-      <!-- ── 3. Under the hood: architecture in three plain layers ───────── -->
-      <section v-if="hasLayers" class="case-tier">
-        <header class="case-tier-head">
-          <UiDisplayTitle tag="h2" level="lg" reveal>
-            {{ $t("case.section_technical") }}
-          </UiDisplayTitle>
-        </header>
-        <UiRevealBlock>
-          <CaseLayers
-            :frontend="project.frontend"
-            :backend="project.backend"
-            :database="project.database"
-          />
-        </UiRevealBlock>
-      </section>
+          <ul v-if="s.points.length" class="case-points" role="list">
+            <li v-for="(pt, i) in s.points" :key="pt">
+              <span class="case-bullet" aria-hidden="true">{{ s.lettered ? `${"abcdefgh"[i]}.` : "—" }}</span>{{ pt }}
+            </li>
+          </ul>
 
-      <!-- Gallery: asymmetric screenshot grid → lightbox. Optional. -->
-      <UiRevealBlock v-if="project.gallery?.length">
-        <CaseGallery
-          :items="project.gallery"
-          :offset="project.cover ? 1 : 0"
-          @open="(i) => (lightboxIndex = i)"
-        />
-      </UiRevealBlock>
+          <div v-if="s.figures.length" class="case-figures">
+            <figure v-for="f in s.figures" :key="f.src" :class="{ 'is-phone': f.device === 'phone' }">
+              <img :src="f.src" :alt="f.alt ?? f.caption ?? ''" class="shot" loading="lazy" decoding="async">
+              <figcaption v-if="f.caption">{{ f.caption }}</figcaption>
+            </figure>
+          </div>
+        </section>
 
-      <!-- ── The way forward ───────────────────────────────────────────── -->
-      <UiRevealBlock>
-        <CaseAccess />
-      </UiRevealBlock>
-
-      <CaseNext v-if="nextProject" :project="nextProject" />
-
-      <CaseLightbox :shots="allShots" v-model:index="lightboxIndex" />
+        <div class="case-encart">
+          <div class="label">{{ $t("case.access_title") }}</div>
+          <p>{{ $t("case.access_note") }}</p>
+          <NuxtLink :to="localePath('/contact')" class="btn btn--secondary">
+            {{ $t("case.access_cta") }} <span aria-hidden="true">→</span>
+          </NuxtLink>
+        </div>
+      </article>
     </div>
 
-    <div v-else class="text-center py-20">
-      <p class="type-body-md text-muted">{{ $t("projects.not_found") }}</p>
-    </div>
-  </v-container>
+    <NuxtLink
+      v-if="next"
+      :to="localePath(`/projects/${next.slug}`)"
+      class="rule-row is-interactive case-next gutter"
+    >
+      <span class="eyebrow">{{ $t("case.next_project") }} — {{ next.number }}</span>
+      <span class="case-next-title">{{ next.title }} →</span>
+    </NuxtLink>
+
+    <UiCtaBand
+      :title="$t('home.cta_title')"
+      :text="$t('home.cta_text')"
+      :button="$t('home.cta_button')"
+      :to="localePath('/contact')"
+    />
+  </div>
+
+  <section v-else class="page-intro gutter section">
+    <p class="t-intro muted">{{ $t("projects.not_found") }}</p>
+    <NuxtLink :to="localePath('/projects')" class="link-text">← {{ $t("projects.back") }}</NuxtLink>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -139,133 +133,125 @@ const route = useRoute()
 
 const slug = route.params.slug as string
 
-const { data: project } = await useAsyncData(
-  `project-${locale.value}-${slug}`,
-  () =>
-    queryCollection(`${locale.value}_projects`)
-      .where("slug", "=", slug)
-      .first(),
+const { data: project } = await useAsyncData(`project-${locale.value}-${slug}`, () =>
+  queryCollection(`${locale.value}_projects`).where("slug", "=", slug).first(),
 )
 
-// Sibling projects, for the "next project" band. Only the two fields that
-// band needs are selected — a case study should not ship four full case
-// studies in its payload just to render one link.
-const { data: siblings } = await useAsyncData(
-  `projects-nav-${locale.value}`,
-  () =>
-    queryCollection(`${locale.value}_projects`)
-      // `order` has to be selected as well as sorted on: select() narrows the
-      // row type, and order() can only reference a column that survived it.
-      .select("slug", "title", "order")
-      .order("order", "ASC")
-      .all(),
+// Sibling projects, for the number and the "next project" link. Only the
+// fields needed: a case study should not ship four full case studies in its
+// payload. `order` is selected because select() narrows the row type before
+// order() sees it.
+const { data: siblings } = await useAsyncData(`projects-nav-${locale.value}`, () =>
+  queryCollection(`${locale.value}_projects`)
+    .select("slug", "title", "order")
+    .order("order", "ASC")
+    .all(),
 )
 
-// Wraps around, so the last project points back at the first and the
-// sequence never dead-ends.
-const nextProject = computed(() => {
+const pad = (i: number) => String(i + 1).padStart(3, "0")
+const index = computed(() => siblings.value?.findIndex((p) => p.slug === slug) ?? -1)
+const number = computed(() => (index.value >= 0 ? pad(index.value) : ""))
+
+// Wraps around, so the sequence never dead-ends.
+const next = computed(() => {
   const all = siblings.value
-  if (!all?.length) return null
-  const i = all.findIndex((p) => p.slug === slug)
-  if (i === -1) return null
-  return all[(i + 1) % all.length] ?? null
+  if (!all?.length || index.value < 0) return null
+  const i = (index.value + 1) % all.length
+  const p = all[i]
+  return p && p.slug !== slug ? { ...p, number: pad(i) } : null
 })
 
-// A value still carrying its `TODO` placeholder counts as unfilled and is
-// dropped (used for the hero-meta status line), so an un-authored value leaves
-// the source with a visible reminder but never ships as a fabricated fact.
+// A value still carrying its TODO placeholder counts as unfilled: it stays a
+// visible reminder in the source but never ships as a fabricated fact.
 const isFilled = (v: unknown): v is string =>
-  typeof v === "string" &&
-  v.trim() !== "" &&
-  !v.trim().toUpperCase().startsWith("TODO")
+  typeof v === "string" && v.trim() !== "" && !v.trim().toUpperCase().startsWith("TODO")
+const filled = (list?: string[] | null) => (list ?? []).filter(isFilled)
 
-// Present when the project describes its front-end / back-end / database.
-const hasLayers = computed(
-  () => !!(project.value?.frontend || project.value?.backend || project.value?.database),
-)
+type Shot = NonNullable<NonNullable<typeof project.value>["gallery"]>[number]
 
-// Lightbox: the page owns the ordered shot list (cover first, then gallery)
-// and the open index (-1 = closed). Both the cover shot and the gallery drive
-// the same index, so navigation runs across every shot on the page.
-const lightboxIndex = ref(-1)
-const allShots = computed(() => {
+interface Section {
+  id: string
+  num: string
+  name: string
+  title?: string
+  text?: string
+  points: string[]
+  lettered: boolean
+  layers: { label: string; text: string }[]
+  figures: Shot[]
+}
+
+const sections = computed<Section[]>(() => {
   const p = project.value
   if (!p) return []
-  const cover = p.cover ? [{ src: p.cover.src, caption: p.cover.alt ?? p.title }] : []
-  const gallery = (p.gallery ?? []).map((g) => ({ src: g.src, caption: g.caption }))
-  return [...cover, ...gallery]
-})
+  const story = p.story ?? {}
+  const gallery = p.gallery ?? []
+  // Unassigned shots split: the first two illustrate the approach, the rest
+  // the result.
+  const figuresFor = (section: "approach" | "result") =>
+    gallery.filter((g, i) => (g.section ?? (i < 2 ? "approach" : "result")) === section)
 
-// ── Progressive reading tiers ─────────────────────────────────────────────
-// Each entry maps a frontmatter field to a label + a render kind. `tiers`
-// resolves this against the current project, so the template is a plain
-// loop: absent fields are dropped, and a tier with no content disappears
-// entirely rather than rendering an empty heading.
-type SectionKind = "prose" | "list"
+  const layers = (
+    [
+      ["layer_frontend", p.frontend],
+      ["layer_backend", p.backend],
+      ["layer_database", p.database],
+    ] as const
+  )
+    .filter(([, text]) => isFilled(text))
+    .map(([key, text]) => ({ label: t(`case.${key}`), text: text as string }))
 
-interface ResolvedSection {
-  label: string
-  kind: SectionKind
-  text?: string
-  items?: string[]
-}
-interface ResolvedTier {
-  id: string
-  heading: string
-  note?: string
-  sections: ResolvedSection[]
-}
+  const raw: Omit<Section, "num">[] = [
+    {
+      id: "cs-problem",
+      name: t("case.s_problem"),
+      title: story.problem?.title ?? undefined,
+      text: story.problem?.text ?? p.intro ?? undefined,
+      points: filled(story.problem?.points),
+      lettered: false,
+      layers: [],
+      figures: [],
+    },
+    {
+      id: "cs-constraints",
+      name: t("case.s_constraints"),
+      title: story.constraints?.title ?? undefined,
+      text: story.constraints?.text ?? undefined,
+      points: filled(story.constraints?.points),
+      lettered: true,
+      layers: [],
+      figures: [],
+    },
+    {
+      id: "cs-approach",
+      name: t("case.s_approach"),
+      title: story.approach?.title ?? undefined,
+      text: story.approach?.text ?? undefined,
+      points: filled(story.approach?.points ?? (story.constraints?.points ? [] : p.highlights)),
+      lettered: false,
+      layers,
+      figures: figuresFor("approach"),
+    },
+    {
+      id: "cs-result",
+      name: t("case.s_result"),
+      title: story.result?.title ?? undefined,
+      text: story.result?.text ?? undefined,
+      points: filled(story.result?.points),
+      lettered: false,
+      layers: [],
+      figures: figuresFor("result"),
+    },
+  ]
 
-const tierDefs: {
-  id: string
-  heading: () => string
-  note?: () => string
-  fields: { field: string; label: () => string; kind: SectionKind }[]
-}[] = [
-  // Overview: what the project is (context), how it answers the need
-  // (solution) and what it actually does (key features). The old split into
-  // problem/challenge/objectives + response/highlights restated the same
-  // three or four ideas six ways; this is the deduplicated core. `impact`
-  // ("Résultats") is dropped: on a solo demo it only re-describes the features
-  // as outcomes, which reads as inflated to the audience most likely to check.
-  {
-    id: "overview",
-    heading: () => t("case.section_overview"),
-    fields: [
-      // No eyebrow: this is the overview paragraph itself, printed directly
-      // under the "Aperçu" heading. `solution` is folded into it in content.
-      { field: "intro", label: () => "", kind: "prose" },
-      { field: "highlights", label: () => t("case.highlights"), kind: "list" },
-    ],
-  },
-]
-
-/** Turns one frontmatter value into a renderable section, or nothing. */
-const resolveSection = (
-  value: unknown,
-  label: string,
-  kind: SectionKind,
-): ResolvedSection[] => {
-  if (kind === "prose") {
-    return typeof value === "string" && value ? [{ label, kind, text: value }] : []
-  }
-  if (!Array.isArray(value) || !value.length) return []
-  return [{ label, kind, items: value as string[] }]
-}
-
-const tiers = computed<ResolvedTier[]>(() => {
-  const p = project.value as Record<string, unknown> | null
-  if (!p) return []
-  return tierDefs
-    .map((tier) => ({
-      id: tier.id,
-      heading: tier.heading(),
-      note: tier.note?.(),
-      sections: tier.fields.flatMap((f) =>
-        resolveSection(p[f.field], f.label(), f.kind),
-      ),
+  return raw
+    .map((s) => ({
+      ...s,
+      title: isFilled(s.title) ? s.title : undefined,
+      text: isFilled(s.text) ? s.text : undefined,
     }))
-    .filter((tier) => tier.sections.length > 0)
+    .filter((s) => s.text || s.points.length || s.layers.length || s.figures.length)
+    .map((s, i) => ({ ...s, num: String(i + 1).padStart(2, "0") }))
 })
 
 if (project.value) {
@@ -279,161 +265,241 @@ if (project.value) {
     ogTitle: `${p.title} - Hamed Bouare`,
     ogDescription: description,
     ogType: "article",
+    ogImage: p.cover ? `https://hamedbouare.me${p.cover.src}` : undefined,
   })
 
   useJsonLd({
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "CreativeWork",
-        "@id": url,
-        name: p.title,
-        url,
-        abstract: p.hook,
-        description,
-        // The stack doubles as keywords — it is the vocabulary people
-        // actually search these projects by.
-        keywords: p.tags?.join(", "),
-        inLanguage: locale.value,
-        creator: {
-          "@type": "Person",
-          name: "Hamed Bouare",
-          url: "https://hamedbouare.me",
-        },
-      },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Projects",
-            item: `https://hamedbouare.me${localePath("/projects")}`,
-          },
-          { "@type": "ListItem", position: 2, name: p.title, item: url },
-        ],
-      },
-    ],
+    "@type": "CreativeWork",
+    "@id": url,
+    name: p.title,
+    url,
+    abstract: p.hook,
+    description,
+    keywords: p.tags?.join(", "),
+    inLanguage: locale.value,
+    creator: { "@type": "Person", name: "Hamed Bouare", url: "https://hamedbouare.me" },
   })
 }
 </script>
 
-<style scoped lang="scss">
-// A generous column. Prose inside stays capped in ch (--measure-prose), so
-// the reading measure never follows this container width.
-.case-inner {
-  max-width: 1080px;
-  margin: 0 auto;
+<style scoped>
+.case-head {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.4vw, 32px);
+  padding-top: clamp(40px, 6vw, 88px);
+  padding-bottom: clamp(32px, 4vw, 56px);
 }
-
 .back-link {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  margin-bottom: var(--space-huge);
-  transition: color 0.2s ease;
-
-  &:hover,
-  &:focus-visible {
-    color: rgb(var(--v-theme-on-background));
-  }
+  align-self: flex-start;
+  padding: 6px 0;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--muted);
+  transition: color 0.2s;
 }
-
-// ── Tier ────────────────────────────────────────────────────────────────
-// The hairline now marks a TIER boundary, not every section. Previously
-// every one of eight sections carried an identical rule and identical
-// padding, which is what made the page read as one repeated block.
-.case-tier {
-  padding-top: var(--section-pad);
-  border-top: 1px solid rgb(var(--v-theme-border));
+.back-link:hover {
+  color: var(--ink);
 }
-.case-tier-head {
-  margin-bottom: var(--space-huge);
+.case-title {
+  max-width: 1100px;
 }
-.case-tier-note {
-  letter-spacing: 0.96px;
-}
-
-// ── Section: label rail | content ───────────────────────────────────────
-.case-section {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: var(--space-huge);
-  padding-bottom: var(--space-huge);
-
-  @media (max-width: 767px) {
-    grid-template-columns: 1fr;
-    // The rail collapses on phones; the label needs real separation from the
-    // text or the two read as one paragraph.
-    gap: var(--space-sm);
-  }
-}
-.case-label {
-  padding-top: 0.35rem; // optically align the eyebrow with the first line
-  color: rgb(var(--v-theme-muted));
-}
-// An unlabelled section (the overview paragraph) spans the full content width
-// instead of leaving an empty label rail beside it.
-.case-section--full {
-  grid-template-columns: 1fr;
-}
-.case-section-body {
-  min-width: 0; // lets long unbroken strings wrap instead of widening the grid
-}
-
-// Full ink: this is the narrative, and it should not read as weaker than the
-// bullet lists beside it.
-.case-prose {
+.case-hook {
   margin: 0;
-  max-width: var(--measure-prose);
-  color: rgb(var(--v-theme-on-background));
+  max-width: 760px;
+  font-family: var(--f-display);
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.4;
 }
-
-// Hairline-marked list — the system's marker, not icons.
-.case-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  max-width: var(--measure-prose);
-
-  li {
-    color: rgb(var(--v-theme-on-background));
-    padding-left: 1.5rem;
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.7em;
-      width: 16px;
-      height: 1px;
-      background: currentColor;
-    }
-  }
-}
-
-// Hero meta band — stack + run status, hoisted directly under the hook. The
-// stack is what a technical reader scans first, so it leads; the status is a
-// quiet caption. Lighter than the old facts strip: one hairline below, not a
-// bordered box.
 .case-meta {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  border: 1px solid var(--rule);
+  margin-top: 8px;
+}
+.case-meta-cell {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
-  padding-bottom: var(--space-huge);
-  border-bottom: 1px solid rgb(var(--v-theme-border));
-}
-.case-status {
-  color: rgb(var(--v-theme-muted));
+  gap: 6px;
+  padding: 16px 20px;
+  font-size: 15px;
 }
 
-// ── Hero cover screenshot ────────────────────────────────────────────────
-.case-cover {
-  margin-top: var(--space-xl);
-  margin-bottom: var(--space-huge);
+.shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-img);
+  background: var(--surface);
+}
+figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+figcaption {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.case-hero {
+  gap: 10px;
+}
+
+.case-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 64px;
+  padding-block: clamp(56px, 7vw, 112px);
+}
+.case-aside {
+  flex: 1 1 200px;
+}
+.case-toc {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+}
+.case-toc-label {
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+.case-toc a {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+  transition: color 0.2s;
+}
+.case-toc a:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+.case-toc a:hover {
+  color: var(--accent);
+}
+.num {
+  color: var(--accent);
+}
+
+.case-article {
+  flex: 999 1 620px;
+  min-width: 0;
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 6vw, 88px);
+}
+.case-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scroll-margin-top: 96px;
+}
+.case-marker {
+  margin: 0;
+  color: var(--accent);
+}
+.case-h2 {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(30px, 3.2vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.case-text {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.case-layers {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  border: 1px solid var(--rule);
+}
+.case-layer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.case-points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.case-points li {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.case-bullet {
+  flex: none;
+  padding-top: 3px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.case-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 20px;
+}
+.case-figures .is-phone {
+  grid-column: 1 / -1;
+  max-width: 420px;
+}
+
+.case-encart {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-img);
+}
+.case-encart p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.case-encart .btn {
+  align-self: flex-start;
+}
+
+.case-next {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px 32px;
+  padding-block: clamp(32px, 4vw, 56px);
+}
+.case-next-title {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(28px, 3.6vw, 52px);
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 759.98px) {
+  .case-aside {
+    display: none;
+  }
 }
 </style>

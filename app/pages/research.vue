@@ -1,174 +1,120 @@
 <!-- app/pages/research.vue -->
 <!--
-  Research / scientific publications.
-
-  Three acts: an introduction that frames the doctoral work, a set of premium
-  publication cards (the real, peer-reviewed papers), and an "impact" section
-  tying the academic rigour back to software engineering.
-
-  Data comes from app/config/publications.ts (locale-invariant meta + per-locale
-  prose) so the page owns only presentation. Reuses the design-system
-  primitives — UiSectionHeader (self-animating openers), UiRevealBlock (scroll
-  reveals), UiEyebrow — and stays inside the monochrome/hairline identity: the
-  type badge is the only differentiator, never a hue.
+  Research, told in three acts: who (the PhD and the method it taught),
+  proof (five real publications, each linking out to its source), and why it
+  matters to a client (impact on engineering work). Publications are data in
+  app/config/publications.ts — real, verifiable, nothing invented.
 -->
 <template>
   <div>
-  <v-container class="research px-6 px-md-10 section-v-pad" fluid>
-    <div class="research-inner">
-      <!-- ── Act I — Introduction ─────────────────────────────────────── -->
-      <UiSectionHeader
-        :label="$t('research.section')"
-        :line1="$t('research.title_1')"
-        :line-em="$t('research.title_em')"
-        :line3="$t('research.title_3')"
-      />
-
-      <UiRevealBlock :delay="80">
-        <div class="research-intro">
-          <p class="research-lead type-body-lg">{{ $t("research.lead") }}</p>
-          <p class="research-p type-body-lg">{{ $t("research.intro_1") }}</p>
-          <p class="research-p type-body-md text-muted">{{ $t("research.intro_2") }}</p>
-
-          <dl class="research-stats">
-            <div class="research-stat">
-              <dt class="type-micro-cap text-muted">01</dt>
-              <dd class="type-body-md">{{ $t("research.stat_degree") }}</dd>
-            </div>
-            <div class="research-stat">
-              <dt class="type-micro-cap text-muted">02</dt>
-              <dd class="type-body-md">{{ $t("research.stat_pubs") }}</dd>
-            </div>
-            <div class="research-stat">
-              <dt class="type-micro-cap text-muted">03</dt>
-              <dd class="type-body-md">{{ $t("research.stat_venues") }}</dd>
-            </div>
-          </dl>
+    <section class="r-intro gutter">
+      <div class="eyebrow">{{ $t("research.section") }}</div>
+      <i18n-t scope="global" keypath="research.title" tag="h1" class="t-h1 r-title">
+        <template #em>
+          <em>{{ $t("research.title_em") }}</em>
+        </template>
+      </i18n-t>
+      <div class="r-lead-row">
+        <p class="r-lead">{{ $t("research.lead") }}</p>
+        <div class="r-text">
+          <p>{{ $t("research.intro_1") }}</p>
+          <p class="muted">{{ $t("research.intro_2") }}</p>
         </div>
-      </UiRevealBlock>
-
-      <!-- ── Act II — Publications ────────────────────────────────────── -->
-      <div class="research-band">
-        <UiSectionHeader
-          :label="$t('research.pubs_label')"
-          :line1="$t('research.pubs_title_1')"
-          :line-em="$t('research.pubs_title_em')"
-        />
       </div>
+    </section>
 
-      <div class="pub-list">
-        <UiRevealBlock
-          v-for="(pub, i) in publications"
-          :key="pub.key"
-          :delay="i * 80"
-        >
-          <article class="pub-card hairline-interactive">
-            <!-- Rail: year anchor + type badge -->
-            <div class="pub-rail">
-              <span class="pub-year">{{ pub.year }}</span>
-              <span class="pub-badge type-micro-cap">{{ typeLabel(pub.type) }}</span>
-            </div>
-
-            <!-- Content -->
-            <div class="pub-body">
-              <p class="pub-meta type-micro-cap text-muted">
-                {{ pub.venue }} · <time :datetime="pub.date">{{ formatDate(pub.date) }}</time>
-              </p>
-
-              <h3 class="pub-title type-title">{{ pub.title }}</h3>
-
-              <p class="pub-summary type-body-md">{{ copy(pub).summary }}</p>
-
-              <div class="pub-facets">
-                <div class="pub-facet">
-                  <p class="pub-facet-label type-micro-cap text-muted">
-                    {{ $t("research.themes_label") }}
-                  </p>
-                  <div class="d-flex flex-wrap ga-1">
-                    <v-chip v-for="theme in copy(pub).themes" :key="theme" size="x-small">
-                      {{ theme }}
-                    </v-chip>
-                  </div>
-                </div>
-
-                <div class="pub-facet">
-                  <p class="pub-facet-label type-micro-cap text-muted">
-                    {{ $t("research.skills_label") }}
-                  </p>
-                  <ul class="pub-skills">
-                    <li v-for="skill in copy(pub).skills" :key="skill" class="type-body-md">
-                      {{ skill }}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <a
-                :href="pub.url"
-                target="_blank"
-                rel="noopener"
-                class="pub-link type-micro-cap"
-              >
-                {{ $t("research.view_publication") }}
-                <v-icon size="14" icon="mdi-arrow-top-right" class="pub-link-icon" />
-              </a>
-            </div>
-          </article>
-        </UiRevealBlock>
+    <div class="cells r-facts">
+      <div v-for="(f, i) in facts" :key="f" class="r-fact">
+        <span class="r-num">{{ String(i + 1).padStart(2, "0") }}</span>
+        <span class="r-fact-text">{{ f }}</span>
       </div>
-
-      <!-- ── Act III — Impact ─────────────────────────────────────────── -->
-      <div class="research-band">
-        <UiSectionHeader
-          :label="$t('research.impact_label')"
-          :line1="$t('research.impact_title_1')"
-          :line-em="$t('research.impact_title_em')"
-        />
-      </div>
-
-      <UiRevealBlock :delay="80">
-        <p class="impact-lead type-body-lg">{{ $t("research.impact_lead") }}</p>
-      </UiRevealBlock>
-
-      <UiRevealBlock :delay="120">
-        <dl class="impact-grid section-surface">
-          <div v-for="n in 8" :key="n" class="impact-item">
-            <dt class="impact-item-title type-title">{{ $t(`research.impact_${n}_t`) }}</dt>
-            <dd class="impact-item-desc type-body-md text-muted">
-              {{ $t(`research.impact_${n}_d`) }}
-            </dd>
-          </div>
-        </dl>
-      </UiRevealBlock>
     </div>
-  </v-container>
 
-  <UiCtaBand
-    :title="$t('research.cta_title')"
-    :text="$t('research.cta_text')"
-    :button="$t('research.cta_button')"
-    :to="localePath('/contact')"
-  />
+    <section class="section gutter" aria-labelledby="pubs-title">
+      <div class="editorial r-head">
+        <div class="editorial__key eyebrow">{{ $t("research.pubs_label") }}</div>
+        <h2 id="pubs-title" class="editorial__body t-h2">{{ $t("research.pubs_title") }}</h2>
+      </div>
+
+      <article v-for="pub in publications" :key="pub.key" class="rule-row pub-card">
+        <div class="pub-key">
+          <span class="pub-year tabular">{{ pub.year }}</span>
+          <span class="tag tag--caps">{{ $t(`research.type_${pub.type}`) }}</span>
+        </div>
+        <div class="pub-body">
+          <div class="pub-venue">
+            {{ pub.venue }} · <time :datetime="pub.date">{{ formatDate(pub.date) }}</time>
+          </div>
+          <h3 class="t-list pub-title">{{ pub.title }}</h3>
+          <p class="pub-sum">{{ copy(pub).summary }}</p>
+          <div class="pub-meta">
+            <div class="pub-meta-col">
+              <div class="label">{{ $t("research.themes_label") }}</div>
+              <ul class="pub-themes" role="list">
+                <li v-for="th in copy(pub).themes" :key="th" class="tag">{{ th }}</li>
+              </ul>
+            </div>
+            <div class="pub-meta-col">
+              <div class="label">{{ $t("research.skills_label") }}</div>
+              <ul class="pub-skills" role="list">
+                <li v-for="sk in copy(pub).skills" :key="sk">— {{ sk }}</li>
+              </ul>
+            </div>
+          </div>
+          <a :href="pub.url" target="_blank" rel="noopener" class="pub-link">
+            {{ $t("research.view_publication") }} ↗
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <section class="r-impact gutter" aria-labelledby="impact-title">
+      <div class="editorial r-head">
+        <div class="editorial__key eyebrow r-impact-key">{{ $t("research.impact_label") }}</div>
+        <div class="editorial__body r-impact-intro">
+          <h2 id="impact-title" class="t-h2">{{ $t("research.impact_title") }}</h2>
+          <p class="r-impact-lead muted">{{ $t("research.impact_lead") }}</p>
+        </div>
+      </div>
+      <div class="cells r-impact-grid">
+        <div v-for="n in 8" :key="n" class="impact-item">
+          <span class="r-num">{{ String(n).padStart(2, "0") }}</span>
+          <span class="impact-title">{{ $t(`research.impact_${n}_t`) }}</span>
+          <span class="impact-desc">{{ $t(`research.impact_${n}_d`) }}</span>
+        </div>
+      </div>
+    </section>
+
+    <UiCtaBand
+      :title="$t('research.cta_title')"
+      :text="$t('research.cta_text')"
+      :button="$t('research.cta_button')"
+      :to="localePath('/contact')"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { publications, type Publication, type PublicationType } from "~/config/publications"
+import { publications, type Publication } from "~/config/publications"
 
 const { locale, t } = useI18n()
 const localePath = useLocalePath()
 
 const copy = (pub: Publication) => pub[locale.value as "fr" | "en"]
 
-const typeLabel = (type: PublicationType) => t(`research.type_${type}`)
-
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat(locale.value, { month: "long", year: "numeric" }).format(new Date(iso))
 
+const facts = computed(() => [
+  t("research.stat_degree"),
+  t("research.stat_pubs"),
+  t("research.stat_venues"),
+])
+
 useSeoMeta({
-  title: () => `${t("research.title_1")} ${t("research.title_em")}`,
+  title: () => t("nav.research"),
   description: () => t("research.meta_desc"),
-  ogTitle: "Research & publications - Hamed Bouare",
+  ogTitle: () => `${t("nav.research")} - Hamed Bouare`,
   ogDescription: () => t("research.meta_desc"),
 })
 
@@ -191,235 +137,202 @@ useJsonLd({
 })
 </script>
 
-<style scoped lang="scss">
-.research-inner {
-  max-width: 920px;
-  margin: 0 auto;
-}
-
-// ── Act I — Introduction ──────────────────────────────────────────────
-.research-intro {
-  margin-top: 2.5rem;
-  max-width: var(--measure-wide);
-}
-.research-lead {
-  color: rgb(var(--v-theme-on-background));
-  font-weight: 500;
-}
-.research-p {
-  margin-top: 1.25rem;
-}
-.research-p.type-body-lg {
-  color: rgb(var(--v-theme-on-background));
-}
-
-.research-stats {
-  margin: 2.5rem 0 0;
-  padding: 0;
-  display: grid;
-  gap: 0;
-  border-top: 1px solid rgb(var(--v-theme-border));
-}
-.research-stat {
-  display: grid;
-  grid-template-columns: 3rem 1fr;
-  gap: 1rem;
-  align-items: baseline;
-  padding: 1rem 0;
-  border-bottom: 1px solid rgb(var(--v-theme-border));
-
-  dd {
-    color: rgb(var(--v-theme-on-background));
-    margin: 0;
-  }
-}
-
-// Band spacing between the three acts.
-.research-band {
-  margin-top: 6rem;
-  @media (max-width: 767px) {
-    margin-top: 4rem;
-  }
-}
-
-// ── Act II — Publications ─────────────────────────────────────────────
-.pub-list {
-  list-style: none;
-  padding: 0;
-  margin: 3rem 0 0;
+<style scoped>
+.r-intro {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: clamp(20px, 2.4vw, 32px);
+  padding-top: clamp(56px, 8vw, 120px);
+  padding-bottom: clamp(48px, 6vw, 88px);
+}
+.r-title {
+  max-width: 1200px;
+  font-size: clamp(40px, 6.4vw, 96px);
+  line-height: 1.02;
+}
+.r-lead-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+  margin-top: clamp(8px, 2vw, 32px);
+}
+.r-lead {
+  flex: 1 1 300px;
+  margin: 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.r-text {
+  flex: 2 1 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-size: 17px;
+  line-height: 1.65;
+}
+.r-text p {
+  margin: 0;
+  line-height: inherit;
+}
+
+.r-facts {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  border-block: 1px solid var(--rule);
+}
+.r-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(22px, 2.8vw, 36px) clamp(20px, 3vw, 40px);
+}
+.r-fact:first-child {
+  padding-left: var(--gutter);
+}
+.r-num {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--accent);
+}
+.r-fact-text {
+  font-family: var(--f-display);
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1.2;
+}
+
+.r-head {
+  gap: 16px 48px;
+  align-items: baseline;
+  padding-bottom: var(--block-gap);
 }
 
 .pub-card {
-  display: grid;
-  grid-template-columns: 128px 1fr;
-  gap: 2.5rem;
-  padding: 2.5rem;
-  border: 1px solid rgb(var(--v-theme-border));
-
-  @media (max-width: 767px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 1.75rem 1.5rem;
-  }
-}
-
-// Rail — the year is the visual anchor; the badge names the venue type.
-.pub-rail {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-
-  @media (max-width: 767px) {
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-  }
+  flex-wrap: wrap;
+  gap: 16px 48px;
+  padding-block: clamp(28px, 3.4vw, 52px);
+}
+.pub-key {
+  flex: 1 1 200px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: baseline;
+  align-content: flex-start;
 }
 .pub-year {
-  font-family: var(--font-display);
-  font-size: 2rem;
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(44px, 4.4vw, 64px);
   line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: rgb(var(--v-theme-on-background));
-  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
 }
-.pub-badge {
-  display: inline-block;
-  align-self: flex-start;
-  padding: 0.25rem 0.6rem;
-  border: 1px solid rgb(var(--v-theme-border));
-  border-radius: 999px;
-  color: rgb(var(--v-theme-muted));
-  white-space: nowrap;
-}
-
 .pub-body {
-  min-width: 0; // let long titles wrap instead of forcing overflow
-}
-.pub-title {
-  color: rgb(var(--v-theme-on-background));
-  margin-top: 0.5rem;
-  transition: color 0.3s ease;
-}
-.pub-summary {
-  color: rgb(var(--v-theme-muted));
-  margin-top: 1rem;
-  max-width: var(--measure-prose);
-}
-
-// Themes + skills side by side, stacking on narrow cards.
-.pub-facets {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem 2rem;
-  margin-top: 1.75rem;
-
-  @media (max-width: 599px) {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-}
-.pub-facet-label {
-  margin-bottom: 0.75rem;
-}
-.pub-skills {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  flex: 999 1 620px;
+  min-width: 0;
+  max-width: 900px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-
-  li {
-    color: rgb(var(--v-theme-on-background));
-    padding-left: 1.25rem;
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.7em;
-      width: 12px;
-      height: 1px;
-      background: currentColor;
-    }
-  }
+  gap: 16px;
 }
-
-// External link to the paper — text + arrow that glides on hover.
-.pub-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 1.75rem;
-  color: rgb(var(--v-theme-on-background));
-  text-decoration: none;
-  transition: opacity 0.2s ease;
-
-  &:hover,
-  &:focus-visible {
-    opacity: 0.7;
-  }
-  &:hover .pub-link-icon,
-  &:focus-visible .pub-link-icon {
-    transform: translate(2px, -2px);
-  }
+.pub-venue {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--muted);
 }
-.pub-link-icon {
-  transition: transform 0.3s ease;
+.pub-title {
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
 }
-
-// Hover: the hairline strengthens (system has no shadow) and the title inks.
-.pub-card.hairline-interactive:hover .pub-title {
-  color: rgb(var(--v-theme-on-background));
+.pub-sum {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
 }
-
-// ── Act III — Impact ──────────────────────────────────────────────────
-.impact-lead {
-  margin-top: 2.5rem;
-  max-width: var(--measure-wide);
-  color: rgb(var(--v-theme-on-background));
-  font-weight: 500;
-}
-
-.impact-grid {
-  margin-top: 2rem;
-  padding: 0.5rem 2.25rem;
-  border: 1px solid rgb(var(--v-theme-border));
+.pub-meta {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 20px 40px;
+  padding-top: 6px;
+}
+.pub-meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pub-themes,
+.pub-skills {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pub-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.pub-link {
+  align-self: flex-start;
+  padding: 4px 0;
+  font-size: 15px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--accent);
+  transition: color 0.2s;
+}
+.pub-link:hover {
+  color: var(--accent);
+}
 
-  @media (max-width: 767px) {
-    grid-template-columns: 1fr;
-    padding: 0.5rem 1.5rem;
-  }
+.r-impact {
+  padding-bottom: var(--section-y);
+}
+.r-impact-key {
+  padding-top: 12px;
+}
+.r-impact-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.r-impact-lead {
+  margin: 0;
+  max-width: 620px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.r-impact-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  border: 1px solid var(--rule);
 }
 .impact-item {
-  padding: 1.75rem 0;
-  border-bottom: 1px solid rgb(var(--v-theme-border));
-
-  // Drop the last row's bottom rule (2 columns → last two, 1 column → last).
-  &:last-child,
-  &:nth-last-child(2):nth-child(odd) {
-    border-bottom: none;
-  }
-  @media (max-width: 767px) {
-    &:nth-last-child(2):nth-child(odd) {
-      border-bottom: 1px solid rgb(var(--v-theme-border));
-    }
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
 }
-.impact-item-title {
-  color: rgb(var(--v-theme-on-background));
+.impact-item .r-num {
+  font-size: 11px;
 }
-.impact-item-desc {
-  margin-top: 0.5rem;
-  max-width: var(--measure-compact);
+.impact-title {
+  font-family: var(--f-display);
+  font-size: 21px;
+  line-height: 1.25;
+}
+.impact-desc {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
 }
 </style>

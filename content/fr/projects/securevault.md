@@ -18,6 +18,25 @@ highlights:
   - "Authentification forte : Argon2id + 2FA TOTP, sessions et appareils révocables"
   - "Générateur avancé, recherche instantanée et tableau de bord de sécurité"
   - "Rate-limiting, anti-brute-force et audit des actions sensibles"
+# Chiffres relevés dans le dépôt (2026-11-06) : 69 tests pytest + 12
+# Vitest + 7 Playwright, couverture CI ≥ 80 %, connexion limitée à 5/min,
+# verrouillage 15 min après 5 échecs, rotation des jetons + détection de rejeu.
+story:
+  problem:
+    title: "Des mots de passe partout, protégés nulle part"
+  constraints:
+    title: "Supposer que la base fuitera"
+    text: "Un coffre à mots de passe est une cible. Il faut partir du principe que la base fuitera un jour, que des robots essaieront des milliers de mots de passe, et qu’un jeton volé sera rejoué."
+  approach:
+    title: "Chiffrer avant de stocker, verrouiller l’accès"
+  result:
+    title: "Des garanties vérifiées, pas promises"
+    text: "Chaque garantie de sécurité est fixée par un test automatisé ou par une règle de configuration."
+    points:
+      - "Les secrets restent illisibles sans la clé maître : un test vérifie que le texte chiffré ne contient jamais le texte en clair"
+      - "Connexion limitée à 5 tentatives par minute ; compte verrouillé 15 minutes après 5 échecs"
+      - "Jetons renouvelés à chaque rafraîchissement, réutilisation détectée ; jeton altéré rejeté"
+      - "88 tests automatisés (69 côté API, 12 unitaires front, 7 parcours de bout en bout), couverture minimale de 80 % imposée en CI"
 tags: ["FastAPI","Vue 3","TypeScript","MongoDB","AES-256-GCM"]
 
 cover:

@@ -1,94 +1,168 @@
 <!-- app/components/sections/ExperienceSection.vue -->
 <!--
-  Not a CV. Proof. The value of this section is the SECTORS and the names —
-  energy, healthcare, rail, industry, research; EDF, GE HealthCare, SNCF… — so
-  each entry leads with its sector and company, not a job title, and the tech
-  stack (tags) is dropped: it is noise here, and lives in the hero and the
-  services. A sector strip up top lets a decision-maker scan the reach at once.
+  "Where I've built" — proof, not a CV. Each row leads with the sector and
+  a 2018→2026 timeline bar, then the organisation, then what was built.
 -->
 <template>
-  <section id="experience" class="section-pad section-surface">
-    <v-container class="px-6 px-md-10" fluid>
-      <UiSectionHeader
-        :label="$t('experience.section')"
-        :line1="$t('experience.title_1')"
-        :line-em="$t('experience.title_em')"
-      />
+  <section id="experience" class="exp gutter" aria-labelledby="exp-title">
+    <div class="editorial exp-head">
+      <div class="editorial__key eyebrow">{{ $t("experience.section") }}</div>
+      <h2 id="exp-title" class="editorial__body t-h2">{{ $t("experience.title") }}</h2>
+    </div>
 
-      <div class="exp-list mt-14">
-        <template v-if="!experiences">
-          <div v-for="n in 3" :key="n" class="exp-skeleton">
-            <v-skeleton-loader type="list-item-three-line" />
+    <div>
+      <article v-for="job in jobs" :key="job.id" class="rule-row exp-row">
+        <div class="exp-key">
+          <div class="exp-tags">
+            <span v-if="job.sector" class="tag tag--caps">{{ job.sector }}</span>
+            <!-- `== null`: Nuxt Content stores an absent optional as null. -->
+            <span v-if="job.end == null" class="status exp-current">
+              {{ $t("experience.current") }}
+            </span>
           </div>
-        </template>
+          <div class="exp-dates">{{ job.period }}</div>
+          <div class="exp-span" aria-hidden="true">
+            <div class="exp-track">
+              <span class="exp-bar" :style="bar(job.start, job.end)" />
+            </div>
+            <div class="exp-axis">
+              <span>{{ AXIS_FROM }}</span><span>{{ AXIS_LABEL_TO }}</span>
+            </div>
+          </div>
+        </div>
 
-        <UiRevealBlock
-          v-for="(exp, i) in experiences"
-          :key="exp.id"
-          :delay="i * 100"
-        >
-          <article class="exp-item">
-            <div class="exp-top">
-              <span v-if="exp.sector" class="exp-sector-tag type-micro-cap">{{ exp.sector }}</span>
-              <span class="exp-period type-micro-cap text-muted">{{ exp.period }}</span>
-            </div>
-            <h3 class="exp-company type-title">{{ exp.company }}</h3>
-            <p class="exp-meta type-micro-cap text-muted">
-              {{ exp.role }} · {{ exp.location }}<template v-if="exp.employment"> · {{ exp.employment }}</template>
-            </p>
-            <div class="exp-body type-body-md text-muted">
-              <ContentRenderer :value="exp" />
-            </div>
-          </article>
-        </UiRevealBlock>
-      </div>
-    </v-container>
+        <div class="exp-org">
+          <h3 class="t-h3">{{ job.company }}</h3>
+          <div class="exp-role">
+            {{ job.role }} · {{ job.location }}<template v-if="job.employment"> · {{ job.employment }}</template>
+          </div>
+        </div>
+
+        <div class="exp-desc">
+          <ContentRenderer :value="job" />
+        </div>
+      </article>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 const { locale } = useI18n()
 
-const { data: experiences } = await useAsyncData(
-  `experiences-${locale.value}`,
-  () =>
-    queryCollection(`${locale.value}_experience`).order("order", "ASC").all(),
+const { data: experiences } = await useAsyncData(`experiences-${locale.value}`, () =>
+  queryCollection(`${locale.value}_experience`).order("order", "ASC").all(),
 )
+const jobs = computed(() => experiences.value ?? [])
+
+// The axis spans nine years from 2018 (as in the design); the bar of an
+// ongoing engagement runs to the build date.
+const AXIS_FROM = 2018
+const AXIS_YEARS = 9
+const AXIS_LABEL_TO = 2026
+const now = new Date()
+const NOW = now.getFullYear() + now.getMonth() / 12
+
+const pct = (v: number) => `${((v / AXIS_YEARS) * 100).toFixed(1)}%`
+const bar = (start: number, end?: number | null) => ({
+  left: pct(start - AXIS_FROM),
+  width: pct(Math.max(0.12, (end ?? NOW) - start)),
+})
 </script>
 
-<style scoped lang="scss">
-// ── Entry ─────────────────────────────────────────────────────────────────
-.exp-item {
-  border-top: 1px solid rgb(var(--v-theme-border));
-  padding: var(--space-xl) 0;
+<style scoped>
+.exp {
+  padding-bottom: var(--section-y);
 }
-.exp-top {
-  display: flex;
+.exp-head {
+  gap: 16px 48px;
   align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xs);
-}
-// The sector leads — full ink, it is the point of the row.
-.exp-sector-tag {
-  color: rgb(var(--v-theme-on-background));
-}
-.exp-company {
-  color: rgb(var(--v-theme-on-background));
-}
-.exp-meta {
-  margin-top: 0.15rem;
-}
-.exp-body {
-  margin-top: var(--space-md);
-  max-width: var(--measure-prose);
-}
-.exp-body :deep(p) {
-  margin: 0;
+  padding-bottom: var(--block-gap);
 }
 
-.exp-skeleton {
-  border-top: 1px solid rgb(var(--v-theme-border));
-  padding: 1rem 0;
+.exp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 48px;
+  padding-block: clamp(24px, 2.8vw, 40px);
+}
+
+.exp-key {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.exp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.exp-current {
+  gap: 6px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--accent);
+}
+.exp-current::before {
+  width: 6px;
+  height: 6px;
+}
+.exp-dates {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.exp-span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 240px;
+}
+.exp-track {
+  position: relative;
+  height: 5px;
+  border-top: 1px solid var(--rule);
+}
+.exp-bar {
+  position: absolute;
+  top: -2px;
+  height: 3px;
+  background: var(--accent);
+}
+.exp-axis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.exp-org {
+  flex: 2 1 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.exp-role {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.exp-desc {
+  flex: 3 1 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.exp-desc :deep(p) {
+  margin: 0;
+  line-height: inherit;
+}
+.exp-desc :deep(p + p) {
+  margin-top: 14px;
 }
 </style>

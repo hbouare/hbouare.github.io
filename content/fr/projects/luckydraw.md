@@ -18,6 +18,25 @@ highlights:
   - "Campagnes configurables (règles, calendrier, gains)"
   - "Achat de tickets et historique de participation"
   - "Back-office : résultats, transactions, statistiques, exports"
+# Chiffres relevés dans le dépôt (2026-11-06) : 44 routes d'API en 10
+# modules, 43 tests unitaires/intégration + 2 Playwright ; tests du moteur
+# provably-fair (hash SHA-256, graine falsifiée rejetée, tirage immuable).
+story:
+  problem:
+    title: "Un tirage en ligne n’inspire pas confiance"
+  constraints:
+    title: "Prouver l’équité, protéger l’argent"
+    text: "Un tirage au sort en ligne ne vaut que si chacun peut vérifier qu’il n’a pas été truqué — y compris par l’opérateur. Et les montants en jeu ne tolèrent aucune erreur d’arrondi."
+  approach:
+    title: "Engager, révéler, vérifier"
+  result:
+    title: "Un tirage que le joueur peut rejouer"
+    text: "Les garanties du moteur de tirage sont fixées par des tests automatisés."
+    points:
+      - "Graine engagée par un hash SHA-256 publié avant le tirage, révélée après : un tirage authentique est validé, une graine falsifiée est rejetée"
+      - "Tirage immuable : un second tirage sur la même loterie est refusé"
+      - "Montants stockés en centimes entiers, sans arithmétique flottante"
+      - "45 tests automatisés (43 unitaires et d’intégration, 2 parcours de bout en bout) ; lint, typage, tests et build bloquants en CI"
 tags: ["Node.js","Express","TypeScript","Vue 3","MongoDB","Redis"]
 
 cover:

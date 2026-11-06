@@ -5,6 +5,8 @@ role: "Développeur Full-Stack"
 company: "Institut d’études avancées"
 sector: "Recherche"
 period: "Avril 2024 — Février 2026"
+start: 2024.25
+end: 2026.1
 employment: "Temps partiel (4 jours par mois)"
 location: "Paris, France"
 flag: "🇫🇷"
