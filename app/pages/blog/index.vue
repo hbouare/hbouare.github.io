@@ -6,6 +6,10 @@
 -->
 <template>
   <div>
+    <ClientOnly>
+      <LazyUiPlumField />
+    </ClientOnly>
+
     <UiPageIntro :eyebrow="$t('blog.section')" class="blog-intro">
       <template #title>
         <i18n-t scope="global" keypath="blog.title" tag="span">

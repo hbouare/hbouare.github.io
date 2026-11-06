@@ -382,6 +382,19 @@ html:not([data-theme="dark"]) .shiki span {
   text-decoration: var(--shiki-default-text-decoration);
 }
 
+/* ── Theme reveal (View Transition, see toggleTheme) ───────────────── */
+/* The new theme is uncovered by a clip-path circle animated from JS, so the
+   default cross-fade is switched off. The CSS colour fades are too: the new
+   snapshot is live, and a fade would show the old colours inside the circle. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+:root:active-view-transition {
+  --theme-fade: none;
+}
+
 /* ── Reduced motion ────────────────────────────────────────────────── */
 /* The !important here is deliberate: an accessibility override must win.
    JS motion (wave field, count-up) checks the media query itself. */

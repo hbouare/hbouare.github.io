@@ -7,6 +7,10 @@
 -->
 <template>
   <div v-if="post">
+    <ClientOnly>
+      <LazyUiPlumField />
+    </ClientOnly>
+
     <section class="art-head gutter">
       <NuxtLink :to="localePath('/blog')" class="back-link">← {{ $t("blog.view_all") }}</NuxtLink>
       <div class="art-meta">

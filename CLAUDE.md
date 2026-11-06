@@ -207,7 +207,7 @@ Contact), `<UiWaveField>`, `<UiThemeLabel>`.
 
 ## Motion
 
-No animation library. Three things move, all honouring
+No animation library. Six things move, all honouring
 `prefers-reduced-motion`:
 
 - **Hero wave field** — [useWaveField.ts](app/composables/useWaveField.ts),
@@ -220,6 +220,24 @@ No animation library. Three things move, all honouring
   rewinds to 0 only when motion is allowed, then counts up at 30%
   visibility. Never ship a "0".
 - **Page transitions** — CSS (`.page-*` in base.css): 250ms fade + 8px.
+- **Handwritten logo** — the header name is an SVG `<text>` traced, inked
+  and erased on a 10s CSS loop (TopBar.vue); a visually-hidden span carries
+  the link's name. Its **rest state is the written name**, and reduced
+  motion sets `animation: none` on it: the global override alone would run
+  the loop once and leave it erased.
+- **Article tree** — [usePlumField.ts](app/composables/usePlumField.ts),
+  generative "plum" branches from the screen edges on `/blog` and
+  `/blog/[slug]` (master's algorithm and constants, unchanged), in
+  `--plum-trace` (the accent, faint). Fixed canvas at `z-index: -1`, which
+  only shows because `.app-shell` is `isolation: isolate`: `<html>` has its
+  own background (inline head style), so body's background paints over
+  anything negative outside that context — drawn, invisible, no error. The
+  "blog tree is painted on screen" test guards it. Reduced motion: the
+  whole tree at once; a theme flip repaints, it does not regrow.
+- **Theme reveal** — `toggleTheme(event)` runs the swap inside a View
+  Transition and grows a clip-path circle from the click (the button centre
+  for a keyboard press). The CSS colour fades (`--theme-fade`) are disabled
+  during it. No View Transitions or reduced motion: a plain swap.
 
 There are no scroll reveals. Do not add a mechanism that rests content at
 opacity 0 and relies on JS to show it: that is how content once ended up in

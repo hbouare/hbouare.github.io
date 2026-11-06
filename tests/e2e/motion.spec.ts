@@ -31,6 +31,51 @@ test.describe("reduced motion", () => {
       { timeout: 10_000 },
     )
   })
+
+  // The global override runs every animation once and stops on its last
+  // keyframe — for the handwritten name, the erased state. It must stay
+  // written: fully inked and not clipped.
+  test("logo name stays written", async ({ page }) => {
+    await reduce(page)
+    await page.goto("/")
+    const name = page.locator(".logo-name").first()
+    await expect(name).toHaveCSS("clip-path", "none")
+    await expect(name.locator("text")).toHaveCSS("fill-opacity", "1")
+  })
+
+  // The blog tree once drew into its canvas but sat under body's
+  // background: pixels in the canvas, nothing on screen, no error. Compare
+  // the screen with and without the canvas.
+  for (const path of ["/blog", "/blog/fastapi-architecture"]) {
+    test(`blog tree is painted on screen (${path})`, async ({ page }) => {
+      await reduce(page)
+      await page.goto(path)
+      // Desktop Chrome is redirected to /en: read the canvas of the final page.
+      await page.waitForSelector("html.hydrated")
+      const canvas = page.locator("canvas.plum-field")
+      await expect
+        .poll(() =>
+          canvas.evaluate((c: HTMLCanvasElement) => {
+            const d = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data
+            for (let i = 3; i < d.length; i += 4) if (d[i]) return true
+            return false
+          }),
+        )
+        .toBe(true)
+      const withTree = await page.screenshot()
+      // Hide it and let two frames pass, or the next screenshot can still
+      // show the previous frame.
+      await canvas.evaluate(
+        (c: HTMLCanvasElement) =>
+          new Promise((done) => {
+            c.style.display = "none"
+            requestAnimationFrame(() => requestAnimationFrame(done))
+          }),
+      )
+      const without = await page.screenshot()
+      expect(withTree.equals(without), "the tree is drawn but not visible").toBe(false)
+    })
+  }
 })
 
 test.describe("motion enabled", () => {

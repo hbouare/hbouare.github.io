@@ -13,7 +13,15 @@
     <a href="#main" class="skip-link">{{ $t("header.skip") }}</a>
 
     <div class="bar gutter">
-      <NuxtLink :to="localePath('/')" class="logo">Hamed Bouare</NuxtLink>
+      <NuxtLink :to="localePath('/')" class="logo">
+        <!-- The name, written then erased in a loop (the pre-refonte
+             handwriting effect). The SVG is decoration; the name is read
+             from the hidden span. -->
+        <svg class="logo-name" viewBox="0 0 124 28" aria-hidden="true">
+          <text x="1" y="21">Hamed Bouare</text>
+        </svg>
+        <span class="visually-hidden">Hamed Bouare</span>
+      </NuxtLink>
 
       <nav class="desk-nav" :aria-label="$t('header.primary_nav')">
         <NuxtLink
@@ -153,7 +161,7 @@ onUnmounted(() => {
   z-index: 20;
   background: var(--bg);
   border-bottom: 1px solid var(--rule);
-  transition: background-color 0.35s;
+  transition: var(--theme-fade);
 }
 
 .skip-link {
@@ -181,11 +189,86 @@ onUnmounted(() => {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
   font-family: var(--f-display);
   font-style: italic;
   font-size: 21px;
   letter-spacing: -0.01em;
   white-space: nowrap;
+}
+
+/* Handwriting, 10s loop: the pen traces the outlines left to right (the
+   wipe carries the direction, the dash draws each stroke), the ink fills
+   in, it holds, then the name is erased in reverse, right to left. */
+.logo-name {
+  width: 124px;
+  height: 28px;
+  overflow: visible;
+  animation: logo-wipe 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.logo-name text {
+  font: inherit;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0.5;
+  stroke-dasharray: 120;
+  /* Rest state = written: what reduced motion shows. */
+  stroke-dashoffset: 0;
+  stroke-opacity: 0;
+  animation: logo-ink 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes logo-wipe {
+  0% {
+    clip-path: inset(-20% 100% -20% 0);
+  }
+  30%,
+  62% {
+    clip-path: inset(-20% -5% -20% 0);
+  }
+  80%,
+  100% {
+    clip-path: inset(-20% 100% -20% 0);
+  }
+}
+/* The outline is only visible while the pen moves; once inked, the fill
+   alone carries the letters. */
+@keyframes logo-ink {
+  0% {
+    stroke-dashoffset: 120;
+    stroke-opacity: 1;
+    fill-opacity: 0;
+  }
+  30% {
+    stroke-dashoffset: 0;
+    stroke-opacity: 1;
+    fill-opacity: 0;
+  }
+  40%,
+  62% {
+    stroke-dashoffset: 0;
+    stroke-opacity: 0;
+    fill-opacity: 1;
+  }
+  70% {
+    stroke-dashoffset: 0;
+    stroke-opacity: 1;
+    fill-opacity: 0;
+  }
+  80%,
+  100% {
+    stroke-dashoffset: 120;
+    stroke-opacity: 1;
+    fill-opacity: 0;
+  }
+}
+/* Reduced motion: the name stays written. Without this, the global
+   override would run the loop once and leave it erased. */
+@media (prefers-reduced-motion: reduce) {
+  .logo-name,
+  .logo-name text {
+    animation: none;
+  }
 }
 
 .desk-nav {

@@ -41,16 +41,66 @@ export const useAppTheme = () => {
     theme.value = readSaved() ?? osPreference()
   }
 
-  const toggleTheme = () => {
+  /**
+   * Flip the theme. Given the click, the new theme is revealed as a circle
+   * growing from the click point (View Transition, the pre-refonte effect);
+   * without View Transitions or under reduced motion it simply swaps.
+   */
+  const toggleTheme = (event?: MouseEvent) => {
     // Before the first sync, the attribute set by the head script is the truth.
     const current =
       theme.value ?? (document.documentElement.getAttribute("data-theme") as ThemeName | null)
-    theme.value = current === "dark" ? "light" : "dark"
-    try {
-      localStorage.setItem(STORAGE_KEY, theme.value)
-    } catch {
-      // Storage unavailable (private mode): the choice lasts the session.
+    const next: ThemeName = current === "dark" ? "light" : "dark"
+    const apply = () => {
+      theme.value = next
+      try {
+        localStorage.setItem(STORAGE_KEY, next)
+      } catch {
+        // Storage unavailable (private mode): the choice lasts the session.
+      }
     }
+
+    if (
+      !document.startViewTransition ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      apply()
+      return
+    }
+
+    // A keyboard "click" has no pointer position (detail 0): start from the
+    // centre of the button instead.
+    let x = window.innerWidth / 2
+    let y = window.innerHeight / 2
+    if (event && event.detail > 0) {
+      x = event.clientX
+      y = event.clientY
+    } else if (event?.currentTarget instanceof Element) {
+      const r = event.currentTarget.getBoundingClientRect()
+      x = r.left + r.width / 2
+      y = r.top + r.height / 2
+    }
+    const radius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    )
+
+    // The callback must leave the DOM in the new theme: wait for the
+    // theme → DOM watcher to flush.
+    const transition = document.startViewTransition(async () => {
+      apply()
+      await nextTick()
+    })
+    transition.ready
+      .then(() => {
+        document.documentElement.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+          { duration: 500, easing: "ease-in-out", pseudoElement: "::view-transition-new(root)" },
+        )
+      })
+      .catch(() => {
+        // Transition skipped: the theme is applied all the same.
+      })
   }
 
   return { theme, isDark, toggleTheme, syncTheme }

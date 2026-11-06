@@ -23,6 +23,9 @@ html[data-theme="light"] {
   --error: #b0261f;
   /* Wave-field traces: ink at reduced alpha (read by useWaveField). */
   --wave-trace: rgba(23, 21, 15, 0.3);
+  /* Article tree branches: the accent, faint enough to sit behind body
+     text (read by usePlumField). */
+  --plum-trace: rgba(181, 63, 24, 0.2);
   color-scheme: light;
 }
 
@@ -35,6 +38,7 @@ html[data-theme="dark"] {
   --accent: #f07a48;
   --error: #f2877c;
   --wave-trace: rgba(238, 234, 224, 0.24);
+  --plum-trace: rgba(240, 122, 72, 0.16);
   color-scheme: dark;
 }
 
