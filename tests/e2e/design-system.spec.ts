@@ -454,3 +454,20 @@ test.describe("contact", () => {
     await expect(page.locator(".cta-band")).toHaveCount(0)
   })
 })
+
+test.describe("back to top", () => {
+  // Hidden at the top (and out of the tab order), shown once scrolled,
+  // and it must actually bring the page back up.
+  test("appears after scrolling and returns to the top", async ({ page }) => {
+    await page.goto("/research")
+    await page.waitForSelector("html.hydrated")
+    const button = page.locator("button.stt")
+    await expect(button).toBeHidden()
+    await page.evaluate(() => window.scrollTo({ top: 1200, behavior: "instant" }))
+    await expect(button).toBeVisible()
+    await expect(button).toHaveAccessibleName(/.+/)
+    await button.click()
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+    await expect(button).toBeHidden()
+  })
+})

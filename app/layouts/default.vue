@@ -5,6 +5,7 @@
       <slot />
     </main>
     <NavigationFooter />
+    <NavigationScrollToTop />
   </div>
 </template>
 

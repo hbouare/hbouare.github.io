@@ -245,9 +245,11 @@ everything else is CSS or canvas. Seven things move, all honouring
   "blog tree is painted on screen" test guards it. Reduced motion: the
   whole tree at once; a theme flip repaints, it does not regrow.
 - **Theme reveal** — `toggleTheme(event)` runs the swap inside a View
-  Transition and grows a clip-path circle from the click (the button centre
-  for a keyboard press) with Vuetify 4's values, as on the old site:
-  `circle(0% → 150%)`, 500ms ease-in-out. The CSS colour fades (`--theme-fade`) are disabled
+  Transition and grows a clip-path circle with Vuetify 4's values, as on the
+  old site: `circle(0% → 150%)`, 500ms ease-in-out. The origin is the
+  viewport CORNER nearest the click (the button centre for a keyboard
+  press): the old toggle sat in the corner, so the theme swept corner to
+  corner along the diagonal; the click point itself reads as a blob. The CSS colour fades (`--theme-fade`) are disabled
   during it. No View Transitions or reduced motion: a plain swap.
 
 Content once ended up in the DOM but invisible: a reveal rested it at

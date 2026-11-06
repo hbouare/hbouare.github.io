@@ -80,11 +80,13 @@ export const useAppTheme = () => {
       x = r.left + r.width / 2
       y = r.top + r.height / 2
     }
-    // Vuetify 4's values, as on the pre-refonte site: origin in % of the
-    // viewport, radius 0% → 150% (of the viewport's diagonal / √2), 500ms
-    // ease-in-out. The radius overshoots the far corner, so the front keeps
-    // its speed across the whole screen instead of easing out at the edge.
-    const at = `${((x / window.innerWidth) * 100).toFixed(2)}% ${((y / window.innerHeight) * 100).toFixed(2)}%`
+    // Vuetify 4's values, as on the pre-refonte site: radius 0% → 150% (of
+    // the viewport's diagonal / √2), 500ms ease-in-out. There the toggle sat
+    // in the very corner (95.5% 4.5%), so the new theme swept corner to
+    // corner along the diagonal. Here the toggle is further in, so the
+    // origin snaps to the viewport corner nearest the click: from a corner,
+    // 150% ends just past the opposite one.
+    const at = `${x < window.innerWidth / 2 ? 0 : 100}% ${y < window.innerHeight / 2 ? 0 : 100}%`
 
     // The callback must leave the DOM in the new theme: wait for the
     // theme → DOM watcher to flush.

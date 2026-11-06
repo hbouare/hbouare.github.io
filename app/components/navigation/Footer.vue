@@ -45,4 +45,11 @@ const year = new Date().getFullYear()
 .socials a:hover {
   color: var(--accent);
 }
+/* Room for the fixed back-to-top button (44px + 16px), which otherwise
+   sits on the last link. Narrow screens stack the links on the left. */
+@media (min-width: 760px) {
+  .app-footer {
+    padding-right: calc(var(--gutter) + 60px);
+  }
+}
 </style>
