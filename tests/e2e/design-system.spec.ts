@@ -188,6 +188,9 @@ test.describe("contrast", () => {
         ".cta-band .cta-text",
         ".cta-band .btn--inverse",
       ]) {
+        // After the client redirect to /en, the experience rows arrive with
+        // their data, after the page itself.
+        await page.locator(sel).first().waitFor({ state: "attached" })
         const { fg, bg } = await colorsOf(page, sel)
         expect(contrast(fg, bg), `${sel} in ${theme}`).toBeGreaterThanOrEqual(4.5)
       }

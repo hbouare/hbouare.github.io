@@ -1,8 +1,9 @@
 <!-- app/components/navigation/TopBar.vue -->
 <!--
   Sticky header, laid out in CSS so the SSR markup is right for every width:
-  wide shows the nav, FR/EN, theme and CTA; narrow shows the short CTA and a
-  Menu button that unfolds the panel below.
+  wide shows the nav, FR/EN and theme; narrow shows a Menu button that
+  unfolds the panel below. No "Discuss a project" CTA here, by the owner's
+  choice: the hero and the end-of-page CTA band lead to /contact.
   Its breakpoint is 1024px, not the system's 760px: the full bar needs ~900px
   of content (measured, FR), so at 760–985px it overflowed by up to 200px.
   The language switch is a real link (not a button) so Nitro's crawler finds
@@ -50,15 +51,9 @@
         >
           <UiThemeLabel />
         </button>
-        <NuxtLink :to="localePath('/contact')" class="header-cta">
-          {{ $t("header.cta") }}
-        </NuxtLink>
       </div>
 
       <div class="mob-tools">
-        <NuxtLink :to="localePath('/contact')" class="header-cta header-cta--mob">
-          {{ $t("header.cta_short") }}
-        </NuxtLink>
         <button
           type="button"
           class="pill pill--tall menu-toggle"
@@ -335,26 +330,6 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.header-cta {
-  font-size: 14px;
-  font-weight: 500;
-  white-space: nowrap;
-  background: var(--ink);
-  color: var(--bg);
-  padding: 10px 18px;
-  border-radius: var(--radius-pill);
-  transition: opacity 0.2s;
-}
-.header-cta:hover {
-  opacity: 0.86;
-}
-.header-cta--mob {
-  height: 44px;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
 }
 
 .mob-menu {

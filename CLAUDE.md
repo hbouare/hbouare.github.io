@@ -140,7 +140,9 @@ properties keyed on it ([tokens.css](app/assets/styles/tokens.css)).
 Source spec: [design_handoff_portfolio_refonte/README.md](design_handoff_portfolio_refonte/README.md)
 (prototype: `Portfolio.dc.html`, open it through a local HTTP server).
 Editorial, light and dark: "the rigour of a researcher, the precision of an
-engineer". Every page leads to **« Discuter d'un projet »** (`/contact`).
+engineer". Every page leads to **« Discuter d'un projet »** (`/contact`)
+through the hero or the end-of-page CTA band — not the header: its CTA was
+removed at the owner's request, unlike the handoff.
 `DESIGN.md` is the previous system's spec and no longer applies.
 
 ### Tokens — never raw values
