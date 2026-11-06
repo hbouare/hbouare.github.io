@@ -137,6 +137,30 @@ test.describe("theme", () => {
       await expect(shown).toHaveText(scheme === "light" ? /^(Sombre|Dark)$/ : /^(Clair|Light)$/)
     }
   })
+
+  // The label once changed the toggle's width ("Sombre" 69px, "Clair" 62px):
+  // the header re-centred on every toggle and shook on repeated ones.
+  test("toggling the theme does not move the header", async ({ page, isMobile }) => {
+    test.skip(isMobile, "desktop header")
+    await page.goto("/")
+    await page.waitForSelector("html.hydrated")
+    const layout = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll(".bar a, .bar button")]
+          .filter((el) => el.getClientRects().length)
+          .map((el) => {
+            const r = el.getBoundingClientRect()
+            return `${r.left.toFixed(1)}/${r.width.toFixed(1)}`
+          }),
+      )
+    const before = await layout()
+    const { attr } = await paintedTheme(page)
+    await toggleTheme(page)
+    await expect.poll(async () => (await paintedTheme(page)).attr).not.toBe(attr)
+    // Past the theme reveal and the colour fades.
+    await page.waitForTimeout(600)
+    expect(await layout()).toEqual(before)
+  })
 })
 
 test.describe("contrast", () => {

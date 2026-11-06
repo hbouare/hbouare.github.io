@@ -176,7 +176,10 @@ Measure any new tone; do not trust a stated ratio.
 
 Shared components: `<UiPageIntro>` (eyebrow + H1 + intro, one per inner
 page), `<UiCtaBand>` (inverted end-of-page block, every page except
-Contact), `<UiWaveField>`, `<UiThemeLabel>`.
+Contact), `<UiWaveField>`, `<UiThemeLabel>`, `<UiPlumField>`, and
+`<NavigationScrollToTop>` (in the layout; shown past 400px by an observer on
+a sentinel, no scroll listener; the footer reserves its width on the right
+from 760px, or it covers the last link).
 
 ### Layout rules
 
