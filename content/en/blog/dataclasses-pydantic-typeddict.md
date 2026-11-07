@@ -1,13 +1,13 @@
 ---
 slug: dataclasses-pydantic-typeddict
-title: "Dataclasses, Pydantic, TypedDict: Which to Choose and Why"
+title: "Dataclasses, Pydantic and TypedDict: choosing for the task"
 date: "2025-01-06"
 readTime: 7
 tags: ["Python", "Pydantic", "Typing", "FastAPI"]
-excerpt: "Not a theoretical comparison — but the concrete decision rules that apply in practice: API input validation, internal models, configuration, serialisation. With the real trade-offs on performance and maintainability."
+excerpt: "Comparing TypedDict, dataclasses and Pydantic for API input, internal models, configuration and serialisation."
 ---
 
-This is a question every Python team eventually confronts. The answers you find online tend to be some version of "Pydantic for APIs, dataclasses for everything else" — a reasonable starting point, but it says nothing about the cases where the choice actually matters. Here are the decision rules I apply in practice.
+The right data model depends on its role: describing a structure, representing an internal object or validating input. This article compares TypedDict, dataclasses and Pydantic through these use cases, considering performance and maintenance trade-offs.
 
 ## Understanding What Each Tool Actually Does
 

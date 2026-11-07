@@ -80,7 +80,7 @@
             required
             name="message"
             rows="6"
-            :placeholder="$t('contact.form_message')"
+            :placeholder="$t('contact.message_placeholder')"
           />
         </label>
 

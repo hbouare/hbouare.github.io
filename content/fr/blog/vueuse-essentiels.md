@@ -1,13 +1,13 @@
 ---
 slug: vueuse-essentiels
-title: "VueUse : les composables qui changent le quotidien"
+title: "VueUse : des composables pour les besoins courants"
 date: "2025-01-13"
 readTime: 10
 tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
-excerpt: "Pas la liste exhaustive de la doc — mais les composables VueUse que l’on utilise réellement sur des projets Vue.js et Nuxt professionnels, avec des cas d’usage concrets et les pièges à éviter."
+excerpt: "Une sélection de composables VueUse avec des exemples pour gérer les états asynchrones et les interactions dans Vue.js et Nuxt."
 ---
 
-VueUse compte plus de 200 composables. La documentation les liste tous, ce qui n’aide pas à savoir lesquels méritent vraiment d’être appris. Voici ceux qui reviennent systématiquement sur des projets professionnels, avec les situations concrètes où ils font gagner du temps.
+Les projets Vue.js partagent des besoins récurrents : gérer un chargement, réagir à une interaction ou synchroniser un état. Cet article présente une sélection de composables VueUse à travers des exemples d’utilisation et les points à vérifier lors de leur intégration.
 
 ## Installation
 

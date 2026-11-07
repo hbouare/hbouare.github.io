@@ -1,13 +1,13 @@
 ---
 slug: nuxt4-introduction
-title: "Nuxt 4: What’s New and What Actually Changes for Developers"
+title: "Nuxt 4: project structure and code organisation"
 date: "2024-12-10"
 readTime: 7
 tags: ["Nuxt", "Vue.js", "Frontend", "SSR"]
-excerpt: "Nuxt 4 is more than a version bump. A restructured project layout, a dedicated app/ directory, and a more mature Nitro runtime — here is what it looks like in practice."
+excerpt: "An overview of Nuxt 4 covering the app/ directory, project organisation, data fetching and rendering."
 ---
 
-If you work with Vue.js and have not yet looked at Nuxt 4, now is a good time to do so. It is not a revolution, but the structural changes are significant enough to be worth a look before you start a new project.
+A Nuxt project’s structure determines where pages, components and server code belong. This overview introduces the Nuxt 4 structure and the changes to consider when planning a project or migration.
 
 ## What Nuxt Is, in Brief
 

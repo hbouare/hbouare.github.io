@@ -1,13 +1,13 @@
 ---
 slug: typescript-interfaces
-title: "TypeScript : interfaces hiérarchiques sur une vraie API"
+title: "TypeScript : modéliser les réponses d’une API"
 date: "2025-06-09"
 readTime: 8
 tags: ["TypeScript", "Vue.js", "API", "Frontend"]
-excerpt: "Pas un cours sur TypeScript — mais comment structurer des interfaces qui collent à une API externe réelle, avec des types utilitaires, des génériques sur les composables Vue, et les décisions concrètes qu’on prend sur du code de production."
+excerpt: "Structures imbriquées, champs optionnels, types utilitaires et composables Vue : organiser les types autour d’une API de gestion de certificats."
 ---
 
-La plupart des tutoriels TypeScript montrent des exemples triviaux : `interface User { name: string; age: number }`. En production, la réalité est plus complexe. Les API externes renvoient des structures imbriquées, des champs optionnels selon le contexte, des unions de types selon l’état. Voici comment structurer tout ça proprement, à partir d’un cas réel.
+Une API peut renvoyer des structures imbriquées, des champs optionnels et des données qui varient selon leur état. À partir d’un exemple de gestion de certificats, cet article montre comment organiser les interfaces TypeScript et les utiliser dans des composables Vue.
 
 ## Le point de départ : une API avec une structure hiérarchique
 

@@ -1,13 +1,13 @@
 ---
 slug: fastapi-project-architecture
-title: "Building a FastAPI Project Structure That Scales and Lasts"
+title: "Organising a FastAPI application into layers"
 date: "2025-03-01"
 readTime: 10
 tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
-excerpt: "Not the FastAPI hello world — but how to organise a real project with routers, a service layer, repositories, dependency injection, and tests that remain maintainable six months down the line."
+excerpt: "Routes, services, data access, dependency injection and tests: a proposed structure for a FastAPI application."
 ---
 
-Most FastAPI tutorials put everything in `main.py`. That works for a demonstration, not for an application maintained by a team over several years. Here is the architecture I use on projects built to last, and the reasoning behind each decision.
+As a FastAPI application grows, its structure affects how easily it can be tested and changed. Here I outline a layered architecture, explaining the roles of routes, services and data access.
 
 ## Project Structure
 

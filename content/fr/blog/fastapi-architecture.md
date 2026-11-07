@@ -1,13 +1,13 @@
 ---
 slug: fastapi-architecture
-title: "Mettre en place une architecture FastAPI évolutive et durable"
+title: "Organiser une application FastAPI en couches"
 date: "2025-03-01"
 readTime: 10
 tags: ["FastAPI", "Python", "Architecture", "Clean Code"]
-excerpt: "Pas le hello world FastAPI — mais comment organiser un projet réel avec des routers, une couche service, des repositories, de l’injection de dépendances, et des tests qui restent maintenables à six mois."
+excerpt: "Routes, services, accès aux données, injection de dépendances et tests : une proposition d’organisation pour une application FastAPI."
 ---
 
-La plupart des tutoriels FastAPI mettent tout dans `main.py`. Ça marche pour un exemple, pas pour une application maintenue par une équipe sur plusieurs années. Voici l’architecture que j’applique sur les projets qui durent, avec les raisons de chaque décision.
+À mesure qu’une application FastAPI évolue, l’organisation du code influence la facilité à la tester et à la modifier. Je présente ici une architecture en couches, en expliquant le rôle des routes, des services et de l’accès aux données.
 
 ## La structure de projet
 

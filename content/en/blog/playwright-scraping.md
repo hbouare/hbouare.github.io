@@ -1,13 +1,13 @@
 ---
 slug: playwright-scraping
-title: "Playwright as a Business Scraping Tool: Beyond E2E Testing"
+title: "Automating data extraction with Playwright"
 date: "2024-01-03"
 readTime: 9
 tags: ["Playwright", "Python", "Scraping", "Automation"]
-excerpt: "Playwright is not just for tests. When a business portal has no usable API, it is the most robust tool available for automating authentication, navigation, and data extraction — here is how to use it seriously in production."
+excerpt: "Using Playwright to navigate a business portal, handle authentication and extract data when the API does not meet the need."
 ---
 
-Most Playwright articles are about end-to-end testing. That is its most visible use case, but far from its only one. When a business portal exposes no API — or one that is incomplete, poorly documented, or restricted to select partners — Playwright becomes a first-class automation tool. Here is how to use it seriously, outside a testing context.
+When a business portal has no suitable API, some operations need to go through its web interface. This article presents an approach to automating navigation and data extraction with Playwright, including authentication and containerised execution.
 
 ## The Concrete Problem: A Portal With No Usable API
 
