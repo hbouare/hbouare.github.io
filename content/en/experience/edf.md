@@ -23,4 +23,4 @@ tags:
   ]
 ---
 
-Within the DevCo team, I build applications and tools that process energy data. I work directly with the business teams to frame their needs, then design the pipelines that make the data behind those processes reliable.
+In EDF’s DevCo team, I design and build business applications and energy data processing tools, working directly with business teams. My work covers front-end and back-end development, systems integration and deployment, as well as improving the reliability of the data used in their processes.

@@ -20,23 +20,23 @@
     "primary_nav": "Main navigation"
   },
   "hero": {
-    "tag": "Software Architect · AI & Data Engineering · R&D · Technical Consulting",
+    "tag": "Software Engineer · Architecture · Full-stack · Data Engineering",
     "title_em": "reliable",
-    "subtitle": "Software architect and PhD in numerical modelling, I design and harden complex systems — data, AI, front-end to back-end. From scientific computing to production software: one researcher’s method, applied to real engineering problems.",
+    "subtitle": "I design and build business applications, from front-end to back-end. My work spans the full development lifecycle, including architecture, data engineering, systems integration and deployment.",
     "cta_projects": "Case studies",
     "cta_contact": "Discuss a project",
     "intl_label": "International experience",
     "stat_years": "Years of experience",
     "stat_sectors": "Sectors",
     "stat_pubs": "Peer-reviewed publications",
-    "title": "Complex problems, {em} software",
+    "title": "Building {em} software",
     "readout_hint": "Wave field · move, click to emit"
   },
   "home": {
-    "cta_title": "A project, a technical doubt?",
-    "cta_text": "Describe your need in a few lines — I’ll get back to you quickly.",
+    "cta_title": "Building something new or improving an existing application?",
+    "cta_text": "Let’s talk about your needs, constraints and next steps.",
     "cta_button": "Let’s work together",
-    "refs_label": "They trusted me with their systems",
+    "refs_label": "Organisations I’ve worked with",
     "refs": [
       "EDF",
       "GE HealthCare",
@@ -49,15 +49,15 @@
   },
   "about": {
     "section": "01 — About",
-    "title_em": "engineer",
-    "p1": "A PhD in numerical modelling taught me to tackle ill-posed problems: break them down, model them, solve them rigorously, then test the results against reality. That is the method I bring to the systems I design — all the more when the stakes are technical and uncertain.",
-    "p2": "I judge software by its usefulness and its robustness, not its sophistication. A good architecture doesn’t need to be spectacular: it needs to stay reliable, readable and maintainable by a whole team — even years after it goes into production, without depending on whoever designed it.",
-    "p3": "I’ve designed and delivered systems in both France and the United Kingdom, across very different technical and human contexts. It left me with one conviction: no solution is worth anything without a precise understanding of the problem, the constraints and the goal. That is always where I start.",
-    "title": "The rigour of a researcher, the precision of an {em}"
+    "title_em": "production software",
+    "p1": "I’m a software engineer working across application architecture, full-stack development and data processing. I work with business teams to understand what they need, design a suitable solution and take it through development and deployment, with ongoing maintenance and improvements.",
+    "p2": "I’ve worked in energy, healthcare, mining, rail and research, in France and the UK. Each setting brings different constraints. I start with the need before choosing technologies, explain the reasoning behind architectural decisions and favour code that a team can maintain and extend without unnecessary complexity.",
+    "p3": "My PhD in mechanics and numerical modelling informs how I work: breaking down problems, questioning assumptions and checking results. These habits help me assess technical options against the way the software will be used and the constraints of the project.",
+    "title": "From business needs to {em}"
   },
   "experience": {
     "section": "02 — Experience",
-    "title": "Where I’ve built",
+    "title": "Professional experience",
     "current": "Current"
   },
   "projects": {

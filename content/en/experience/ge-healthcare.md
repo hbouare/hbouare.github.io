@@ -22,4 +22,4 @@ tags:
   ]
 ---
 
-On the AI DReAM team, I built web applications powered by AI models to analyse and monitor complex medical conditions, particularly glioblastoma, one of the most aggressive brain cancers. The goal: turn medical data into something clinicians and researchers can actually use to study and track the disease.
+On the AI DReAM team, I developed web interfaces integrating AI models to analyse and monitor medical conditions, particularly glioblastoma, an aggressive form of brain cancer. The applications help clinicians and researchers use medical data to study the disease and track its progression.

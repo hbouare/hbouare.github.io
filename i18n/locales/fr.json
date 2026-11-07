@@ -20,23 +20,23 @@
     "primary_nav": "Navigation principale"
   },
   "hero": {
-    "tag": "Architecte logiciel · IA & Data Engineering · R&D · Conseil technique",
+    "tag": "Ingénieur logiciel · Architecture · Full-stack · Data engineering",
     "title_em": "fiables",
-    "subtitle": "Architecte logiciel et docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes — data, IA, du front-end au back-end. Du calcul scientifique au logiciel de production : une même méthode de chercheur, appliquée à des problèmes d’ingénierie concrets.",
+    "subtitle": "Je conçois et développe des applications métier, du front-end au back-end. Architecture, données, intégration de systèmes et mise en production : j’interviens sur l’ensemble du cycle de développement.",
     "cta_projects": "Études de cas",
     "cta_contact": "Discuter d’un projet",
     "intl_label": "Expérience internationale",
     "stat_years": "Années d’expérience",
     "stat_sectors": "Secteurs",
     "stat_pubs": "Publications évaluées",
-    "title": "Des problèmes complexes, des logiciels {em}",
+    "title": "Concevoir des logiciels {em}",
     "readout_hint": "Champ d’ondes · déplacez, cliquez pour émettre"
   },
   "home": {
-    "cta_title": "Un projet, un doute technique ?",
-    "cta_text": "Décrivez votre besoin en quelques lignes — je vous réponds rapidement.",
+    "cta_title": "Un projet à concevoir ou à faire évoluer ?",
+    "cta_text": "Parlons de vos besoins, de vos contraintes et des prochaines étapes.",
     "cta_button": "Travaillons ensemble",
-    "refs_label": "Ils m’ont confié des systèmes",
+    "refs_label": "Les organisations avec lesquelles j’ai travaillé",
     "refs": [
       "EDF",
       "GE HealthCare",
@@ -49,15 +49,15 @@
   },
   "about": {
     "section": "01 — À propos",
-    "title_em": "l’ingénieur",
-    "p1": "Un doctorat en modélisation numérique m’a appris à traiter des problèmes mal posés : les décomposer, les modéliser, les résoudre avec rigueur, puis confronter les résultats au réel. C’est cette démarche que j’applique aux systèmes que je conçois — d’autant plus quand les enjeux sont techniques et incertains.",
-    "p2": "Je juge un logiciel à son utilité et à sa robustesse, pas à sa sophistication. Une bonne architecture n’a pas besoin d’être spectaculaire : elle doit rester fiable, lisible et maintenable par toute une équipe — y compris plusieurs années après sa mise en production, sans dépendre de la personne qui l’a conçue.",
-    "p3": "J’ai conçu et livré des systèmes en France comme au Royaume-Uni, dans des contextes techniques et humains très différents. J’en tire une conviction : aucune solution ne vaut sans une compréhension précise du problème, des contraintes et de l’objectif. C’est par là que je commence, toujours.",
-    "title": "La rigueur du chercheur, la précision de {em}"
+    "title_em": "logiciel en production",
+    "p1": "Ingénieur logiciel, je travaille sur l’architecture des applications, le développement full-stack et le traitement des données. Mon rôle est de comprendre les besoins métier, de concevoir une solution adaptée et de l’accompagner du développement à la mise en production, puis dans sa maintenance et ses évolutions.",
+    "p2": "Mes missions dans l’énergie, la santé, le secteur minier, le ferroviaire et la recherche, en France et au Royaume-Uni, m’ont appris à tenir compte de contraintes variées. Je pars du besoin avant de choisir les technologies, j’explicite les choix d’architecture et je privilégie un code simple à maintenir et à faire évoluer en équipe.",
+    "p3": "Mon doctorat en mécanique et en modélisation numérique nourrit cette approche : décomposer un problème, examiner les hypothèses et vérifier les résultats. J’applique ces réflexes aux décisions techniques, en confrontant les solutions aux usages et aux contraintes du projet.",
+    "title": "Du besoin métier au {em}"
   },
   "experience": {
     "section": "02 — Parcours",
-    "title": "Où j’ai construit",
+    "title": "Mon parcours professionnel",
     "current": "En cours"
   },
   "projects": {

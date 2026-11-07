@@ -21,6 +21,6 @@ tags:
   ]
 ---
 
-Le Laboratoire Souterrain à Bas Bruit, situé à Rustrel (Vaucluse, France), est un site de recherche interdisciplinaire installé dans une ancienne base militaire reconvertie. Il comprend un réseau de galeries souterraines creusées dans un massif karstique fortement hétérogène, dont les caractéristiques influencent la propagation des ondes mécaniques et la distribution des contraintes alentour.
+Au LSBB, j’ai conçu et développé une application de simulation numérique pour étudier la propagation des ondes mécaniques dans les galeries souterraines. Elle permet d’analyser la réponse du tunnel et du terrain environnant en régimes harmonique et transitoire.
 
-J’y ai conçu et développé une application de simulation numérique pour étudier la propagation des ondes dans ces galeries et analyser la réponse dynamique du tunnel et de son environnement, en régime harmonique comme transitoire.
+Ce laboratoire interdisciplinaire, situé à Rustrel dans le Vaucluse, occupe une ancienne base militaire. Ses galeries traversent un massif karstique hétérogène : cette diversité géologique influence la propagation des ondes et la répartition des contraintes autour des tunnels.

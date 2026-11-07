@@ -23,4 +23,4 @@ tags:
   ]
 ---
 
-Au sein de l’équipe DevCo, je développe des applications et des outils de traitement de données énergétiques. Je travaille directement avec les équipes métier pour cadrer leurs besoins, puis concevoir les traitements qui fiabilisent les données dont dépendent leurs processus.
+Au sein de l’équipe DevCo, je conçois et développe des applications métier et des outils de traitement de données énergétiques, en lien direct avec les équipes métier. Mon travail couvre le développement front-end et back-end, l’intégration de systèmes et la mise en production, ainsi que la fiabilisation des données utilisées dans leurs processus.

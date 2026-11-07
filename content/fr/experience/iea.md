@@ -13,4 +13,4 @@ flag: "🇫🇷"
 tags: ["Nuxt.js", "TypeScript", "AWS", "MongoDB", "GitHub Actions", "Terraform"]
 ---
 
-J’ai participé à la refonte du site de l’Institut d’études avancées, un centre qui accueille des chercheurs du monde entier. J’y ai développé les nouvelles fonctionnalités et repris l’interface pour mieux mettre en valeur les programmes de recherche, les activités de l’institut et les chercheurs invités.
+J’ai contribué à la refonte du site de l’Institut d’études avancées de Paris, qui accueille des chercheurs du monde entier. J’ai développé de nouvelles fonctionnalités et retravaillé l’interface pour présenter les programmes de recherche, les activités de l’institut et les chercheurs invités.

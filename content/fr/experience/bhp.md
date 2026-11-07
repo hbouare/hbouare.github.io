@@ -21,4 +21,4 @@ tags:
   ]
 ---
 
-J’ai contribué au développement d’une application web d’analyse de l’activité des sites d’exploitation de BHP, groupe minier international présent dans de nombreux pays. Mon travail consistait à centraliser leurs données opérationnelles afin de les rendre réellement exploitables.
+J’ai contribué au développement d’une application web d’analyse de l’activité des sites du groupe minier international BHP. Mon travail portait sur la centralisation des données opérationnelles de ces sites pour permettre leur analyse dans une même application.
