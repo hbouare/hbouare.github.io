@@ -42,12 +42,12 @@ export default defineNuxtConfig({
         {
           name: "description",
           content:
-            "Hamed Bouare, architecte logiciel · IA & Data Engineering. Docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes.",
+            "Hamed Bouare, ingénieur logiciel · Architecture · Data engineering. Docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes.",
         },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         {
           property: "og:title",
-          content: "Hamed Bouare — Architecte logiciel · IA & Data Engineering",
+          content: "Hamed Bouare — Ingénieur logiciel · Architecture · Data engineering",
         },
         {
           property: "og:description",
@@ -55,21 +55,13 @@ export default defineNuxtConfig({
             "Docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes — data, IA, du front-end au back-end.",
         },
         { property: "og:type", content: "website" },
-        { property: "og:image", content: "https://hamedbouare.me/og-image.png" },
+        // og:image is set per locale in app.vue. No twitter:title /
+        // description: X falls back to the og:* tags each page sets in its
+        // own language, where fixed French ones here would win everywhere.
         { property: "og:image:type", content: "image/png" },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
-        {
-          name: "twitter:title",
-          content: "Hamed Bouare — Architecte logiciel · IA & Data Engineering",
-        },
-        {
-          name: "twitter:description",
-          content:
-            "Docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes.",
-        },
-        { name: "twitter:image", content: "https://hamedbouare.me/og-image.png" },
       ],
       link: [
         // SVG (theme-adaptive ink) is preferred by modern browsers; the ICO is
@@ -158,6 +150,10 @@ export default defineNuxtConfig({
         "/en/contact",
       ],
       crawlLinks: true,
+      // "Request access" links carry ?project=<slug> to prefill the contact
+      // form client-side; the page itself is the same, so don't prerender
+      // one copy per project.
+      ignore: [/\?project=/],
     },
   },
 

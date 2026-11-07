@@ -345,11 +345,19 @@ test.describe("projects", () => {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
     )
 
-    const contactCta = page.locator('.case-encart a[href$="/contact"]')
+    const contactCta = page.locator('.case-encart a[href*="/contact"]')
     const publicLink = page.locator('.case-encart a[href^="http"]')
     const hasWayForward =
       (await contactCta.count()) > 0 || (await publicLink.count()) > 0
     expect(hasWayForward, "case study must offer a way forward").toBe(true)
+
+    // The request carries ?project=<slug>, and the form names the project
+    // so the visitor doesn't have to.
+    if ((await contactCta.count()) > 0) {
+      await contactCta.click()
+      await expect(page).toHaveURL(/\/contact\?project=fleetops/)
+      await expect(page.locator("textarea[name=message]")).toHaveValue(/flotte automobile|Fleet Management/)
+    }
   })
 })
 

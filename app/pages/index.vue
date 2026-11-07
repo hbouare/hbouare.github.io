@@ -30,7 +30,7 @@ useJsonLd({
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Hamed Bouare",
-  jobTitle: "Software Architect · AI & Data Engineering",
+  jobTitle: "Software Engineer · Architecture · Data Engineering",
   url: "https://hamedbouare.me",
   sameAs: [
     "https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/",
