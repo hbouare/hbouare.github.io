@@ -18,6 +18,25 @@ highlights:
   - "Dashboard shell and a versioned REST API (/api/v1)"
   - "Shared data model: UUID identifiers, UTC timestamps, reversible migrations"
   - "Complete, blocking quality chain (lint, strict typing, tests) in CI"
+# Figures counted in the repository (2026-11-06): 42 API routes, 5 Alembic
+# migrations (each with a downgrade), 56 pytest + 24 Vitest + 7 Playwright
+# tests, CI coverage gates: API 90%, front-end 80% (branches 70%).
+story:
+  problem:
+    title: "Foundations before features"
+  constraints:
+    title: "Adding domains without touching the foundations"
+    text: "A financial SaaS for SMEs grows one domain at a time — finance, imports, invoices, alerts, reports. Each addition has to plug into what exists without rewriting it, and without quality eroding release after release."
+  approach:
+    title: "A modular monolith, a blocking quality chain"
+  result:
+    title: "Business domains, plugged into the foundations"
+    text: "On these foundations, the business domains were added one by one, each with its own routes, service and repository."
+    points:
+      - "42 API routes across seven business domains: authentication, finance, CSV/XLSX imports, invoices, alerts, reports, search"
+      - "5 schema migrations, each one reversible"
+      - "87 automated tests: 56 on the API, 24 front-end unit tests, 7 end-to-end journeys"
+      - "Minimum coverage enforced in CI: 90% on the API, 80% on the front end"
 tags: ["FastAPI","Vue 3","TypeScript","PostgreSQL","SQLAlchemy"]
 
 cover:

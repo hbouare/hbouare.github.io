@@ -5,6 +5,8 @@ role: "Full-Stack Developer"
 company: "Paris Institute for Advanced Study"
 sector: "Research"
 period: "April 2024 — February 2026"
+start: 2024.25
+end: 2026.1
 employment: "Part-time (4 days per month)"
 location: "Paris, France"
 flag: "🇫🇷"

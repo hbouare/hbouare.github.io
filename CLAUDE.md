@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Personal portfolio site for Hamed Bouare. **Nuxt 4** + **Vuetify 4** + **Nuxt Content v3** + **@nuxtjs/i18n**, statically generated (SSG) and deployed to **GitHub Pages** at `hamedbouare.me`. Package manager is **yarn** (1.22.22) — the README mentions npm but CI and deploy use yarn.
+Personal portfolio site for Hamed Bouare. **Nuxt 4** + **Nuxt Content v3** + **@nuxtjs/i18n**, plain CSS (no UI framework; GSAP only for the title line splits), statically generated (SSG) and deployed to **GitHub Pages** at `hamedbouare.me`. Package manager is **yarn** (1.22.22) — the README mentions npm but CI and deploy use yarn.
 
 ## Commands
 
@@ -25,10 +25,11 @@ both must stay green:
   server), desktop + mobile. Every test maps to a bug that actually shipped
   here. Run `npx playwright install chromium` once after cloning.
 
-The e2e suite guards failure modes that produce **no console error**: the theme
-desyncing from the DOM, Vuetify utility classes silently not shipping, text
-rendered in a colour that matches its background, horizontal overflow, and
-missing accessible names. Do not delete a test here without replacing the
+The e2e suite guards failure modes that produce **no console error**: the
+theme not set before first paint, the painted theme disagreeing with
+`data-theme`, text below AA contrast, horizontal overflow, content stuck at
+opacity 0, a blank wave-field canvas, a `TODO` placeholder rendered, broken
+screenshots, and missing accessible names. Do not delete a test here without replacing the
 guarantee — each one was written after the corresponding bug reached the
 built output.
 
@@ -51,7 +52,7 @@ const { locale } = useI18n()
 queryCollection(`${locale.value}_blog`).order("date", "DESC").all()
 ```
 
-So adding content means adding a Markdown file under **both** `content/fr/...` and `content/en/...` with frontmatter that satisfies the schema (e.g. experiences need `id, order, role, company, period, location, flag, tags`). New routes are picked up by Nitro's `crawlLinks` prerender — add explicit entries to `nitro.prerender.routes` in [nuxt.config.ts](nuxt.config.ts) only for pages not reachable by crawling.
+So adding content means adding a Markdown file under **both** `content/fr/...` and `content/en/...` with frontmatter that satisfies the schema (e.g. experiences need `id, order, role, company, period, start, location, flag, tags`; `start`/`end` are decimal years drawn as the home-page timeline bar, no `end` = ongoing). New routes are picked up by Nitro's `crawlLinks` prerender — add explicit entries to `nitro.prerender.routes` in [nuxt.config.ts](nuxt.config.ts) only for pages not reachable by crawling.
 
 #### Frontmatter is PUBLISHED, whether or not it is rendered
 
@@ -73,342 +74,230 @@ should `select()` that subset — and note that `select()` narrows the row type
 
 #### Project case studies (`/projects/[slug]`)
 
-Three reading tiers, each with a deliberately different visual form, because
-one page serves a recruiter (~15s), a client, a delivery lead and a senior
-developer:
+Told as an article: header + 3-cell meta grid, hero shot, then a sticky
+contents list and four sections — **Problème → Contraintes → Démarche →
+Résultat** — then the code-access box and the next-project link.
 
-1. **Summit** — hero, facts strip, results. Everything a non-technical reader
-   needs, above the fold-ish. `impact` is FIRST, not last.
-2. **Narrative** — context/problem, then response.
-3. **Under the hood** — architecture prose, the `stack` layer plan, then
-   `decisions` (problem → choice → **what it costs**).
-
-Rendering stays data-driven via `tierDefs` in the page: one loop, not a dozen
-copied blocks. Adding a section means adding a field to the schema and one
-entry to `tierDefs`. The presentational pieces live in `app/components/case/`
-(`<CaseHero>`, `<CaseFacts>`, `<CaseOutcomes>`, `<CasePlan>`,
-`<CaseDecisions>`, `<CaseAccess>`, `<CaseNext>`).
+Sections come from the `story` frontmatter object (`problem`, `constraints`,
+`approach`, `result`, each `{ title?, text?, points? }`), and gallery shots
+are placed with `gallery[].section: approach | result`. The page builds one
+list of sections (`sections`, computed) and renders it in one loop.
 
 Two content rules:
 
-- **`decisions[].consequence` is mandatory in the schema on purpose.** A
-  decision with no stated cost reads as marketing to the audience most likely
-  to check.
-- **Facts (`period`, `team`, `status`) whose value starts with `TODO` are
-  dropped at render** (`isFilled` in the page). A placeholder is a visible
-  reminder in the source that can never ship as a fabricated fact. Do not
-  "helpfully" fill these in — they are the author's to supply.
+- **No invented copy.** A project without `story` falls back to what it
+  already has: `intro` as the problem, `highlights` as the approach, its
+  gallery as figures. A section left empty disappears and the numbering
+  closes up.
+- **Values starting with `TODO` are dropped at render** (`isFilled`). The
+  placeholders are visible reminders in the source that can never ship as
+  fabricated facts — e2e asserts no case study renders "TODO". Do not
+  "helpfully" fill them in (notably `result.text`, the measurable result):
+  they are the author's to supply.
 
 Source access is granted personally via `/contact`; there is no repo, demo or
-docs link on these pages, and no `access` flag branching the UI.
+docs link on these pages.
 
-### Theming (dark-first, anti-flash, View Transitions)
+### Theming
 
-Theme state lives in **Vuetify** (`dark`/`light` themes defined in [app/plugins/vuetify.ts](app/plugins/vuetify.ts)), and everything else mirrors it:
+Theme = the **`data-theme` attribute on `<html>`**. All colour is CSS custom
+properties keyed on it ([tokens.css](app/assets/styles/tokens.css)).
 
-- An **inline `<head>` script** in [nuxt.config.ts](nuxt.config.ts) reads `localStorage['portfolio-theme']` and sets `data-theme` + `colorScheme` *before paint* to prevent a flash. Inline CSS hides the body (`opacity:0`) until `html.hydrated`.
-- [app/composables/useAppTheme.ts](app/composables/useAppTheme.ts) has a **single reactive watcher** on `theme.name` that writes localStorage + the DOM `data-theme` attribute.
-
-Two ordering constraints are load-bearing. Both were violated during the
-refactor and both produced the *same* silent symptom — `data-theme="light"`
-with `.v-application` stuck on `v-theme--dark`:
-
-1. **The watcher must NOT be `immediate`.** At setup the theme name is still
-   the SSR default (`dark`), so an immediate run writes `dark` to localStorage
-   and destroys a saved `light` preference before anything reads it.
-2. **The restore must NOT happen in the Vuetify plugin.** Calling
-   `theme.change()` during plugin install races hydration, and Vue re-patches
-   `.v-application` back to the SSR theme. The restore belongs in
-   `app.vue`'s `onMounted` (via `syncTheme()`), after hydration and before the
-   anti-flash reveal.
-
-Constraint 2 reproduces only intermittently, so it survives manual testing —
-it was caught by `yarn test:e2e`, not by looking.
-
-Keep this one-way flow intact: **Vuetify theme name → watcher → DOM/localStorage**.
-Never write `data-theme` or localStorage by hand.
-
-**Always change the theme through `theme.change(name)` / `theme.toggle([a, b])`.**
-Vuetify 4 made `theme.global.name` read-only behind a deprecation `Proxy`.
-Assigning `theme.global.name.value = x` still *looks* like it works — it even
-sets the underlying ref — but it does not drive the theme, and because
-`deprecate()` is stripped from production builds **it fails completely
-silently, with no console output**. This exact bug shipped once already: the
-DOM went light while `.v-application` stayed `v-theme--dark`.
-
-`toggleTheme(event)` uses Vuetify 4's native transition API —
-`setTransitionOrigin(event)` anchors the clip-path reveal to the click point
-and `toggle([...], true)` runs the swap inside it. Do not hand-roll
-`document.startViewTransition` again; the framework owns it now.
-
-When verifying a theme change, assert on **`.v-application`'s `v-theme--*`
-class**, not on `data-theme` — the two can disagree, and that disagreement is
-precisely the failure mode above.
+- An **inline `<head>` script** in [nuxt.config.ts](nuxt.config.ts) sets
+  `data-theme` before first paint: saved choice
+  (`localStorage['portfolio-theme']`), else `prefers-color-scheme`. There is
+  no body-hiding anti-flash: nothing theme-dependent is rendered by JS, so
+  there is nothing to hide. **If that script breaks, nothing errors** — the
+  page corrects itself at hydration, but every dark visit fades in from
+  light. A syntax error did exactly that once; the "theme is set before first
+  paint" e2e test guards it.
+- [useAppTheme.ts](app/composables/useAppTheme.ts): `theme` state → **one
+  watcher** (`useThemeDomSync`, installed once in `app.vue`) → DOM. Change it
+  only via `toggleTheme()` / `syncTheme()`; never write `data-theme` by hand.
+- **Only an explicit toggle is persisted.** Until the visitor chooses, the OS
+  preference applies, including live OS changes.
+- **Markup that depends on the theme is switched in CSS, not rendered from
+  state** — the prerendered HTML cannot know the theme. See
+  [ThemeLabel.vue](app/components/ui/ThemeLabel.vue): both labels render and
+  `html[data-theme]` shows one.
+- Verify a theme change on the **painted** colour
+  (`getComputedStyle(document.body).backgroundColor`), not only the attribute.
 
 ### i18n
 
 `@nuxtjs/i18n`, strategy `prefix_except_default`, default locale **`fr`** (no prefix), `en` under `/en`. UI strings live in `i18n/locales/{fr,en}.json`; content lives in the per-locale Markdown collections above. Use `useLocalePath()` for internal links and `$t()` / `useI18n().t()` for UI strings.
 
-## Design system
+- A title with one emphasised word uses `<i18n-t keypath>` with an `{em}`
+  slot. Word order differs between FR and EN, so never split a title into
+  `title_1` / `title_em` keys.
+- The language switch is a **link** (`switchLocalePath`), not a button, so
+  Nitro's crawler reaches every `/en` route from any page.
+- Desktop Chrome in Playwright is `en-US` and is redirected from `/` to
+  `/en`: write e2e text assertions locale-neutrally.
 
-The visual language is **monochrome, uppercase, hairline-separated, flat**.
-[DESIGN.md](DESIGN.md) is the source spec; the rules below are how it is
-actually implemented here, including the places this project deliberately
-departs from it.
+## Design system — « Sismogramme »
 
-### The load-bearing rule: no accent colour
-
-Black and white do all the chromatic work. Hierarchy is carried by
-**typography, tracking, tone (muted vs full ink), and 1px hairlines** — never
-by hue. Adding a brand accent colour breaks the system.
-
-`primary` is therefore the *ink* colour (white on dark, black on light), not a
-brand tint. `color="primary"` on a filled control gives you white-on-white in
-dark mode — see the pitfalls below.
-
-The only exception is the semantic set (`error`, `warning`, `info`, `success`).
-Those are **functional only**: form validation and feedback. Never decorative.
+Source spec: [design_handoff_portfolio_refonte/README.md](design_handoff_portfolio_refonte/README.md)
+(prototype: `Portfolio.dc.html`, open it through a local HTTP server).
+Editorial, light and dark: "the rigour of a researcher, the precision of an
+engineer". Every page leads to **« Discuter d'un projet »** (`/contact`)
+through the hero or the end-of-page CTA band — not the header: its CTA was
+removed at the owner's request, unlike the handoff.
+`DESIGN.md` is the previous system's spec and no longer applies.
 
 ### Tokens — never raw values
 
-Colour tokens live in [app/plugins/vuetify.ts](app/plugins/vuetify.ts) for both
-modes. Use `rgb(var(--v-theme-<token>))`, never a hex literal, and never
-`rgba(var(--v-theme-primary), 0.12)` for a border — that was the old idiom and
-it is gone; borders use the `border` token at full opacity.
+- Colour ([tokens.css](app/assets/styles/tokens.css)): `--bg`, `--surface`,
+  `--ink`, `--muted`, `--rule`, `--accent`, `--error`, `--wave-trace`, for
+  both themes. Never a hex in a component.
+- Type: `--f-display` (Newsreader), `--f-sans` (Instrument Sans), `--f-mono`
+  (IBM Plex Mono); fluid sizes `--fs-hero/h1/h2/cta/h3/list/lead/intro/figure`.
+- Space and layout: `--sp-*` (4px base), `--gutter`, `--section-y`,
+  `--block-gap`.
 
-Available: `background`, `surface`, `surface-2`, `primary`, `on-primary`,
-`secondary`, `on-background`, `on-surface`, `muted`, `border`, plus the four
-semantic ones.
+### The accent is rare
 
-Spacing and type tokens live as custom properties in
-[app/assets/styles/main.scss](app/assets/styles/main.scss) (`--space-*`,
-`--type-*`, `--section-pad`, `--font-*`).
+`--accent` marks one word of a title, numbers, wave fronts and status —
+never a background fill. **The light accent is `#b53f18`, not the handoff's
+`#c2441a`**: the handoff value measures 4.46:1 on `--bg` and 4.08:1 on
+`--surface` (the README claims ≈5:1), below AA for the 11–12px mono uses.
+Measure any new tone; do not trust a stated ratio.
 
-### Typography
-
-Two families only: **Inter** (display + body, the spec's documented D-DIN
-substitute) and **DM Mono** — *code only*.
-
-Use the tier classes; never restate a font-size in a component:
+### Primitives — reach for these first ([base.css](app/assets/styles/base.css))
 
 | Class | Use |
 |---|---|
-| `.type-display-xxl/xl/lg` | Display headings. Always uppercase, 700, positively tracked. |
-| `.type-title` | Card / list-item titles. **Not** uppercase. |
-| `.type-body-lg` / `.type-body-md` | Reading copy / UI copy. |
-| `.type-micro-cap` | Eyebrows, meta, nav, labels. Uppercase. |
-| `.type-button-cap` | Button labels (applied globally via defaults). |
-| `.type-caption` | Footer, legal, helper text. |
+| `.t-hero` `.t-h1` `.t-h2` `.t-cta` | Display 300 headings (fluid). `em` inside is italic; `.em-accent` colours it. |
+| `.t-h3` `.t-list` `.t-lead` `.t-intro` | Organisation/service titles, list titles, standfirst, intro. |
+| `.eyebrow` / `.label` | Mono uppercase markers, 12px / 11px. |
+| `.btn` + `--primary` / `--secondary` / `--inverse` | Pill buttons: ink, outlined, on the inverted CTA band. |
+| `.link-text`, `.tag` (`--caps`, `--accent`), `.chip` (`aria-pressed`), `.status` | Links, tags, filter chips, availability dot. |
+| `.gutter`, `.section`, `.editorial` (`__key` / `__body`) | Side margin, section rhythm, marker column + content column (wraps by itself). |
+| `.cells` | Grid of cells with perfect 1px hairlines (gap over a `--rule` background). |
+| `.rule-row` (+ `.is-interactive`) | Hairline row; surface on hover. |
 
-**The responsive stair-step (80 → 60 → 48 → 40) lives in ONE place**: the
-`:root` breakpoint blocks in `main.scss`. Never add per-component type
-breakpoints — that duplication is exactly what this refactor removed.
+Shared components: `<UiPageIntro>` (eyebrow + H1 + intro, one per inner
+page), `<UiCtaBand>` (inverted end-of-page block, every page except
+Contact), `<UiWaveField>`, `<UiThemeLabel>`, `<UiPlumField>`, and
+`<NavigationScrollToTop>` (in the layout; shown past 400px by an observer on
+a sentinel, no scroll listener; the footer reserves its width on the right
+from 760px, or it covers the last link).
 
-### Vuetify conventions
+### Layout rules
 
-[app/plugins/vuetify.ts](app/plugins/vuetify.ts) sets the global `defaults`
-that carry the visual language:
-
-- `VBtn` — ghost outlined **pill**, uppercase cap label. This *is* the CTA
-  component; there is no wrapper for it. Prefer `variant="text"` for secondary
-  actions rather than a second pill: the system allows **one pill per band**.
-- `VCard` — `elevation: 0`, `rounded: 'lg'` (8px). The system has **no shadow
-  tier**; separation is a hairline or a surface step.
-- `VChip` — outlined pill, small.
-- `VTextField` / `VTextarea` — outlined, 4px radius.
-
-**Prefer the defaults over per-component props.** If you find yourself writing
-`rounded=`, `variant=`, or `color=` on one of these, ask whether the default is
-wrong instead.
-
-#### Pitfalls that have already caused bugs here
-
-- **`color="…"` on `variant="outlined"` sets the TEXT and BORDER colour, not
-  the background.** `color="surface"` on an outlined card paints the label in
-  the surface colour — invisible against the canvas. Leave `color` off and let
-  text inherit.
-- **`color="primary"` + `variant="flat"`** renders white-on-white in dark mode,
-  because `primary` is the ink colour. Use the ghost default.
-- **`color` on `<v-app-bar>`** emits an inline `background-color` that only
-  `!important` can beat. Omit it and style the background in CSS.
-
-#### Overrides and specificity
-
-Vuetify 4 wraps its own CSS in `@layer`, so **unlayered author CSS wins on
-cascade order alone**. You should not need `!important` or doubled selectors to
-override Vuetify. If you reach for one, the real cause is almost always an
-inline style coming from a prop — remove the prop instead.
-
-`import 'vuetify/styles'` in the plugin is **required**: `vite-plugin-vuetify`
-autoImport only injects per-component styles, so without it every utility class
-(`mb-6`, `ga-4`, `d-none`, `px-md-10`, the whole grid) silently becomes a
-no-op. This has broken the site once.
-
-### Shared UI primitives
-
-Reach for these before writing new CSS:
-
-- `<UiEyebrow>` — micro-cap kicker with the 28px hairline rule. `tone="muted"`,
-  `:rule="false"`.
-- `<UiDisplayTitle tag level>` — display tier heading.
-- `<UiSectionHeader>` — eyebrow + display title; the standard section opener.
-- `.hairline-interactive` — hover/focus state for any hairline surface. The
-  system has no shadow, so hover = the hairline strengthening to full ink.
-- `<UiRevealBlock :delay>` — scroll reveal.
-
-### Documented departures from DESIGN.md
-
-The spec describes a photography-led marketing site. This is a text-driven
-portfolio, so four departures are intentional — keep them, and keep them
-documented:
-
-1. **No full-bleed photography.** The spec's primary depth medium ("the
-   photographs *are* the design system") does not exist here. Bands are
-   typographic title cards instead.
-2. **Monospace is kept, for code only.** The spec has no mono tier; this site
-   has nine technical posts with syntax highlighting.
-3. **A `.type-title` tier was added.** The spec jumps 48px → 16px because it
-   has no cards; a card-driven portfolio needs a title tier.
-4. **`surface-2` and a real `muted` were derived.** The spec has only two dark
-   surfaces and its "muted" (`#f0f0fa`) is indistinguishable from white —
-   unusable for the volume of secondary text here.
-
-Light mode is also an extension: the source system has no dark/light toggle,
-so the light palette is built from its shop-site tokens.
+- **One breakpoint: 760px** — except the header, which switches at
+  **1024px**: the full bar needs ~900px of content and overflowed by up to
+  200px at 768px (measured).
+- No shadows. Borders are 1px `--rule`. Radii: pills 999px, cards 8px,
+  images 6px.
+- Plain unlayered CSS, no framework: no `!important` anywhere except the
+  reduced-motion block.
 
 ### Accessibility floor
 
-- Every icon-only control needs an `aria-label` (from i18n, not hardcoded), and
-  toggles need `aria-expanded`. Several were missing entirely.
-- Interactive states must cover `:focus-visible`, not just `:hover` — on a
-  monochrome ghost UI the focus ring is the only affordance.
-- Measured contrast is **AA across both themes** (full ink 21:1, muted 6.1:1
-  dark / 6.9:1 light). If you introduce a new tone, measure it; do not eyeball
-  near-black on black.
-- `prefers-reduced-motion` is honoured globally in `main.scss` — the
-  `!important` there is deliberate and must win.
+- `:focus-visible` = 2px accent outline, offset 3px (global).
+- Touch targets ≥ 44px on mobile. Nothing may be hover-only: the code-block
+  "Copy" button was, and could not be reached on touch.
+- Contrast is AA in both themes, measured; e2e checks key text.
+- No icons. Toggles carry `aria-pressed` / `aria-expanded`.
 
 ### Components are auto-imported with directory prefixes
 
-Nuxt auto-imports from `app/components/<dir>/`, so a component in `ui/` is `<Ui...>`, in `sections/` is `<Sections...>`, in `navigation/` is `<Navigation...>`. Scroll-reveal animations wrap content in `<UiRevealBlock :delay="...">`, backed by [app/composables/useScrollReveal.ts](app/composables/useScrollReveal.ts).
+`app/components/ui/` → `<Ui...>`, `sections/` → `<Sections...>`,
+`navigation/` → `<Navigation...>`.
 
 ### Contact form
 
-[app/components/sections/ContactSection.vue](app/components/sections/ContactSection.vue) / [app/pages/contact.vue](app/pages/contact.vue) send via `@emailjs/browser` using `runtimeConfig.public.emailjs*` (empty in repo, supplied by CI secrets).
+[app/pages/contact.vue](app/pages/contact.vue) sends via `@emailjs/browser` using `runtimeConfig.public.emailjs*` (empty in repo, supplied by CI secrets). Native HTML5 validation only; states `idle → sending → sent | error`; no confirm dialog (removed on purpose); a hidden `hb-trap` honeypot silently drops bots. Selected topics go in a `topics` param **and** are prefixed to the message, so they arrive whatever the EmailJS template contains.
 
-## Motion (GSAP)
+## Motion
 
-Animation is GSAP, centralised so it stays coherent and accessible. The rules
-below are not optional — two of them guard real accessibility failures.
+Motion follows master's `config/motion.ts`: short, decisive, no overshoot
+(power3.out ≈ `--ease-out`). Durations and distances are tokens in
+tokens.css. GSAP is used for one thing only, splitting titles into lines;
+everything else is CSS or canvas. Seven things move, all honouring
+`prefers-reduced-motion`:
 
-### The one entry point: `useMotion`
+- **Hero wave field** — [useWaveField.ts](app/composables/useWaveField.ts),
+  a port of the prototype's `waveSim()`. Canvas 2D, client-only
+  (`<ClientOnly><LazyUiWaveField>`), DPR capped at 2, one rAF loop paused
+  off-screen, colours read from `--wave-trace` / `--accent` and re-read when
+  `data-theme` flips. Reduced motion: one still frame at t = 1.7s, no
+  interaction.
+- **Key figures count-up** — SSR renders the **final** values; the client
+  rewinds to 0 only when motion is allowed, then counts up at 30%
+  visibility. Never ship a "0".
+- **Page transitions** — CSS (`.page-*` in base.css), master's values: the
+  old page leaves in 250ms (12px up), the new one enters in 600ms (from 12px
+  below, `--ease-out`).
+- **Scroll reveal** — the `v-reveal` directive
+  ([plugins/reveal.ts](app/plugins/reveal.ts)): `.fade`, `.scale`,
+  `.stagger` (on a list container) and `.lines` (section titles rise line by
+  line behind a mask, GSAP SplitText, desktop only). One shared
+  IntersectionObserver, fires once, as the element starts to enter.
+- **Handwritten logo** — the header name is an SVG `<text>` traced, inked
+  and erased on a 10s CSS loop (TopBar.vue); a visually-hidden span carries
+  the link's name. Its **rest state is the written name**, and reduced
+  motion sets `animation: none` on it: the global override alone would run
+  the loop once and leave it erased.
+- **Article tree** — [usePlumField.ts](app/composables/usePlumField.ts),
+  generative "plum" branches from the screen edges on `/blog` and
+  `/blog/[slug]` (master's algorithm and constants, unchanged), in
+  `--plum-trace` (the accent, faint). Fixed canvas at `z-index: -1`, which
+  only shows because `.app-shell` is `isolation: isolate`: `<html>` has its
+  own background (inline head style), so body's background paints over
+  anything negative outside that context — drawn, invisible, no error. The
+  "blog tree is painted on screen" test guards it. Reduced motion: the
+  whole tree at once; a theme flip repaints, it does not regrow.
+- **Theme reveal** — `toggleTheme(event)` runs the swap inside a View
+  Transition and grows a clip-path circle with Vuetify 4's values, as on the
+  old site: `circle(0% → 150%)`, 500ms ease-in-out. The origin is the
+  viewport CORNER nearest the click (the button centre for a keyboard
+  press): the old toggle sat in the corner, so the theme swept corner to
+  corner along the diagonal; the click point itself reads as a blob. The CSS colour fades (`--theme-fade`) are disabled
+  during it. No View Transitions or reduced motion: a plain swap.
 
-**Never call gsap directly in a component.** Use `useMotion(rootRef, build)`
-([app/composables/useMotion.ts](app/composables/useMotion.ts)). It wraps
-`gsap.matchMedia` scoped to the component root and guarantees three things
-CSS and raw GSAP cannot:
+Content once ended up in the DOM but invisible: a reveal rested it at
+opacity 0 and never fired. The scroll reveal is built so that cannot recur;
+keep these invariants:
 
-1. **Reduced motion is honoured.** The CSS `prefers-reduced-motion` block
-   cannot stop GSAP — GSAP writes inline styles from JS and ignores
-   `animation-duration: 0`. `build` receives `{ motion }`; when it is false,
-   reveal the final state and return.
-2. **Selectors are scoped** to the root — `.card` never reaches another
-   instance.
-3. **Everything reverts on unmount** (tweens, ScrollTriggers, SplitText).
-   Verified: 0 MB heap growth over 48 navigations.
+- **The server renders nothing hidden** (`getSSRProps` is empty). Without
+  JS, or before hydration, every page is complete.
+- **Only what is still below the viewport is hidden**, on mount. Never hide
+  content already on screen (it would flicker) — this is why the hero and
+  page intros have no reveal.
+- **The observer's root extends far above the viewport**, so content
+  scrolled past or jumped over (anchor, End key, restored scroll) counts as
+  seen. It fires on entry, not at 85%: something in the last 15% of a page
+  could never reach that line.
+- **A stagger container also handles children added after mount**: data
+  fetched on client navigation arrives later (the /en redirect does this).
+- **`.lines` splits a CLONE of the title.** SplitText's `revert()` rebuilds
+  children from innerHTML, which would orphan the nodes Vue patches; the
+  originals are put back once the lines have risen.
+- **Duration tokens are read with their unit**: the CSS minifier rewrites
+  `900ms` as `.9s`.
+- **Never animate a `.cells` child**: its hairlines are the `--rule`
+  background showing through the gap, and a hidden cell leaves a solid
+  block. Reveal the whole grid.
 
-`build` also receives `{ mobile, tablet, desktop }`. **These breakpoints are
-exhaustive on purpose** — `gsap.matchMedia` only invokes the callback when a
-condition matches, so a gap would leave a component un-initialised at some
-width under reduced motion (this shipped once: the hero counter froze at 0).
-
-### Timings live in one file
-
-Durations, eases, staggers and distances are in
-[app/config/motion.ts](app/config/motion.ts). Import them; never hardcode a
-duration or ease in a component. The system's motion is **short and decisive —
-no bounce or elastic**, which would fight the "engineered" identity.
-
-### SSR / no-JS / flash
-
-Reveal targets rest at `opacity: 0` in CSS, guarded by `html.js` (added by the
-inline head script) so they fall back to visible without JS. `gsap.from`
-reads the *current* value as the END state — when an element rests at
-`opacity: 0`, use `fromTo` (or `gsap.to`), never `from`, or it animates 0→0.
-When clearing props after a reveal, clear `transform` only: clearing `opacity`
-drops the element back to its CSS resting `0`.
-
-### What is animated, and what is deliberately not
-
-- **Hero**: orchestrated timeline; the display title does a masked line reveal
-  (SplitText, desktop/tablet only — line splitting is recomputed on resize and
-  not worth it on mobile). SplitText is registered globally (it is on the
-  landing page).
-- **Section openers** (`UiSectionHeader`): self-animating — eyebrow fade +
-  masked title reveal. **Do not wrap them in `UiRevealBlock`** — it doubles
-  the entrance.
-- **`UiRevealBlock`**: scroll reveal. GSAP owns the tween; an
-  **IntersectionObserver** owns the trigger (not ScrollTrigger). A `once`
-  ScrollTrigger caches its start in scroll pixels at creation, so a large
-  programmatic jump arriving before its first update can leave the trigger
-  un-fired forever — and a reveal that never fires is not a missing
-  animation, it is content stuck at the CSS resting `opacity: 0`: in the DOM,
-  indexed, invisible, no console error. The observer's `rootMargin`
-  (`SCROLL_START_MARGIN`) carries a deliberately huge **top** value so an
-  element that ends up *above* the viewport (scroll-to-bottom, restored
-  position, in-page anchor) still counts as entered. Don't shrink it.
-  - Corollary for tests: `scroll-behavior: smooth` is set site-wide in
-    main.scss, so a bare `window.scrollTo(0, …)` animates and can be dropped
-    under load. E2E scroll jumps use `behavior: "instant"` on purpose.
-- **Page transitions**: GSAP JS hooks on `<NuxtPage :transition>` in
-  [app/app.vue](app/app.vue) (`css: false`). The hooks MUST call `done()` on
-  every path, including reduced motion, or navigation hangs.
-- **Nav scroll state, logo draw, infinity SVG, hover states**: kept as CSS —
-  GSAP would add no value. Do not "upgrade" working CSS transitions to GSAP.
-
-### Verifying motion changes
-
-`yarn test:e2e` includes `tests/e2e/motion.spec.ts`, which asserts reduced
-motion reveals everything, the hero counter reaches its value, navigation
-never blocks — all silent
-failure modes. Always test **desktop AND mobile, motion AND reduced-motion**;
-several bugs here only appeared in one specific combination.
-
-## Design reference
-
-[DESIGN.md](DESIGN.md) is the source design-system spec (colors, typography,
-spacing, tokens). Consult it before changing layout, colour, or typographic
-styling — but read the "Documented departures" section above first: it is an
-extraction of a photography-led marketing site, and four of its rules do not
-transfer to this portfolio.
+The "no content is left invisible" test jumps to the bottom of every page in
+both motion modes; "without JavaScript" checks the SSR output.
 
 ## Avoiding regressions
 
-There is no test suite, so verification is manual and must be **measured, not
-eyeballed**. Before considering a visual change done:
+Verification is measured, not eyeballed:
 
 ```bash
-yarn typecheck                      # must stay at the 10-error baseline
-yarn generate                       # must stay at 30 prerendered HTML routes
-npx serve .output/public -l 4173    # then check the built output, not just dev
+yarn typecheck                      # zero errors
+yarn generate                       # check the prerendered route count
+yarn test:e2e                       # against the static build
 ```
 
-Then, in the browser:
-
-- Check **both themes**. Toggle, and also **reload** — restore-on-load and
-  toggle are different code paths, and only one of them was broken last time.
-- Check **390 / 768 / 1440**. Confirm `document.documentElement.scrollWidth`
-  does not exceed `clientWidth` (no horizontal overflow).
-- **Measure computed colours** on anything you restyled
-  (`getComputedStyle(el).color` vs its resolved background). Monochrome UIs
-  fail quietly: near-black text on black looks like empty space, not like a
-  bug. Three separate contrast bugs in this codebase were found this way and
-  none of them produced a console error.
-- Confirm the **route count is unchanged** — nav changes can break Nitro's
-  `crawlLinks` discovery.
-
-A silent failure is the default failure mode in this stack. An empty console
-proves nothing.
+Then check the built output in both themes (toggle **and** reload), at
+390 / 768 / 1440, with `document.documentElement.scrollWidth <= clientWidth`.
+A silent failure is the default failure mode here: an empty console proves
+nothing.
 
 ## Notes
 

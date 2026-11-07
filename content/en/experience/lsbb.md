@@ -5,6 +5,8 @@ role: "Research Engineer & Back-End Developer"
 company: "LSBB & Avignon University"
 sector: "Research"
 period: "April 2018 — September 2021"
+start: 2018.25
+end: 2021.67
 location: "Avignon, France & Edinburgh, United Kingdom"
 flag: "🇫🇷 & 🇬🇧"
 tags:

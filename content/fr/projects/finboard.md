@@ -18,6 +18,25 @@ highlights:
   - "Shell de tableau de bord et API REST versionnée (/api/v1)"
   - "Modèle de données commun : identifiants UUID, horodatages UTC, migrations réversibles"
   - "Chaîne qualité complète et bloquante (lint, typage strict, tests) en CI"
+# Chiffres relevés dans le dépôt (2026-11-06) : 42 routes d'API, 5
+# migrations Alembic (chacune avec un downgrade), 56 tests pytest + 24 Vitest
+# + 7 Playwright, seuils de couverture CI : API 90 %, front 80 % (branches 70 %).
+story:
+  problem:
+    title: "Des fondations avant les fonctionnalités"
+  constraints:
+    title: "Ajouter des domaines sans toucher au socle"
+    text: "Un SaaS financier pour PME s’enrichit domaine après domaine — finance, imports, factures, alertes, rapports. Chaque ajout doit se brancher sur l’existant sans le réécrire, et sans laisser la qualité se dégrader au fil des livraisons."
+  approach:
+    title: "Un monolithe modulaire, une chaîne qualité bloquante"
+  result:
+    title: "Les domaines métier, branchés sur le socle"
+    text: "Sur ce socle, les domaines métier sont venus s’ajouter un à un, chacun avec ses routes, son service et son repository."
+    points:
+      - "42 routes d’API réparties en sept domaines métier : authentification, finance, imports CSV/XLSX, factures, alertes, rapports, recherche"
+      - "5 migrations de schéma, chacune réversible"
+      - "87 tests automatisés : 56 côté API, 24 tests unitaires front, 7 parcours de bout en bout"
+      - "Couverture minimale bloquante en CI : 90 % sur l’API, 80 % sur le front"
 tags: ["FastAPI","Vue 3","TypeScript","PostgreSQL","SQLAlchemy"]
 
 cover:

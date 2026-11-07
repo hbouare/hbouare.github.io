@@ -1,48 +1,124 @@
 // app/composables/useAppTheme.ts
-import { useTheme } from 'vuetify'
+//
+// Theme = the `data-theme` attribute on <html>. Everything visual keys off it
+// in CSS (tokens.css), and the inline head script (nuxt.config.ts) sets it
+// before first paint — so SSR never needs to know the theme and there is no
+// flash to hide.
+//
+// One-way flow: `theme` state → single watcher → DOM. Change the theme only
+// through toggleTheme()/syncTheme(); never write data-theme by hand.
+//
+// Rules:
+// - Default = OS preference. Only an explicit toggle is persisted, so until
+//   the visitor chooses, a later OS change still applies.
+// - Anything that must show the current theme in markup (the toggle label)
+//   is switched in CSS on data-theme, not rendered from this state — the
+//   server-rendered HTML cannot know the theme, CSS can.
 
-const STORAGE_KEY = 'portfolio-theme'
+const STORAGE_KEY = "portfolio-theme"
+
+export type ThemeName = "light" | "dark"
+
+const readSaved = (): ThemeName | null => {
+  try {
+    const v = localStorage.getItem(STORAGE_KEY)
+    return v === "light" || v === "dark" ? v : null
+  } catch {
+    return null
+  }
+}
+
+const osPreference = (): ThemeName =>
+  window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
 
 export const useAppTheme = () => {
-  const theme = useTheme()
-  const isDark = computed(() => theme.current.value.dark)
+  // null until the client syncs: the server does not know the theme.
+  const theme = useState<ThemeName | null>("app-theme", () => null)
+  const isDark = computed(() => theme.value === "dark")
 
-  // ── Single reactive watcher: Vuetify theme name → DOM + localStorage ──
-  // Every theme change flows through here, no matter the source. Keep this
-  // one-way: change the theme through Vuetify (`change`/`toggle`) and let
-  // the watcher mirror it outwards. Never write data-theme directly.
-  //
-  // Deliberately NOT immediate. At setup the name is still the SSR default
-  // ('dark'), so an immediate run would write 'dark' to localStorage and
-  // destroy a saved 'light' preference before syncTheme() gets to read it.
-  if (import.meta.client) {
-    watch(
-      () => theme.name.value,
-      (name) => {
-        localStorage.setItem(STORAGE_KEY, name)
-        document.documentElement.setAttribute('data-theme', name)
-        document.documentElement.style.colorScheme = name
-      },
-    )
+  /** Re-read the saved choice, else the OS preference. Client only. */
+  const syncTheme = () => {
+    theme.value = readSaved() ?? osPreference()
   }
 
   /**
-   * Toggle dark ↔ light.
-   *
-   * Vuetify 4 owns the View Transition: `setTransitionOrigin` anchors the
-   * clip-path reveal to the click point and `toggle(..., true)` runs the
-   * swap inside the transition. Passing no event still works — the reveal
-   * just falls back to the framework default origin.
+   * Flip the theme. Given the click, the new theme is revealed as a circle
+   * growing from the click point (View Transition, the pre-refonte effect);
+   * without View Transitions or under reduced motion it simply swaps.
    */
-  const toggleTheme = (event?: MouseEvent | PointerEvent) => {
-    if (event) theme.setTransitionOrigin(event as PointerEvent)
-    return theme.toggle(['dark', 'light'], true)
+  const toggleTheme = (event?: MouseEvent) => {
+    // Before the first sync, the attribute set by the head script is the truth.
+    const current =
+      theme.value ?? (document.documentElement.getAttribute("data-theme") as ThemeName | null)
+    const next: ThemeName = current === "dark" ? "light" : "dark"
+    const apply = () => {
+      theme.value = next
+      try {
+        localStorage.setItem(STORAGE_KEY, next)
+      } catch {
+        // Storage unavailable (private mode): the choice lasts the session.
+      }
+    }
+
+    if (
+      !document.startViewTransition ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      apply()
+      return
+    }
+
+    // A keyboard "click" has no pointer position (detail 0): start from the
+    // centre of the button instead.
+    let x = window.innerWidth / 2
+    let y = window.innerHeight / 2
+    if (event && event.detail > 0) {
+      x = event.clientX
+      y = event.clientY
+    } else if (event?.currentTarget instanceof Element) {
+      const r = event.currentTarget.getBoundingClientRect()
+      x = r.left + r.width / 2
+      y = r.top + r.height / 2
+    }
+    // Vuetify 4's values, as on the pre-refonte site: radius 0% → 150% (of
+    // the viewport's diagonal / √2), 500ms ease-in-out. There the toggle sat
+    // in the very corner (95.5% 4.5%), so the new theme swept corner to
+    // corner along the diagonal. Here the toggle is further in, so the
+    // origin snaps to the viewport corner nearest the click: from a corner,
+    // 150% ends just past the opposite one.
+    const at = `${x < window.innerWidth / 2 ? 0 : 100}% ${y < window.innerHeight / 2 ? 0 : 100}%`
+
+    // The callback must leave the DOM in the new theme: wait for the
+    // theme → DOM watcher to flush.
+    const transition = document.startViewTransition(async () => {
+      apply()
+      await nextTick()
+    })
+    transition.ready
+      .then(() => {
+        document.documentElement.animate(
+          { clipPath: [`circle(0% at ${at})`, `circle(150% at ${at})`] },
+          { duration: 500, easing: "ease-in-out", pseudoElement: "::view-transition-new(root)" },
+        )
+      })
+      .catch(() => {
+        // Transition skipped: the theme is applied all the same.
+      })
   }
 
-  /** Re-sync Vuetify from localStorage (bfcache / tab restore / other tab). */
-  const syncTheme = () => {
-    theme.change(localStorage.getItem(STORAGE_KEY) || 'dark')
-  }
+  return { theme, isDark, toggleTheme, syncTheme }
+}
 
-  return { isDark, toggleTheme, syncTheme }
+/**
+ * Installs the single theme → DOM watcher. Called once, from app.vue.
+ */
+export const useThemeDomSync = () => {
+  const { theme } = useAppTheme()
+  if (import.meta.client) {
+    watch(theme, (name) => {
+      if (!name) return
+      document.documentElement.setAttribute("data-theme", name)
+      document.documentElement.style.colorScheme = name
+    })
+  }
 }

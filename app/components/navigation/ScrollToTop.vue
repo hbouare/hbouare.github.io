@@ -1,42 +1,92 @@
+<!-- app/components/navigation/ScrollToTop.vue -->
+<!--
+  "Back to top", restored from master: a round button, bottom right, shown
+  once the page is scrolled past 400px. No scroll listener: an observer
+  watches a 400px sentinel at the top of the page. Hidden with visibility,
+  so it also leaves the tab order. Focus moves to <main> on use, since the
+  button disappears under the pointer.
+-->
 <template>
-  <v-btn
-    v-show="visible"
-    class="scroll-to-top"
-    icon="mdi-arrow-up"
-    variant="outlined"
-    rounded="circle"
-    size="small"
+  <div ref="sentinel" class="stt-sentinel" aria-hidden="true" />
+  <button
+    type="button"
+    class="stt"
+    :class="{ 'is-shown': shown }"
     :aria-label="$t('nav.scroll_top')"
-    @click="scrollToTop"
-  />
+    @click="toTop"
+  >
+    <span aria-hidden="true">↑</span>
+  </button>
 </template>
 
 <script setup lang="ts">
-const visible = ref(false)
+const sentinel = ref<HTMLElement | null>(null)
+const shown = ref(false)
 
-function onScroll() {
-  visible.value = window.scrollY > 400
+let observer: IntersectionObserver | undefined
+onMounted(() => {
+  if (!sentinel.value || typeof IntersectionObserver === "undefined") return
+  observer = new IntersectionObserver(([entry]) => {
+    shown.value = !entry?.isIntersecting
+  })
+  observer.observe(sentinel.value)
+})
+onBeforeUnmount(() => observer?.disconnect())
+
+const toTop = () => {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" })
+  document.getElementById("main")?.focus({ preventScroll: true })
 }
-
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: "smooth" })
-}
-
-onMounted(() => window.addEventListener("scroll", onScroll))
-onUnmounted(() => window.removeEventListener("scroll", onScroll))
 </script>
 
-<style scoped lang="scss">
-.scroll-to-top {
+<style scoped>
+.stt-sentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 400px;
+  pointer-events: none;
+}
+
+.stt {
   position: fixed;
-  bottom: 32px;
-  right: 32px;
-  z-index: 1000;
-  opacity: 0.85;
-  transition: opacity 0.3s, transform 0.3s;
-  &:hover {
-    opacity: 1;
-    transform: translateY(-2px);
+  right: var(--gutter);
+  bottom: 24px;
+  z-index: 15;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-family: var(--f-mono);
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out),
+    visibility 0.3s,
+    border-color 0.2s;
+}
+.stt.is-shown {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.stt:hover {
+  border-color: var(--ink);
+}
+
+@media print {
+  .stt {
+    display: none;
   }
 }
 </style>

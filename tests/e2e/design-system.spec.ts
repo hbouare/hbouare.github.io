@@ -47,60 +47,119 @@ async function colorsOf(page: Page, selector: string) {
   }, selector)
 }
 
-const themeClass = (page: Page) =>
-  page.locator(".v-application").getAttribute("class")
+/** The theme as the page actually paints it: attribute AND body colour. */
+async function paintedTheme(page: Page) {
+  return page.evaluate(() => ({
+    attr: document.documentElement.getAttribute("data-theme"),
+    bg: getComputedStyle(document.body).backgroundColor,
+  }))
+}
+const BG = { light: "rgb(243, 240, 232)", dark: "rgb(19, 18, 15)" } as const
+
+/** Clicks the visible theme toggle (inside the menu panel on mobile). */
+async function toggleTheme(page: Page) {
+  await page.waitForSelector("html.hydrated")
+  const menu = page.locator("button.menu-toggle")
+  if (await menu.isVisible()) await menu.click()
+  await page.locator("button.theme-toggle:visible").first().click()
+}
 
 test.describe("theme", () => {
-  // Guards the bug where Vuetify 4 made theme.global.name read-only: the DOM
-  // went light (data-theme, body background) while .v-application stayed
-  // v-theme--dark. Assert on the Vuetify class, not on data-theme.
-  test("toggle switches the Vuetify theme, not just the DOM attribute", async ({
-    page,
-  }) => {
+  // With no saved choice, the OS preference decides — and is NOT persisted,
+  // so a later OS change still applies.
+  for (const scheme of ["light", "dark"] as const) {
+    test(`defaults to prefers-color-scheme: ${scheme}`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme })
+      await page.goto("/")
+      await page.waitForSelector("html.hydrated")
+      expect(await paintedTheme(page)).toEqual({ attr: scheme, bg: BG[scheme] })
+      expect(
+        await page.evaluate(() => localStorage.getItem("portfolio-theme")),
+      ).toBeNull()
+    })
+  }
+
+  // The head script must set the theme BEFORE first paint. If it breaks
+  // (a syntax error once did), the page still ends up right after hydration,
+  // so every other theme test passes — but each dark visit fades in from
+  // light. Read the attribute at DOMContentLoaded, before any app code.
+  test("theme is set before first paint", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "dark" })
+    await page.addInitScript(() => {
+      document.addEventListener("DOMContentLoaded", () => {
+        ;(window as unknown as { __dclTheme?: string | null }).__dclTheme =
+          document.documentElement.getAttribute("data-theme")
+      })
+    })
     await page.goto("/")
-    expect(await themeClass(page)).toContain("v-theme--dark")
+    expect(
+      await page.evaluate(() => (window as unknown as { __dclTheme?: string | null }).__dclTheme),
+    ).toBe("dark")
+  })
 
-    await page.locator("button.theme-toggle").first().click()
-    await expect(page.locator(".v-application")).toHaveClass(/v-theme--light/)
-
-    // All three layers must agree — the failure mode was them diverging.
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light")
+  // The failure this guards shipped twice under Vuetify: the attribute said
+  // one theme while the page painted the other. Assert on the painted colour
+  // as well as the attribute, and on the persisted choice.
+  test("toggle repaints the page and persists the choice", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "light" })
+    await page.goto("/")
+    await toggleTheme(page)
+    await expect
+      .poll(() => paintedTheme(page))
+      .toEqual({ attr: "dark", bg: BG.dark })
     expect(
       await page.evaluate(() => localStorage.getItem("portfolio-theme")),
-    ).toBe("light")
+    ).toBe("dark")
   })
 
+  // Restore-on-load and toggle are different code paths.
   test("theme survives a reload", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "light" })
     await page.goto("/")
-    await page.locator("button.theme-toggle").first().click()
-    await expect(page.locator(".v-application")).toHaveClass(/v-theme--light/)
-
+    await toggleTheme(page)
+    await expect.poll(async () => (await paintedTheme(page)).attr).toBe("dark")
     await page.reload()
-    await expect(page.locator(".v-application")).toHaveClass(/v-theme--light/)
+    await page.waitForSelector("html.hydrated")
+    expect(await paintedTheme(page)).toEqual({ attr: "dark", bg: BG.dark })
   })
-})
 
-test.describe("vuetify integration", () => {
-  // Guards the missing `import 'vuetify/styles'`, which silently turned every
-  // utility class into a no-op while the templates still referenced them.
-  test("utility classes are actually applied", async ({ page }) => {
+  // The toggle label is switched in CSS on data-theme (the server cannot know
+  // the theme): exactly one label must show, and it must name the OTHER theme.
+  test("toggle label names the other theme", async ({ page, isMobile }) => {
+    test.skip(isMobile, "desktop toggle")
+    for (const scheme of ["light", "dark"] as const) {
+      await page.emulateMedia({ colorScheme: scheme })
+      await page.goto("/")
+      // Exactly one label is displayed (CSS on data-theme); read its visible
+      // word. Locale-neutral: desktop Chrome lands on /en.
+      const shown = page.locator(".desk-tools button.theme-toggle .theme-label:visible > [aria-hidden]")
+      await expect(shown).toHaveCount(1)
+      await expect(shown).toHaveText(scheme === "light" ? /^(Sombre|Dark)$/ : /^(Clair|Light)$/)
+    }
+  })
+
+  // The label once changed the toggle's width ("Sombre" 69px, "Clair" 62px):
+  // the header re-centred on every toggle and shook on repeated ones.
+  test("toggling the theme does not move the header", async ({ page, isMobile }) => {
+    test.skip(isMobile, "desktop header")
     await page.goto("/")
-    const applied = await page.evaluate(() => {
-      const probe = document.createElement("div")
-      probe.className = "d-flex mb-6 ga-4"
-      document.body.appendChild(probe)
-      const s = getComputedStyle(probe)
-      const result = {
-        display: s.display,
-        marginBottom: s.marginBottom,
-        gap: s.gap,
-      }
-      probe.remove()
-      return result
-    })
-    expect(applied.display).toBe("flex")
-    expect(applied.marginBottom).not.toBe("0px")
-    expect(applied.gap).not.toBe("normal")
+    await page.waitForSelector("html.hydrated")
+    const layout = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll(".bar a, .bar button")]
+          .filter((el) => el.getClientRects().length)
+          .map((el) => {
+            const r = el.getBoundingClientRect()
+            return `${r.left.toFixed(1)}/${r.width.toFixed(1)}`
+          }),
+      )
+    const before = await layout()
+    const { attr } = await paintedTheme(page)
+    await toggleTheme(page)
+    await expect.poll(async () => (await paintedTheme(page)).attr).not.toBe(attr)
+    // Past the theme reveal and the colour fades.
+    await page.waitForTimeout(600)
+    expect(await layout()).toEqual(before)
   })
 })
 
@@ -116,20 +175,22 @@ test.describe("contrast", () => {
       await page.goto("/")
       await page.evaluate((t) => localStorage.setItem("portfolio-theme", t), theme)
       await page.reload()
-      // Generous timeout: the whole suite runs parallel against one static
-      // server, so hydration can lag well past the 5s default.
-      await expect(page.locator(".v-application")).toHaveClass(
-        new RegExp(`v-theme--${theme}`),
-        { timeout: 20_000 },
-      )
+      await expect(page.locator("html")).toHaveAttribute("data-theme", theme)
 
       for (const sel of [
-        ".type-display-xxl",
+        ".hero-title",
+        ".hero-title .em-accent",
         ".hero-subtitle",
-        ".v-btn",
-        ".stat-number",
-        ".ui-eyebrow",
+        ".btn--primary",
+        ".figure-value",
+        ".eyebrow",
+        ".exp-role",
+        ".cta-band .cta-text",
+        ".cta-band .btn--inverse",
       ]) {
+        // After the client redirect to /en, the experience rows arrive with
+        // their data, after the page itself.
+        await page.locator(sel).first().waitFor({ state: "attached" })
         const { fg, bg } = await colorsOf(page, sel)
         expect(contrast(fg, bg), `${sel} in ${theme}`).toBeGreaterThanOrEqual(4.5)
       }
@@ -150,13 +211,13 @@ test.describe("layout", () => {
     }
   })
 
-  // The display tier must stair-step from the :root tokens, not from
-  // per-component breakpoints.
+  // The hero display size is a fluid token (--fs-hero, clamp 46→132px);
+  // it must reach its floor on a phone, not stay at desktop size.
   test("display tier scales down on mobile", async ({ page, isMobile }) => {
     test.skip(!isMobile, "mobile-only assertion")
     await page.goto("/")
     const size = await page
-      .locator(".type-display-xxl")
+      .locator(".hero-title")
       .first()
       .evaluate((el) => parseInt(getComputedStyle(el).fontSize))
     expect(size).toBeLessThanOrEqual(60)
@@ -181,7 +242,7 @@ test.describe("routes", () => {
     test(`${path} renders`, async ({ page }) => {
       const res = await page.goto(path)
       expect(res?.status()).toBe(200)
-      await expect(page.locator(".v-application")).toBeVisible()
+      await expect(page.locator("main h1")).toBeVisible()
     })
   }
 })
@@ -220,18 +281,19 @@ test.describe("research", () => {
 })
 
 test.describe("accessibility", () => {
-  // Both icon-only toggles shipped with no accessible name at all.
-  test("theme toggle has an accessible name", async ({ page }) => {
+  // The toggle once shipped with no accessible name at all. Its name must
+  // say what it does, and contain the visible word (label-in-name).
+  test("theme toggle has an accessible name", async ({ page, isMobile }) => {
+    test.skip(isMobile, "desktop toggle")
+    await page.emulateMedia({ colorScheme: "light" })
     await page.goto("/")
-    const label = await page
-      .locator("button.theme-toggle")
-      .first()
-      .getAttribute("aria-label")
-    expect(label, "theme-toggle needs an aria-label").toBeTruthy()
+    await expect(page.locator(".desk-tools button.theme-toggle")).toHaveAccessibleName(
+      /^(Passer en mode sombre|Switch to dark mode)$/,
+    )
   })
 
-  // The menu button is rendered only below the md breakpoint (v-if=smAndDown),
-  // so it exists on the mobile project but not on desktop.
+  // The menu button shows below the 760px breakpoint only (CSS). Its visible
+  // "Menu"/"Fermer" text is its accessible name.
   test("menu button has an accessible name where it renders", async ({
     page,
     isMobile,
@@ -240,10 +302,13 @@ test.describe("accessibility", () => {
     const menu = page.locator("button.menu-toggle")
     if (isMobile) {
       await expect(menu).toBeVisible()
-      expect(await menu.getAttribute("aria-label")).toBeTruthy()
-      expect(await menu.getAttribute("aria-expanded")).toBe("false")
+      await expect(menu).toHaveAccessibleName(/\S/)
+      await expect(menu).toHaveAttribute("aria-expanded", "false")
+      await menu.click()
+      await expect(menu).toHaveAttribute("aria-expanded", "true")
+      await expect(page.locator("#mobile-menu")).toBeVisible()
     } else {
-      await expect(menu).toHaveCount(0)
+      await expect(menu).toBeHidden()
     }
   })
 })
@@ -285,5 +350,151 @@ test.describe("projects", () => {
     const hasWayForward =
       (await contactCta.count()) > 0 || (await publicLink.count()) > 0
     expect(hasWayForward, "case study must offer a way forward").toBe(true)
+  })
+})
+
+test.describe("home", () => {
+  // The count-up must never ship "0": SSR renders the final values, so a
+  // crawler or a no-JS reader sees the real figures.
+  test("key figures are prerendered with their final values", async ({
+    request,
+  }) => {
+    const html = await (await request.get("/")).text()
+    expect(html).toMatch(/class="figure-value[^"]*"[^>]*>8\+</)
+  })
+
+  test("experience lists every engagement with its timeline bar", async ({
+    page,
+  }) => {
+    await page.goto("/")
+    const rows = page.locator(".exp-row")
+    await expect(rows).toHaveCount(6)
+    // The bar is positioned in % of the 2018→2026 axis; an empty style means
+    // the start/end frontmatter did not reach the page.
+    for (let i = 0; i < 6; i++) {
+      await expect(rows.nth(i).locator(".exp-bar")).toHaveAttribute(
+        "style",
+        /left:\s*[\d.]+%.*width:\s*[\d.]+%/,
+      )
+    }
+    await expect(page.locator(".exp-current")).toHaveCount(1)
+  })
+
+  // A blank canvas is the silent failure here: the field must actually paint,
+  // with motion and as a still frame under reduced motion.
+  for (const motion of ["no-preference", "reduce"] as const) {
+    test(`wave field paints (${motion})`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: motion })
+      await page.goto("/")
+      const canvas = page.locator("canvas.wave-field")
+      await expect(canvas).toBeAttached({ timeout: 10_000 })
+      await expect
+        .poll(
+          () =>
+            canvas.evaluate((c: HTMLCanvasElement) => {
+              const ctx = c.getContext("2d")
+              if (!ctx || !c.width) return 0
+              const d = ctx.getImageData(0, 0, c.width, c.height).data
+              let n = 0
+              for (let i = 3; i < d.length; i += 4) if (d[i]) n++
+              return n
+            }),
+          { timeout: 10_000 },
+        )
+        .toBeGreaterThan(1000)
+    })
+  }
+
+  // Active state follows the section: a case study lights up Projects.
+  test("nav marks the current section", async ({ page, isMobile }) => {
+    test.skip(isMobile, "desktop nav only")
+    await page.goto("/projects/fleetops")
+    const active = page.locator(".desk-nav .nav-link.is-active")
+    await expect(active).toHaveCount(1)
+    await expect(active).toHaveAttribute("href", "/projects")
+  })
+})
+
+test.describe("case studies", () => {
+  const slugs = ["fleetops", "finboard", "luckydraw", "securevault"]
+
+  // Story fields still holding a TODO placeholder must be dropped at render,
+  // never shown as content.
+  for (const slug of slugs) {
+    test(`${slug} renders no TODO placeholder`, async ({ page }) => {
+      await page.goto(`/projects/${slug}`)
+      await expect(page.locator(".case-article")).toBeVisible()
+      expect(await page.locator("main").innerText()).not.toMatch(/TODO/i)
+    })
+  }
+
+  // Lazy images only load once scrolled to; walk the page, then every shot
+  // must have decoded (a wrong path is otherwise an empty grey box).
+  test("every screenshot loads", async ({ page }) => {
+    await page.goto("/projects/fleetops")
+    const height = await page.evaluate(() => document.body.scrollHeight)
+    for (let y = 0; y < height; y += 600) {
+      await page.evaluate((top) => window.scrollTo({ top, behavior: "instant" }), y)
+    }
+    await page.waitForLoadState("networkidle")
+    const broken = await page.$$eval(".shot", (imgs) =>
+      (imgs as HTMLImageElement[]).filter((i) => !i.naturalWidth).map((i) => i.src),
+    )
+    expect(broken).toEqual([])
+  })
+})
+
+test.describe("blog", () => {
+  // Every post is in the prerendered list (crawlable); a chip only narrows it.
+  test("topic chips filter the list", async ({ page }) => {
+    await page.goto("/blog")
+    const rows = page.locator(".blog-card")
+    const all = await rows.count()
+    expect(all).toBe(9)
+    const chip = page.locator(".chip", { hasText: "TypeScript" })
+    await chip.click()
+    await expect(chip).toHaveAttribute("aria-pressed", "true")
+    const filtered = await rows.count()
+    expect(filtered).toBeGreaterThan(0)
+    expect(filtered).toBeLessThan(all)
+  })
+
+  // The contents list comes from the build-time TOC, so it is in the HTML.
+  test("article contents are prerendered", async ({ request }) => {
+    const html = await (await request.get("/blog/fastapi-architecture")).text()
+    expect(html).toMatch(/class="art-toc"/)
+    expect(html).toMatch(/href="#[a-z0-9-]+"/)
+  })
+})
+
+test.describe("contact", () => {
+  test("form relies on native validation and toggles topics", async ({ page }) => {
+    await page.goto("/contact")
+    await expect(page.locator('input[name="name"]')).toHaveAttribute("required", "")
+    await expect(page.locator('input[name="email"]')).toHaveAttribute("type", "email")
+    await expect(page.locator('textarea[name="message"]')).toHaveAttribute("required", "")
+    const topic = page.locator(".topic").first()
+    await expect(topic).toHaveAttribute("aria-pressed", "false")
+    await topic.click()
+    await expect(topic).toHaveAttribute("aria-pressed", "true")
+    // No CTA band on the destination page itself.
+    await expect(page.locator(".cta-band")).toHaveCount(0)
+  })
+})
+
+test.describe("back to top", () => {
+  // Hidden at the top (and out of the tab order), shown once scrolled,
+  // and it must actually bring the page back up.
+  test("appears after scrolling and returns to the top", async ({ page }) => {
+    await page.goto("/research")
+    await page.waitForSelector("html.hydrated")
+    const button = page.locator("button.stt")
+    await expect(button).toBeHidden()
+    await page.evaluate(() => window.scrollTo({ top: 1200, behavior: "instant" }))
+    await expect(button).toBeVisible()
+    await expect(button).toHaveAccessibleName(/.+/)
+    await button.click()
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+    await expect(button).toBeHidden()
   })
 })

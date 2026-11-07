@@ -17,8 +17,7 @@ export default defineConfig({
 
   // Tests run against the STATIC BUILD, not the dev server. Several of the
   // bugs these tests guard against only appeared in production output —
-  // notably Vuetify's deprecation warnings being stripped from prod builds,
-  // which is what made the broken theme fail silently.
+  // e.g. the pre-paint theme script, which only runs in the generated HTML.
   webServer: {
     command: "npx serve .output/public -l " + PORT,
     url: BASE_URL,

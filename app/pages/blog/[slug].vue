@@ -1,82 +1,101 @@
 <!-- app/pages/blog/[slug].vue -->
+<!--
+  Article. The contents list comes from Nuxt Content's build-time TOC (the
+  H2s), so it is in the prerendered HTML, not built after hydration. The
+  first paragraph is set as the standfirst. Next article = the next older
+  post, wrapping round.
+-->
 <template>
-  <div class="blog-layout">
-    <!-- Main content -->
-    <div class="blog-main">
-      <v-container class="px-6 px-md-10" fluid >
-        <div class="section-v-pad">
-          <UiRevealBlock>
-            <NuxtLink
-              :to="localePath('/blog')"
-              class="back-link type-micro-cap text-muted"
-            >
-              <v-icon size="14" class="mr-1">mdi-arrow-left</v-icon>
-              {{ $t("blog.view_all") }}
-            </NuxtLink>
-          </UiRevealBlock>
+  <div v-if="post">
+    <ClientOnly>
+      <LazyUiPlumField />
+    </ClientOnly>
 
-          <!-- Skeleton while loading -->
-          <div v-if="!post && !postError" class="py-8">
-            <v-skeleton-loader type="heading" class="mb-6" />
-            <v-skeleton-loader type="paragraph" class="mb-4" />
-            <v-skeleton-loader type="paragraph" class="mb-4" />
-            <v-skeleton-loader type="paragraph" />
-          </div>
+    <section class="art-head gutter">
+      <NuxtLink :to="localePath('/blog')" class="back-link">← {{ $t("blog.view_all") }}</NuxtLink>
+      <div class="art-meta">
+        <time :datetime="post.date">{{ formatDate(post.date) }}</time>
+        <span aria-hidden="true">·</span>
+        <span>{{ post.readTime }} {{ $t("blog.min_read") }}</span>
+      </div>
+      <h1 class="t-h1 art-title">{{ post.title }}</h1>
+      <ul class="art-tags" role="list">
+        <li v-for="tag in post.tags" :key="tag" class="tag">{{ tag }}</li>
+      </ul>
+    </section>
 
-          <div v-if="post">
-            <UiRevealBlock>
-              <div class="d-flex align-center ga-3 mb-6 flex-wrap">
-                <span class="type-micro-cap text-muted">{{
-                  formatDate(post.date)
-                }}</span>
-                <span class="type-micro-cap text-muted">·</span>
-                <span class="type-micro-cap text-muted"
-                  >{{ post.readTime }} {{ $t("blog.min_read") }}</span
-                >
-              </div>
+    <div class="art-body gutter">
+      <aside v-if="toc.length" class="art-aside">
+        <nav class="art-toc" :aria-label="$t('blog.toc')">
+          <div class="label art-toc-label">{{ $t("blog.toc") }}</div>
+          <a
+            v-for="(h, i) in toc"
+            :key="h.id"
+            :href="`#${h.id}`"
+            :class="{ 'is-active': h.id === activeId }"
+          >
+            <span class="num">{{ String(i + 1).padStart(2, "0") }}</span>
+            <span>{{ h.text }}</span>
+          </a>
+        </nav>
+      </aside>
 
-              <h1 class="post-title type-display-lg">{{ post.title }}</h1>
-
-              <div class="d-flex flex-wrap ga-1 mt-5">
-                <v-chip v-for="tag in post.tags" :key="tag" size="x-small">{{ tag }}</v-chip>
-              </div>
-            </UiRevealBlock>
-
-            <v-divider class="my-10" />
-
-            <div ref="contentRef" class="post-content">
-              <ContentRenderer :value="post" />
-            </div>
-          </div>
-
-          <div v-else-if="postError" class="text-center py-20">
-            <p class="type-body-md text-muted">{{ $t("blog.not_found") }}</p>
-          </div>
-        </div>
-      </v-container>
+      <article ref="contentRef" class="prose">
+        <ContentRenderer :value="post" />
+      </article>
     </div>
 
-    <!-- TOC sidebar (desktop only) -->
-    <aside v-if="post" class="blog-sidebar d-none d-lg-block">
-      <UiBlogToc :headings="headings" :active-id="activeId" />
-    </aside>
+    <NuxtLink
+      v-if="next"
+      :to="localePath(`/blog/${next.slug}`)"
+      class="rule-row is-interactive art-next gutter"
+    >
+      <span class="eyebrow">{{ $t("blog.next") }}</span>
+      <span class="art-next-title">{{ next.title }} →</span>
+    </NuxtLink>
+
+    <UiCtaBand
+      :title="$t('home.cta_title')"
+      :text="$t('home.cta_text')"
+      :button="$t('home.cta_button')"
+      :to="localePath('/contact')"
+    />
   </div>
+
+  <section v-else class="gutter section">
+    <p class="t-intro muted">{{ $t("blog.not_found") }}</p>
+    <NuxtLink :to="localePath('/blog')" class="link-text">← {{ $t("blog.view_all") }}</NuxtLink>
+  </section>
 </template>
 
 <script setup lang="ts">
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+const { formatDate } = useFormatDate()
 
+const slug = route.params.slug as string
 const contentRef = ref<HTMLElement | null>(null)
 
-const { data: post, error: postError } = await useAsyncData(
-  `post-${locale.value}-${route.params.slug}`,
-  () =>
-    queryCollection(`${locale.value}_blog`)
-      .where("slug", "=", route.params.slug as string)
-      .first(),
+const { data: post } = await useAsyncData(`post-${locale.value}-${slug}`, () =>
+  queryCollection(`${locale.value}_blog`).where("slug", "=", slug).first(),
 )
+
+// Siblings for the "next article" link — two fields only, not every post.
+const { data: siblings } = await useAsyncData(`blog-nav-${locale.value}`, () =>
+  queryCollection(`${locale.value}_blog`).select("slug", "title", "date").order("date", "DESC").all(),
+)
+const next = computed(() => {
+  const all = siblings.value ?? []
+  const i = all.findIndex((p) => p.slug === slug)
+  if (i < 0 || all.length < 2) return null
+  return all[(i + 1) % all.length] ?? null
+})
+
+const toc = computed(() =>
+  (post.value?.body?.toc?.links ?? []).map((l) => ({ id: l.id, text: l.text })),
+)
+const { activeId } = useTableOfContents(contentRef)
 
 if (post.value) {
   useSeoMeta({
@@ -84,6 +103,7 @@ if (post.value) {
     description: post.value.excerpt,
     ogTitle: `${post.value.title} - Hamed Bouare`,
     ogDescription: post.value.excerpt,
+    ogType: "article",
   })
 
   useJsonLd({
@@ -92,199 +112,302 @@ if (post.value) {
     headline: post.value.title,
     description: post.value.excerpt,
     datePublished: post.value.date,
-    author: {
-      "@type": "Person",
-      name: "Hamed Bouare",
-      url: "https://hamedbouare.me",
-    },
+    inLanguage: locale.value,
+    author: { "@type": "Person", name: "Hamed Bouare", url: "https://hamedbouare.me" },
   })
 }
 
-const { formatDate } = useFormatDate()
-
-// Table of contents
-const { headings, activeId } = useTableOfContents(contentRef)
-
-// Copy-to-clipboard for code blocks
-onMounted(() => {
-  nextTick(() => {
-    setupCopyButtons()
-  })
-})
+// Copy-to-clipboard on code blocks (progressive: absent without JS).
+onMounted(() => nextTick(setupCopyButtons))
 
 function setupCopyButtons() {
-  if (!contentRef.value) return
-
-  const codeBlocks = contentRef.value.querySelectorAll("pre")
-  codeBlocks.forEach((pre) => {
-    // Wrap in a relative container
+  contentRef.value?.querySelectorAll("pre").forEach((pre) => {
     const wrapper = document.createElement("div")
-    wrapper.className = "code-block-wrapper"
+    wrapper.className = "code-block"
     pre.parentNode?.insertBefore(wrapper, pre)
     wrapper.appendChild(pre)
 
     const btn = document.createElement("button")
-    btn.className = "copy-btn font-mono"
+    btn.type = "button"
+    btn.className = "copy-btn"
     btn.textContent = t("blog.copy_code")
-    btn.setAttribute("aria-label", t("blog.copy_code"))
-
     btn.addEventListener("click", async () => {
-      const code =
-        pre.querySelector("code")?.textContent ?? pre.textContent ?? ""
       try {
-        await navigator.clipboard.writeText(code)
+        await navigator.clipboard.writeText(pre.querySelector("code")?.textContent ?? pre.textContent ?? "")
         btn.textContent = t("blog.copied")
-        btn.classList.add("copy-btn--success")
-        setTimeout(() => {
-          btn.textContent = t("blog.copy_code")
-          btn.classList.remove("copy-btn--success")
-        }, 2000)
+        setTimeout(() => (btn.textContent = t("blog.copy_code")), 2000)
       } catch {
-        // Fallback silently
+        // Clipboard unavailable: the code stays selectable.
       }
     })
-
     wrapper.appendChild(btn)
   })
 }
 </script>
 
-<style scoped lang="scss">
-.blog-layout {
+<style scoped>
+.art-head {
   display: flex;
-  justify-content: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  gap: 0;
+  flex-direction: column;
+  gap: clamp(18px, 2.2vw, 28px);
+  padding-top: clamp(40px, 6vw, 88px);
+  padding-bottom: clamp(32px, 4vw, 56px);
+  border-bottom: 1px solid var(--rule);
 }
-
-.blog-main {
-  flex: 1;
-  min-width: 0;
-  // Long-form reading column. `--measure-wide` (72ch) keeps prose in the
-  // comfortable 45–75-char range and gives code blocks the classic ~80-column
-  // width, replacing the old 800px (~100 chars/line — too wide to read).
-  max-width: var(--measure-wide);
-}
-
-.blog-sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  padding-top: 12rem;
-  padding-right: 1rem;
-}
-
-// Size and tracking come from .type-micro-cap.
 .back-link {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  margin-bottom: 2rem;
-  transition: color 0.2s ease;
-
-  &:hover,
-  &:focus-visible {
-    color: rgb(var(--v-theme-on-background));
-  }
+  align-self: flex-start;
+  padding: 6px 0;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.back-link:hover {
+  color: var(--ink);
+}
+.art-meta {
+  display: flex;
+  gap: 12px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.art-title {
+  max-width: 1100px;
+  font-size: clamp(38px, 5.6vw, 80px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+.art-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-// Long-form prose. Body runs at the reading tier, not the UI tier — this
-// is the one surface where line length and leading matter most.
-.post-content {
-  font-size: var(--type-body-lg);
-  line-height: 1.8;
-  color: rgb(var(--v-theme-on-background));
+.art-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 64px;
+  padding-block: clamp(48px, 6vw, 96px);
+}
+.art-aside {
+  flex: 1 1 220px;
+}
+.art-toc {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.art-toc-label {
+  font-size: 12px;
+  padding-bottom: 10px;
+}
+.art-toc a {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
+  transition: color 0.2s;
+}
+.art-toc a:hover,
+.art-toc a.is-active {
+  color: var(--accent);
+}
+.num {
+  color: var(--accent);
+}
 
-  :deep(h2),
-  :deep(h3) {
-    font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    margin-top: 2em;
-    margin-bottom: 0.5em;
-    color: rgb(var(--v-theme-on-background));
-  }
+.art-next {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px 32px;
+  padding-block: clamp(32px, 4vw, 56px);
+}
+.art-next-title {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(24px, 3vw, 44px);
+  letter-spacing: -0.02em;
+}
 
-  // Nuxt Content wraps headings in an anchor for deep-linking; the UA
-  // underline on it must not read as a link inside the prose.
-  :deep(h2 a),
-  :deep(h3 a) {
-    text-decoration: none;
-    color: inherit;
+@media (max-width: 759.98px) {
+  .art-aside {
+    display: none;
   }
+}
+</style>
 
-  :deep(h2) {
-    font-size: var(--type-prose-h2);
-  }
-
-  :deep(h3) {
-    font-size: var(--type-title);
-  }
-
-  :deep(p) {
-    margin-bottom: 1.2em;
-    color: rgb(var(--v-theme-muted));
-  }
-
-  :deep(.code-block-wrapper) {
-    position: relative;
-    margin: 1.5em 0;
-  }
-
-  :deep(pre) {
-    background: rgb(var(--v-theme-surface));
-    border: 1px solid rgb(var(--v-theme-border));
-    padding: 1.25rem;
-    margin: 0;
-    overflow-x: auto;
-    font-size: var(--type-code);
-  }
-
-  :deep(.copy-btn) {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.25rem 0.6rem;
-    font-size: calc(var(--type-code) * 0.8);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    background: rgb(var(--v-theme-surface-2));
-    color: rgb(var(--v-theme-muted));
-    border: 1px solid rgb(var(--v-theme-border));
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: var(--font-mono);
-  }
-
-  :deep(.copy-btn:hover) {
-    color: rgb(var(--v-theme-on-background));
-    border-color: rgb(var(--v-theme-on-background));
-  }
-
-  :deep(.copy-btn--success) {
-    color: rgb(var(--v-theme-on-background));
-    border-color: rgb(var(--v-theme-on-background));
-  }
-
-  :deep(code) {
-    font-family: var(--font-mono);
-  }
-
-  :deep(ul),
-  :deep(ol) {
-    padding-left: 1.5em;
-    margin-bottom: 1.2em;
-  }
-
-  :deep(li) {
-    margin-bottom: 0.4em;
-    color: rgb(var(--v-theme-muted));
-  }
-
-  // Emphasis is weight + full-ink colour, never a hue.
-  :deep(strong) {
-    color: rgb(var(--v-theme-on-background));
-    font-weight: 700;
-  }
+<style>
+/* Prose — the Markdown body. Unscoped: ContentRenderer's elements are not
+   this component's own. */
+.prose {
+  flex: 999 1 620px;
+  min-width: 0;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  font-size: 18px;
+  line-height: 1.75;
+}
+.prose > div {
+  display: contents;
+}
+.prose p,
+.prose ul,
+.prose ol,
+.prose pre {
+  margin: 0;
+}
+.prose p {
+  line-height: inherit;
+}
+/* Standfirst. */
+.prose > div > p:first-child {
+  font-family: var(--f-display);
+  font-size: clamp(20px, 1.8vw, 24px);
+  line-height: 1.5;
+}
+.prose h2 {
+  margin: 24px 0 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(26px, 2.4vw, 34px);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  scroll-margin-top: 96px;
+}
+.prose h3 {
+  margin: 8px 0 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.3;
+  scroll-margin-top: 96px;
+}
+/* Nuxt Content wraps heading text in a self-link; keep it quiet. */
+.prose h2 a,
+.prose h3 a {
+  color: inherit;
+}
+.prose a {
+  border-bottom: 1px solid var(--accent);
+}
+.prose a:hover {
+  color: var(--accent);
+}
+.prose h2 a,
+.prose h3 a {
+  border-bottom: none;
+}
+.prose strong {
+  font-weight: 600;
+}
+.prose :not(pre) > code {
+  font-family: var(--f-mono);
+  font-size: 0.8em;
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.prose .code-block {
+  position: relative;
+}
+.prose pre {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 20px;
+  overflow-x: auto;
+}
+.prose pre code {
+  font-family: inherit;
+}
+.prose .copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+/* Always visible: a hover-only button does not exist on touch screens. */
+.prose .copy-btn:hover {
+  color: var(--ink);
+}
+.prose blockquote {
+  margin: 8px 0;
+  padding: 4px 0 4px 24px;
+  border-left: 2px solid var(--accent);
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: clamp(22px, 2vw, 26px);
+  line-height: 1.4;
+}
+.prose blockquote p {
+  margin: 0;
+}
+.prose ul {
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.prose ul li {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.prose ol {
+  padding-left: 1.4em;
+}
+.prose ol li + li {
+  margin-top: 8px;
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  display: block;
+  overflow-x: auto;
+}
+.prose th,
+.prose td {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+.prose th {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-img);
 }
 </style>

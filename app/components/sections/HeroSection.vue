@@ -1,310 +1,130 @@
+<!-- app/components/sections/HeroSection.vue -->
+<!--
+  Home hero. The wave field fills the frame behind the text; the overlay is
+  pointer-transparent except for the CTAs, so moving or clicking anywhere
+  else in the hero drives the field.
+-->
 <template>
-  <section ref="heroRoot" class="hero-section">
-    <v-container class="hero-inner px-6 px-md-10" fluid>
-      <v-row align="center" class="hero-fill section-v-pad">
-        <!-- LEFT -->
-        <v-col cols="12" md="7" class="hero-left">
-          <UiEyebrow class="hero-tag hero-beat">
-            {{ $t("hero.tag") }}
-          </UiEyebrow>
-          <UiDisplayTitle ref="titleEl" tag="h1" level="xxl" class="hero-title">
-            {{ $t("hero.title_1") }}<br />
-            <span class="text-muted">{{ $t("hero.title_em") }}</span
-            ><template v-if="$t('hero.title_3')"><br />{{ $t("hero.title_3") }}</template>
-          </UiDisplayTitle>
-          <p class="hero-subtitle type-body-lg text-muted hero-beat">
-            {{ $t("hero.subtitle") }}
-          </p>
+  <section class="hero">
+    <ClientOnly>
+      <LazyUiWaveField :readout="readout" />
+    </ClientOnly>
 
-          <!--
-            The system allows a single ghost pill per band. All three
-            destinations are kept (none of them is redundant), but only the
-            primary one takes the pill; the other two drop to text links so
-            the band still reads as having one CTA.
-          -->
-          <div class="d-flex align-center ga-4 mt-10 hero-beat flex-wrap">
-            <v-btn :to="localePath('/contact')" size="large">
-              {{ $t("hero.cta_contact") }}
-            </v-btn>
-            <v-btn :to="localePath('/projects')" size="large">
-              {{ $t("hero.cta_projects") }}
-            </v-btn>
-          </div>
+    <div class="hero-inner gutter">
+      <p class="eyebrow hero-tag">{{ $t("hero.tag") }}</p>
 
-          <!-- International pills -->
-          <div class="hero-beat mt-12">
-            <UiEyebrow tone="muted" class="mb-3">
-              {{ $t("hero.intl_label") }}
-            </UiEyebrow>
-            <div class="d-flex flex-wrap ga-2">
-              <v-chip v-for="country in countries" :key="country">
-                {{ country }}
-              </v-chip>
+      <div class="hero-main">
+        <i18n-t scope="global" keypath="hero.title" tag="h1" class="t-hero hero-title">
+          <template #em>
+            <em class="em-accent">{{ $t("hero.title_em") }}</em>
+          </template>
+        </i18n-t>
+
+        <div class="hero-foot">
+          <div class="hero-intro">
+            <p class="hero-subtitle">{{ $t("hero.subtitle") }}</p>
+            <div class="hero-ctas">
+              <NuxtLink :to="localePath('/contact')" class="btn btn--primary">
+                {{ $t("hero.cta_contact") }} <span aria-hidden="true">→</span>
+              </NuxtLink>
+              <NuxtLink :to="localePath('/projects')" class="link-text">
+                {{ $t("hero.cta_projects") }}
+              </NuxtLink>
             </div>
           </div>
-        </v-col>
 
-        <!-- RIGHT: stats -->
-        <v-col cols="12" md="5" class="d-none d-md-flex justify-end hero-beat">
-          <v-row ref="statsRef" class="stats-grid" no-gutters>
-            <v-col v-for="(stat, index) in stats" :key="stat.key" cols="12">
-              <!--
-                No `color` prop: on an outlined card Vuetify applies it to
-                the text and border, not the background. `color="surface"`
-                was painting the label in the surface colour — invisible
-                against the canvas.
-              -->
-              <v-card class="stat-box hairline-interactive pa-5" variant="text">
-                <div class="stat-number">
-                  <span>{{ statsStarted ? animatedValues[index] : 0 }}</span>
-                  <span v-if="stat.suffix" class="stat-suffix">{{
-                    stat.suffix
-                  }}</span>
-                </div>
-                <div class="stat-label type-micro-cap text-muted mt-1">
-                  {{ $t(`hero.${stat.key}`) }}
-                </div>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-container>
-
-    <!-- Scroll indicator -->
-    <div class="scroll-hint type-micro-cap text-muted hero-beat" aria-hidden="true">
-      <span class="scroll-line" />
-      {{ $t("hero.scroll") }}
+          <div class="hero-readout" aria-hidden="true">
+            <div>{{ $t("hero.readout_hint") }}</div>
+            <div ref="readout" class="tabular">t = 000.00 s</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import type { ComponentPublicInstance } from "vue"
-import { SplitText } from "gsap/SplitText"
-import { DURATION, EASE, STAGGER, DISTANCE } from "~/config/motion"
-
 const localePath = useLocalePath()
-
-const { t } = useI18n()
-
-const countries = computed(() => [
-  t("hero.country_france"),
-  t("hero.country_uk"),
-])
-
-const stats = [
-  { value: "8+", key: "stat_years", numeric: 8, suffix: "+" },
-  { value: "5", key: "stat_sectors", numeric: 5 },
-  { value: "5", key: "stat_pubs", numeric: 5 },
-]
-
-const statsRef = ref<HTMLElement | ComponentPublicInstance | null>(null)
-const statsStarted = ref(false)
-const animatedValues = ref<number[]>(stats.map(() => 0))
-
-/** Ease-out count-up. GSAP drives the tick so it obeys the global ticker. */
-const animateCountUp = () => {
-  const targets = stats.map((s) => s.numeric ?? 0)
-  const proxy = { p: 0 }
-  gsap.to(proxy, {
-    p: 1,
-    duration: 2.5,
-    ease: EASE.out,
-    onUpdate: () => {
-      animatedValues.value = targets.map((v) => Math.round(v * proxy.p))
-    },
-  })
-}
-
-const unwrap = (r: HTMLElement | ComponentPublicInstance | null) =>
-  r && "$el" in r ? (r.$el as HTMLElement) : r
-
-const heroRoot = ref<HTMLElement | null>(null)
-const titleEl = ref<ComponentPublicInstance | null>(null)
-
-const { gsap, ScrollTrigger } = useGsap()
-
-useMotion(heroRoot, ({ motion, mobile }) => {
-  const statsEl = unwrap(statsRef.value)
-  const titleNode = unwrap(titleEl.value)
-  const targets = stats.map((s) => s.numeric ?? 0)
-
-  // ── Reduced motion: reveal the final counter values immediately, with no
-  // scroll dependency, and skip every reveal. Everything else already rests
-  // at its final state in the DOM.
-  if (!motion) {
-    statsStarted.value = true
-    animatedValues.value = targets
-    return
-  }
-
-  // ── Count-up: fire when the stats grid enters view (immediately if it is
-  // already above the fold). Hidden on mobile, so guarded by statsEl.
-  if (statsEl) {
-    ScrollTrigger.create({
-      trigger: statsEl,
-      start: "top 90%",
-      once: true,
-      onEnter: () => {
-        if (statsStarted.value) return
-        statsStarted.value = true
-        animateCountUp()
-      },
-    })
-  }
-
-  const beats = gsap.utils.toArray<HTMLElement>(".hero-beat")
-
-  const tl = gsap.timeline({ defaults: { ease: EASE.out } })
-
-  // Display title: a masked line reveal — each line rises out from behind
-  // its own clipped edge. This is the hero's signature moment.
-  //
-  // On mobile the line split is skipped: recomputing line breaks on every
-  // resize is expensive, and the whole-title fade reads just as well at
-  // that size. SplitText.create's onSplit re-runs on font load and resize,
-  // so line breaks are always correct; the instance is reverted by
-  // matchMedia on cleanup.
-  // The SplitText instance is created inside this matchMedia scope, so it is
-  // reverted automatically on cleanup — no manual revert needed.
-  if (titleNode && !mobile) {
-    SplitText.create(titleNode, {
-      type: "lines",
-      mask: "lines",
-      linesClass: "hero-line",
-      autoSplit: true,
-      onSplit: (self) =>
-        gsap.from(self.lines, {
-          yPercent: 110,
-          duration: DURATION.slow,
-          ease: EASE.out,
-          stagger: STAGGER.line,
-        }),
-    })
-  } else if (titleNode) {
-    tl.fromTo(
-      titleNode,
-      { autoAlpha: 0, y: DISTANCE.base },
-      { autoAlpha: 1, y: 0, duration: DURATION.base },
-      0,
-    )
-  }
-
-  // Supporting beats rise in just behind the title. fromTo (not from):
-  // the beats rest at opacity 0 in CSS to avoid a pre-reveal flash, so the
-  // end state must be stated explicitly rather than read from the DOM.
-  tl.fromTo(
-    beats,
-    { autoAlpha: 0, y: DISTANCE.base },
-    {
-      autoAlpha: 1,
-      y: 0,
-      duration: DURATION.base,
-      stagger: STAGGER.beat,
-      // Clear ONLY transform: the inline opacity:1 must persist, otherwise
-      // the element falls back to the CSS resting `opacity: 0` and vanishes.
-      clearProps: "transform",
-    },
-    mobile ? 0.1 : 0.25,
-  )
-})
+const readout = ref<HTMLElement | null>(null)
 </script>
 
-<style scoped lang="scss">
-.hero-section {
+<style scoped>
+.hero {
   position: relative;
-  min-height: 100vh;
+  height: clamp(640px, 56vw, 800px);
+  border-bottom: 1px solid var(--rule);
   overflow: hidden;
+  cursor: crosshair;
 }
+
 .hero-inner {
   position: relative;
-  z-index: 1;
-}
-// Forces the row to fill the viewport so `align="center"` centres the hero
-// content vertically. Named semantically (not `.min-h-screen`) so it is not
-// mistaken for a Vuetify utility — Vuetify ships no min-height helper.
-// Vertical rhythm comes from the shared `.section-v-pad` token in main.scss
-// (the local `.py-24` duplicate is gone).
-.hero-fill {
-  min-height: 100vh;
-}
-
-// Size comes from the micro-cap tier; only the rhythm is local.
-.hero-tag {
-  margin-bottom: 1.5rem;
-}
-.hero-subtitle {
-  margin-top: 1.5rem;
-  max-width: var(--measure-lead);
-}
-
-// Stats — border colour and hover come from .hairline-interactive.
-.stats-grid {
-  width: 320px;
-}
-.stat-box {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-.stat-number {
-  font-family: var(--font-display);
-  font-size: var(--type-display-lg);
-  font-weight: 700;
-  line-height: 1;
-}
-.stat-suffix {
-  font-size: 0.65em;
-  vertical-align: super;
-  margin-left: 1px;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: clamp(24px, 4vw, 56px);
+  padding-bottom: clamp(28px, 3.6vw, 52px);
+  pointer-events: none;
 }
 
-// Scroll hint — the micro-cap tier supplies size and tracking.
-.scroll-hint {
-  position: absolute;
-  bottom: 36px;
-  right: 50px;
+.hero-tag {
+  margin: 0;
+  max-width: 720px;
+}
+
+.hero-main {
   display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 3.4vw, 48px);
+}
+.hero-title {
+  max-width: 1100px;
+}
+
+.hero-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.hero-intro {
+  flex: 1 1 480px;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.hero-subtitle {
+  margin: 0;
+  font-size: clamp(16px, 1.3vw, 18px);
+  line-height: 1.6;
+}
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
   align-items: center;
-  gap: 10px;
-  writing-mode: vertical-lr;
-}
-.scroll-line {
-  display: block;
-  width: 1px;
-  height: 44px;
-  background: rgb(var(--v-theme-on-background));
-  animation: scrollPulse 2s ease-in-out infinite;
+  pointer-events: auto;
+  cursor: auto;
 }
 
-// No per-component type breakpoints: every tier used here (display-xxl,
-// micro-cap, body-lg) stair-steps from the :root tokens in main.scss.
-
-// ── Entrance (GSAP) ────────────────────────────────────────────────────
-// The staggered CSS keyframes were replaced by an orchestrated timeline in
-// script. Beats rest hidden so there is no flash before the timeline runs;
-// they are revealed by gsap.from(), which also clears these inline styles.
-// Guards: no-JS and reduced-motion keep everything visible.
-html.js .hero-beat {
-  opacity: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  html.js .hero-beat {
-    opacity: 1;
-  }
+.hero-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
 }
 
-@keyframes scrollPulse {
-  0%,
-  100% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scaleY(0.5);
-    opacity: 0.3;
+@media (max-width: 759.98px) {
+  .hero-readout {
+    display: none;
   }
 }
 </style>

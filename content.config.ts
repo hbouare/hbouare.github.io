@@ -11,12 +11,25 @@ const experienceSchema = z.object({
   // not job titles.
   sector:   z.string().optional(),
   period:   z.string(),
+  // Engagement span as decimal years (2024.42 ≈ June 2024), drawn as the
+  // 2018→2026 timeline bar on the home page. No `end` = ongoing.
+  start:    z.number(),
+  end:      z.number().optional(),
   // Contract type (e.g. "Freelance", "Temps plein"). Optional — only set it
   // where it disambiguates, e.g. two overlapping missions run in parallel.
   employment: z.string().optional(),
   location: z.string(),
   flag:     z.string(),
   tags:     z.array(z.string()),
+})
+
+// One section of a case study, told as an article. `title` is the section's
+// own heading (the "01 — Problème" eyebrow is generic); a title or text that
+// starts with `TODO` is dropped at render, like the other placeholders.
+const storySection = z.object({
+  title:  z.string().optional(),
+  text:   z.string().optional(),
+  points: z.array(z.string()).optional(),
 })
 
 const projectSchema = z.object({
@@ -47,6 +60,16 @@ const projectSchema = z.object({
   backend:  z.string().optional(),
   database: z.string().optional(),
 
+  // ── The case study as an article: Problème → Contraintes → Démarche →
+  // Résultat. Optional: a project without it falls back to `intro` (problem),
+  // `highlights` (approach) and its gallery, so no copy is ever invented.
+  story: z.object({
+    problem:     storySection.optional(),
+    constraints: storySection.optional(),
+    approach:    storySection.optional(),
+    result:      storySection.optional(),
+  }).optional(),
+
   // ── Visuals (optional) ───────────────────────────────────────────────────
   // `cover` is the big hero screenshot (browser mockup, top of the case study).
   cover: z.object({
@@ -63,6 +86,9 @@ const projectSchema = z.object({
     alt:     z.string().optional(),
     device:  z.enum(["browser", "phone"]).optional(),
     span:    z.number().optional(),
+    // Which story section shows the shot. Absent → split: the first two in
+    // Démarche, the rest in Résultat.
+    section: z.enum(["approach", "result"]).optional(),
   })).optional(),
 
   // There is deliberately NO repository/demo/docs URL here. Source access is

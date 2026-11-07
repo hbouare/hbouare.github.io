@@ -1,46 +1,55 @@
 <!-- app/components/navigation/Footer.vue -->
 <template>
-  <footer class="app-footer">
-    <v-container
-      class="d-flex align-center justify-space-between py-5 px-6 px-md-10 flex-wrap ga-3"
-      fluid
-    >
-      <span class="type-caption text-muted">
-        © {{ new Date().getFullYear() }} Hamed Bouare —
-        {{ $t("footer.rights") }}
-      </span>
-      <div class="d-flex align-center ga-2">
-        <span class="status-dot" />
-        <span class="type-micro-cap">{{ $t("footer.available") }}</span>
-      </div>
-    </v-container>
+  <footer class="app-footer gutter">
+    <span>© {{ year }} Hamed Bouare — {{ $t("footer.rights") }}</span>
+    <span class="status avail">{{ $t("footer.available") }}</span>
+    <span class="socials">
+      <a href="https://github.com/hbouare" target="_blank" rel="noopener">GitHub</a>
+      <a
+        href="https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/"
+        target="_blank"
+        rel="noopener"
+      >LinkedIn</a>
+    </span>
   </footer>
 </template>
 
-<style scoped lang="scss">
-.app-footer {
-  border-top: 1px solid rgb(var(--v-theme-border));
-}
+<script setup lang="ts">
+const year = new Date().getFullYear()
+</script>
 
-// The availability indicator is functional, not decorative — it stays
-// monochrome like the rest of the system and relies on motion, not hue.
-.status-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: rgb(var(--v-theme-on-background));
-  border-radius: 50%;
-  animation: blink 2s ease-in-out infinite;
+<style scoped>
+.app-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 40px;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 28px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--muted);
 }
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(1.3);
+.avail {
+  color: var(--ink);
+}
+.socials {
+  display: flex;
+  gap: 20px;
+}
+.socials a {
+  padding: 12px 0;
+  transition: color 0.2s;
+}
+.socials a:hover {
+  color: var(--accent);
+}
+/* Room for the fixed back-to-top button (44px + 16px), which otherwise
+   sits on the last link. Narrow screens stack the links on the left. */
+@media (min-width: 760px) {
+  .app-footer {
+    padding-right: calc(var(--gutter) + 60px);
   }
 }
 </style>

@@ -1,8 +1,9 @@
 import { test, expect, type Page } from "@playwright/test"
 
 /**
- * Guards for the GSAP motion layer. Every assertion here maps to a bug found
- * during implementation — all silent, none producing a console error.
+ * Guards for motion: the wave field, the key-figures count-up and page
+ * transitions. Every assertion maps to a silent failure — content left
+ * invisible, a counter stuck at 0, a navigation that never settles.
  *
  * Note: reduced motion is set with `page.emulateMedia()` rather than
  * `test.use({ reducedMotion })`. In this Playwright/browser combination the
@@ -13,71 +14,176 @@ import { test, expect, type Page } from "@playwright/test"
 const reduce = (page: Page) => page.emulateMedia({ reducedMotion: "reduce" })
 
 test.describe("reduced motion", () => {
-  // Bug: gsap.matchMedia only invokes its callback when a condition matches.
-  // With non-exhaustive breakpoints, desktop + reduced-motion matched none,
-  // so useMotion never ran and the hero counter stayed frozen at 0.
-  test("hero counter reaches its final value", async ({ page }) => {
+  // No count-up under reduced motion: the final values stay as rendered.
+  test("key figures show their final values", async ({ page }) => {
     await reduce(page)
     await page.goto("/")
-    await expect(page.locator(".stat-number span").first()).toHaveText("8", {
-      timeout: 10_000,
+    await expect(page.locator(".figure-value").first()).toHaveText("8+")
+  })
+
+  // The wave field freezes on a single front at t = 1.7s.
+  test("wave field is a still frame", async ({ page, isMobile }) => {
+    test.skip(isMobile, "the readout is desktop-only")
+    await reduce(page)
+    await page.goto("/")
+    await expect(page.locator(".hero-readout .tabular")).toHaveText(
+      /t = 001\.70 s · 1 source$/,
+      { timeout: 10_000 },
+    )
+  })
+
+  // The global override runs every animation once and stops on its last
+  // keyframe — for the handwritten name, the erased state. It must stay
+  // written: fully inked and not clipped.
+  test("logo name stays written", async ({ page }) => {
+    await reduce(page)
+    await page.goto("/")
+    const name = page.locator(".logo-name").first()
+    await expect(name).toHaveCSS("clip-path", "none")
+    await expect(name.locator("text")).toHaveCSS("fill-opacity", "1")
+  })
+
+  // The blog tree once drew into its canvas but sat under body's
+  // background: pixels in the canvas, nothing on screen, no error. Compare
+  // the screen with and without the canvas.
+  for (const path of ["/blog", "/blog/fastapi-architecture"]) {
+    test(`blog tree is painted on screen (${path})`, async ({ page }) => {
+      await reduce(page)
+      await page.goto(path)
+      // Desktop Chrome is redirected to /en: read the canvas of the final page.
+      await page.waitForSelector("html.hydrated")
+      const canvas = page.locator("canvas.plum-field")
+      await expect
+        .poll(() =>
+          canvas.evaluate((c: HTMLCanvasElement) => {
+            const d = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data
+            for (let i = 3; i < d.length; i += 4) if (d[i]) return true
+            return false
+          }),
+        )
+        .toBe(true)
+      const withTree = await page.screenshot()
+      // Hide it and let two frames pass, or the next screenshot can still
+      // show the previous frame.
+      await canvas.evaluate(
+        (c: HTMLCanvasElement) =>
+          new Promise((done) => {
+            c.style.display = "none"
+            requestAnimationFrame(() => requestAnimationFrame(done))
+          }),
+      )
+      const without = await page.screenshot()
+      expect(withTree.equals(without), "the tree is drawn but not visible").toBe(false)
     })
-  })
-
-  // The masked line reveal is pure motion — it must not run.
-  test("hero title is not line-split", async ({ page }) => {
-    await reduce(page)
-    await page.goto("/")
-    await expect(page.locator(".stat-number span").first()).toHaveText("8")
-    expect(await page.locator(".hero-line").count()).toBe(0)
-  })
-
-  // Reveal blocks rest at opacity 0 and are shown by ScrollTrigger; under
-  // reduced motion, content below the fold must not be trapped invisible.
-  test("below-the-fold content is visible without scrolling", async ({
-    page,
-  }) => {
-    await reduce(page)
-    await page.goto("/projects")
-    const blocks = page.locator(".reveal-block")
-    const count = await blocks.count()
-    expect(count).toBeGreaterThan(0)
-    for (let i = 0; i < count; i++) {
-      await expect(blocks.nth(i)).toHaveCSS("opacity", "1")
-    }
-  })
+  }
 })
 
 test.describe("motion enabled", () => {
-  test("hero title is line-split for the masked reveal", async ({
-    page,
-    isMobile,
-  }) => {
-    test.skip(isMobile, "line splitting is desktop/tablet only")
+  // The count-up rewinds to 0 on the client and must land on the final
+  // value once the strip is in view.
+  test("key figures count up to their final values", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" })
     await page.goto("/")
-    await expect(page.locator(".hero-line").first()).toBeVisible({
-      timeout: 10_000,
+    await page.locator(".figures").scrollIntoViewIfNeeded()
+    await expect(page.locator(".figure-value").first()).toHaveText("8+", {
+      timeout: 5_000,
     })
-    expect(await page.locator(".hero-line").count()).toBeGreaterThan(0)
+  })
+})
+
+// The silent failure this whole file guards: content in the DOM, indexed,
+// but stuck at opacity 0 (a reveal that never fired). Walk every page,
+// JUMPING to the bottom — the scroll reveal must also show what was skipped
+// over — in both motion modes, and assert no text is left invisible once
+// the reveals have played.
+const PAGES = ["/", "/services", "/projects", "/projects/fleetops", "/research", "/blog", "/blog/fastapi-architecture", "/contact"]
+const invisibleText = (page: Page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll("main *")]
+      .filter((el) => el.childElementCount === 0 && el.textContent?.trim())
+      .filter((el) => {
+        for (let n: Element | null = el; n; n = n.parentElement) {
+          if (getComputedStyle(n).opacity === "0") return true
+        }
+        return false
+      })
+      .map((el) => el.textContent?.trim().slice(0, 40)),
+  )
+for (const motion of ["no-preference", "reduce"] as const) {
+  test(`no content is left invisible (${motion})`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: motion })
+    for (const path of PAGES) {
+      await page.goto(path)
+      await page.waitForSelector("html.hydrated")
+      // Jump again on every poll: data fetched after a client redirect (/en)
+      // can lengthen the page under the first jump.
+      await expect
+        .poll(
+          async () => {
+            await page.evaluate(() =>
+              window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
+            )
+            return invisibleText(page)
+          },
+          { message: `invisible text on ${path}` },
+        )
+        .toEqual([])
+    }
+  })
+}
+
+test.describe("scroll reveal", () => {
+  // The reveal must actually run: content below the fold starts hidden on
+  // the client and is shown, for good, once scrolled to.
+  test("below-the-fold content is revealed on scroll", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" })
+    await page.goto("/")
+    await page.waitForSelector("html.hydrated")
+    const row = page.locator(".exp-row").last()
+    await expect(row).toHaveClass(/reveal-hidden/)
+    await row.scrollIntoViewIfNeeded()
+    await expect(row).not.toHaveClass(/reveal-hidden/)
+    await expect(row).toHaveCSS("opacity", "1")
+    // Scrolling back up does not hide it again.
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }))
+    await expect(row).toHaveCSS("opacity", "1")
   })
 
-  test("reveal blocks end fully visible after scrolling", async ({ page }) => {
+  // Titles rise line by line (GSAP SplitText) on a CLONE of their content;
+  // the nodes Vue rendered are put back afterwards. The title must end up
+  // exactly as rendered, with no split wrappers or stray aria-label left.
+  test("title line reveal leaves the heading as rendered", async ({ page, isMobile }) => {
+    test.skip(isMobile, "no line split below 760px")
     await page.emulateMedia({ reducedMotion: "no-preference" })
-    await page.goto("/projects")
-    // behavior:"instant" is load-bearing, not cosmetic. main.scss sets
-    // `scroll-behavior: smooth` site-wide, so a bare scrollTo animates — and
-    // under parallel-worker CPU load that animation is sometimes dropped
-    // entirely (scrollY stays 0), leaving the below-fold blocks unreached and
-    // this assertion flaking. An explicit instant jump is what "scroll to the
-    // bottom" was always meant to be.
-    await page.evaluate(() =>
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }),
-    )
-    const blocks = page.locator(".reveal-block")
-    const count = await blocks.count()
-    for (let i = 0; i < count; i++) {
-      await expect(blocks.nth(i)).toHaveCSS("opacity", "1", { timeout: 8_000 })
+    await page.goto("/")
+    await page.waitForSelector("html.hydrated")
+    const title = page.locator("#exp-title")
+    await expect(title).toHaveClass(/reveal-hidden/)
+    const before = await title.innerHTML()
+    await title.scrollIntoViewIfNeeded()
+    await expect(title).not.toHaveClass(/reveal-hidden/)
+    await expect.poll(() => title.innerHTML(), { timeout: 5_000 }).toBe(before)
+    await expect(title).not.toHaveAttribute("aria-label")
+  })
+
+  test("nothing is hidden under reduced motion", async ({ page }) => {
+    await reduce(page)
+    await page.goto("/")
+    await page.waitForSelector("html.hydrated")
+    await expect(page.locator(".reveal-hidden")).toHaveCount(0)
+  })
+})
+
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false })
+
+  // The server never renders the hidden state: without JS, every page is
+  // complete and visible.
+  test("every page renders its content visible", async ({ page }) => {
+    for (const path of PAGES) {
+      await page.goto(path)
+      await expect(page.locator(".reveal-hidden")).toHaveCount(0)
+      expect(await invisibleText(page), `invisible text on ${path}`).toEqual([])
     }
   })
 })
@@ -87,16 +193,16 @@ test.describe("page transitions", () => {
   // leaves the router stuck and the next page never mounts. Navigate a full
   // loop and assert each destination's own content renders and settles.
   //
-  // Desktop-only: the nav links live behind a hamburger drawer on mobile.
+  // Desktop-only: the nav links live behind the Menu panel on mobile.
   // The transition engine is viewport-independent, so testing the links here
   // covers the behaviour; the reduced-motion test below covers the mobile
   // engine path via a direct check.
   // Unique-href links only. The home link (logo + About both point at "/")
   // is intentionally excluded to keep each hop unambiguous.
   const hops: [string, string, string][] = [
-    ['.app-nav a[href="/projects"]', "/projects", ".proj-card"],
-    ['.app-nav a[href="/blog"]', "/blog", ".blog-card"],
-    ['.app-nav a[href="/contact"]', "/contact", "form"],
+    ['.desk-nav a[href="/projects"]', "/projects", ".proj-card"],
+    ['.desk-nav a[href="/blog"]', "/blog", ".blog-card"],
+    ['.desk-nav a[href="/contact"]', "/contact", "form"],
   ]
 
   test("navigation completes and content stays visible", async ({
@@ -124,7 +230,7 @@ test.describe("page transitions", () => {
     test.skip(isMobile, "nav links are in a drawer on mobile")
     await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto("/")
-    await page.locator('.app-nav a[href="/projects"]').first().click()
+    await page.locator('.desk-nav a[href="/projects"]').first().click()
     await expect(page).toHaveURL(/\/projects$/)
     await expect(page.locator(".proj-card").first()).toBeVisible()
   })

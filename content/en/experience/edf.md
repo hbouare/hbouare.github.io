@@ -5,6 +5,7 @@ role: "Data Engineer & Full-Stack Developer"
 company: "EDF"
 sector: "Energy"
 period: "June 2024 — Present"
+start: 2024.42
 employment: "Full-time"
 location: "Saint-Denis, France"
 flag: "🇫🇷"

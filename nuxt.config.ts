@@ -1,5 +1,4 @@
 // nuxt.config.ts
-import vuetify, { transformAssetUrls } from "vite-plugin-vuetify"
 
 export default defineNuxtConfig({
   future: { compatibilityVersion: 4 },
@@ -16,28 +15,26 @@ export default defineNuxtConfig({
   },
 
   app: {
-    // The page transition is driven by GSAP JS hooks defined on <NuxtPage>
-    // in app.vue (css: false). This entry stays as the SSR/no-JS fallback
-    // name; `mode: out-in` keeps the two pages from overlapping.
+    // CSS page transition (.page-* in base.css); `out-in` keeps the two
+    // pages from overlapping.
     pageTransition: { name: "page", mode: "out-in" },
     head: {
       title: "Hamed Bouare",
       titleTemplate: "%s - Hamed Bouare",
       style: [
         {
-          // Fix #3: CSS anti-flash INLINE dans le <head>, pas dans un fichier externe.
-          // Fix #1: opacity:0 au lieu de visibility:hidden (rien ne passe à travers).
+          // Canvas colour before the stylesheet loads (mirrors --bg in
+          // tokens.css). No body-hiding: the theme lives in data-theme, set
+          // by the script below before paint, so there is no flash to mask.
           innerHTML:
-            'html,body{margin:0;background:#000}html[data-theme="light"],html[data-theme="light"] body{background:#fff}html:not(.hydrated) body{opacity:0}html.hydrated body{transition:opacity .1s}',
+            'html,body{margin:0;background:#f3f0e8}html[data-theme="dark"],html[data-theme="dark"] body{background:#13120f}',
           tagPosition: "head",
         },
       ],
       script: [
         {
-          // Also marks <html> as scripting-capable: scroll-reveal blocks rest
-          // at opacity 0 and are revealed by GSAP, so without JS they must
-          // fall back to visible rather than staying blank.
-          innerHTML: `(function(){var d=document.documentElement,t=localStorage.getItem('portfolio-theme')||'dark';d.setAttribute('data-theme',t);d.style.colorScheme=t;d.classList.add('js')})()`,
+          // A saved choice wins; otherwise the OS preference decides.
+          innerHTML: `(function(){var d=document.documentElement,t;try{t=localStorage.getItem('portfolio-theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.setAttribute('data-theme',t);d.style.colorScheme=t})()`,
           tagPosition: "head",
         },
       ],
@@ -45,17 +42,17 @@ export default defineNuxtConfig({
         {
           name: "description",
           content:
-            "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack avec une expérience internationale.",
+            "Hamed Bouare, architecte logiciel · IA & Data Engineering. Docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes.",
         },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         {
           property: "og:title",
-          content: "Hamed Bouare — Data Engineer & Full-Stack Developer",
+          content: "Hamed Bouare — Architecte logiciel · IA & Data Engineering",
         },
         {
           property: "og:description",
           content:
-            "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack avec une expérience internationale.",
+            "Docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes — data, IA, du front-end au back-end.",
         },
         { property: "og:type", content: "website" },
         { property: "og:image", content: "https://hamedbouare.me/og-image.png" },
@@ -65,12 +62,12 @@ export default defineNuxtConfig({
         { name: "twitter:card", content: "summary_large_image" },
         {
           name: "twitter:title",
-          content: "Hamed Bouare — Data Engineer & Full-Stack Developer",
+          content: "Hamed Bouare — Architecte logiciel · IA & Data Engineering",
         },
         {
           name: "twitter:description",
           content:
-            "Portfolio de Hamed Bouare, Data Engineer et développeur Full-Stack.",
+            "Docteur en modélisation numérique, je conçois et fiabilise des systèmes complexes.",
         },
         { name: "twitter:image", content: "https://hamedbouare.me/og-image.png" },
       ],
@@ -88,11 +85,9 @@ export default defineNuxtConfig({
         },
         {
           rel: "stylesheet",
-          // Inter is the design system's documented substitute for D-DIN
-          // (display tiers run 700 uppercase with positive tracking).
-          // DM Mono is kept for code only — a deliberate, documented
-          // deviation, since the source system has no monospace tier.
-          href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=DM+Mono:wght@400&display=swap",
+          // « Sismogramme »: Newsreader (display), Instrument Sans (text),
+          // IBM Plex Mono (markers, code). TODO: self-host via @nuxt/fonts.
+          href: "https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap",
         },
       ],
     },
@@ -106,15 +101,6 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "@nuxtjs/i18n",
     "@nuxtjs/sitemap",
-    (_options, nuxt) => {
-      nuxt.hooks.hook("vite:extendConfig", (config) => {
-        // vite-plugin-vuetify, Nuxt and the root all resolve their own copy of
-        // vite's types. The plugin array is structurally identical in each but
-        // nominally distinct, and no single PluginOption import satisfies all
-        // three — so widen the target array instead. Runtime is unaffected.
-        ;(config.plugins as unknown[])?.push(vuetify({ autoImport: true }))
-      })
-    },
   ],
 
   // Nuxt Content v3 config
@@ -122,9 +108,10 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
+          // Sober, low-chroma palettes close to the « Sismogramme » tokens.
           theme: {
-            dark: "github-dark",
-            default: "github-light",
+            dark: "vitesse-dark",
+            default: "vitesse-light",
           },
         },
       },
@@ -133,7 +120,6 @@ export default defineNuxtConfig({
 
   // i18n config
   i18n: {
-    bundle: { optimizeTranslationDirective: false },
     baseUrl: "https://hamedbouare.me",
     strategy: "prefix_except_default",
     defaultLocale: "fr",
@@ -149,22 +135,10 @@ export default defineNuxtConfig({
     },
   },
 
-  build: {
-    transpile: ["vuetify"],
-  },
-
   vite: {
-    vue: {
-      template: {
-        transformAssetUrls,
-      },
-    },
     define: {
       "process.env.DEBUG": false,
     },
-    // `css.preprocessorOptions.scss.api = "modern-compiler"` was removed:
-    // the modern Sass compiler is now the only API, so the option no longer
-    // exists in Vite's types.
   },
 
   // Static generation for GitHub Pages
@@ -187,5 +161,5 @@ export default defineNuxtConfig({
     },
   },
 
-  css: ["~/assets/styles/main.scss"],
+  css: ["~/assets/styles/tokens.css", "~/assets/styles/base.css"],
 })
