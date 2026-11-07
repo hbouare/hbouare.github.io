@@ -143,7 +143,10 @@
       "Conseil et R&D",
       "Autre"
     ],
-    "message_placeholder": "Décrivez votre besoin, l’existant et vos contraintes. Vous pouvez aussi préciser le calendrier envisagé."
+    "message_placeholder": "Décrivez votre besoin, l’existant et vos contraintes. Vous pouvez aussi préciser le calendrier envisagé.",
+    "reply_time": "Je réponds généralement sous 24 h ouvrées.",
+    "privacy": "Vos informations servent uniquement à vous répondre. Elles sont transmises par e-mail via le service EmailJS et ne sont ni revendues ni réutilisées à d’autres fins.",
+    "access_prefill": "Bonjour, je souhaiterais accéder au dépôt du projet {project}."
   },
   "footer": {
     "available": "Disponible pour de nouveaux projets",
@@ -218,6 +221,6 @@
     "eyebrow": "Contact"
   },
   "seo": {
-    "role": "Architecte logiciel · IA & Data Engineering"
+    "role": "Ingénieur logiciel · Architecture · Data engineering"
   }
 }

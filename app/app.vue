@@ -25,6 +25,13 @@ useHead(() => ({
   meta: [...(head.value.meta || [])],
 }))
 
+// Share preview, one per language (public/og-image*.png, 1200×630).
+const { locale } = useI18n()
+const ogImage = computed(() =>
+  `https://hamedbouare.me/og-image${locale.value === "en" ? "-en" : ""}.png`,
+)
+useSeoMeta({ ogImage, twitterImage: ogImage })
+
 onMounted(() => {
   syncTheme()
   // Readiness marker: e2e tests wait on it before measuring.

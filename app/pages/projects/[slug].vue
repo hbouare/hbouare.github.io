@@ -96,7 +96,7 @@
         <div v-reveal class="case-encart">
           <div class="label">{{ $t("case.access_title") }}</div>
           <p>{{ $t("case.access_note") }}</p>
-          <NuxtLink :to="localePath('/contact')" class="btn btn--secondary">
+          <NuxtLink :to="localePath({ path: '/contact', query: { project: slug } })" class="btn btn--secondary">
             {{ $t("case.access_cta") }} <span aria-hidden="true">→</span>
           </NuxtLink>
         </div>

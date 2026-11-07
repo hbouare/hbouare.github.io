@@ -143,7 +143,10 @@
       "Consulting and R&D",
       "Other"
     ],
-    "message_placeholder": "Tell me what you need, what is already in place and any constraints. Include your preferred timeline if you have one."
+    "message_placeholder": "Tell me what you need, what is already in place and any constraints. Include your preferred timeline if you have one.",
+    "reply_time": "I usually reply within 24 hours on working days.",
+    "privacy": "Your details are used only to reply to you. They are sent by email through the EmailJS service and are never sold or used for any other purpose.",
+    "access_prefill": "Hello, I would like access to the {project} repository."
   },
   "footer": {
     "available": "Available for new projects",
@@ -218,6 +221,6 @@
     "eyebrow": "Contact"
   },
   "seo": {
-    "role": "Software Architect · AI & Data Engineering"
+    "role": "Software Engineer · Architecture · Data Engineering"
   }
 }

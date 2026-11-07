@@ -4,6 +4,8 @@
   validation (required, type=email) — no JS validation layer to keep in sync.
   States: idle → sending → sent | error. No confirm dialog (removed on
   purpose); a hidden honeypot field silently drops bot submissions.
+  `?project=<slug>` (from a case study's "request access") prefills the
+  message, client-side only: the prerendered page is the same for all.
   No CTA band on this page: it IS the destination.
 -->
 <template>
@@ -17,6 +19,7 @@
       </i18n-t>
       <p class="t-intro contact-desc">{{ $t("contact.desc") }}</p>
       <div class="status contact-avail">{{ $t("footer.available") }}</div>
+      <p class="contact-reply">{{ $t("contact.reply_time") }}</p>
 
       <div class="contact-links">
         <div class="label contact-links-label">{{ $t("contact.socials") }}</div>
@@ -98,6 +101,7 @@
           {{ state === "sending" ? $t("contact.form_sending") : $t("contact.form_send") }}
           <span aria-hidden="true">→</span>
         </button>
+        <p class="form-privacy">{{ $t("contact.privacy") }}</p>
       </form>
     </div>
   </section>
@@ -106,8 +110,9 @@
 <script setup lang="ts">
 import emailjs from "@emailjs/browser"
 
-const { t, tm, rt } = useI18n()
+const { t, tm, rt, locale } = useI18n()
 const config = useRuntimeConfig()
+const route = useRoute()
 
 useSeoMeta({
   title: "Contact",
@@ -161,6 +166,18 @@ const submit = async () => {
   }
 }
 
+// Arriving from "request access" on a case study: name the project in the
+// message. Only the title is fetched, and only if the visitor hasn't typed.
+onMounted(async () => {
+  const slug = route.query.project
+  if (typeof slug !== "string" || form.message) return
+  const project = await queryCollection(`${locale.value}_projects`)
+    .where("slug", "=", slug)
+    .select("title")
+    .first()
+  if (project && !form.message) form.message = t("contact.access_prefill", { project: project.title })
+})
+
 const reset = () => {
   form.name = ""
   form.email = ""
@@ -191,6 +208,11 @@ const reset = () => {
 .contact-avail {
   font-family: var(--f-mono);
   font-size: 12px;
+}
+.contact-reply {
+  margin: -8px 0 0;
+  font-size: 15px;
+  color: var(--muted);
 }
 .contact-links {
   display: flex;
@@ -299,6 +321,12 @@ const reset = () => {
 .form-submit {
   align-self: flex-start;
   padding: 0 26px;
+}
+.form-privacy {
+  margin: -12px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
 }
 .form-submit:disabled {
   opacity: 0.6;
