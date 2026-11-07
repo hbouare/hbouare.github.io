@@ -20,9 +20,6 @@
 
       <div class="contact-links">
         <div class="label contact-links-label">{{ $t("contact.socials") }}</div>
-        <a href="https://github.com/hbouare" target="_blank" rel="noopener">
-          <span>GitHub</span><span class="contact-handle">hbouare ↗</span>
-        </a>
         <a href="https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/" target="_blank" rel="noopener">
           <span>LinkedIn</span><span class="contact-handle">hamed-bouare-phd ↗</span>
         </a>

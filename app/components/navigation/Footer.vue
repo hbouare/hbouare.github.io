@@ -4,7 +4,6 @@
     <span>© {{ year }} Hamed Bouare — {{ $t("footer.rights") }}</span>
     <span class="status avail">{{ $t("footer.available") }}</span>
     <span class="socials">
-      <a href="https://github.com/hbouare" target="_blank" rel="noopener">GitHub</a>
       <a
         href="https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/"
         target="_blank"

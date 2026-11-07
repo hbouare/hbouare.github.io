@@ -33,7 +33,6 @@ useJsonLd({
   jobTitle: "Software Architect · AI & Data Engineering",
   url: "https://hamedbouare.me",
   sameAs: [
-    "https://github.com/hbouare",
     "https://www.linkedin.com/in/hamed-bouare-phd-0a1981112/",
   ],
 })
