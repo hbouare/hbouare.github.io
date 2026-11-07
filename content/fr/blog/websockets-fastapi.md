@@ -1,13 +1,13 @@
 ---
 slug: websockets-fastapi
-title: "WebSockets : état partagé, authentification et déconnexions"
+title: "WebSockets avec FastAPI : connexions, authentification et état partagé"
 date: "2025-03-13"
 readTime: 10
 tags: ["FastAPI", "WebSockets", "Python", "Temps réel"]
-excerpt: "Les tutoriels WebSocket FastAPI s’arrêtent tous au chat basique. Les vrais problèmes commencent après : authentifier une connexion, gérer un ConnectionManager multi-clients, diffuser des événements, et nettoyer les connexions mortes en environnement multi-pods."
+excerpt: "Authentifier les connexions WebSocket, diffuser des événements et gérer les déconnexions dans une application FastAPI déployée sur plusieurs instances."
 ---
 
-Le tutoriel officiel FastAPI sur les WebSockets tient en vingt lignes. C’est suffisant pour comprendre l’API, pas pour construire quelque chose de fiable. Voici ce que les exemples ne montrent pas : authentification, gestion d’état distribuée, diffusion, et nettoyage des connexions mortes.
+Une application WebSocket doit suivre ses connexions, authentifier les utilisateurs et distribuer les événements aux clients concernés. Cet article examine ces responsabilités avec FastAPI, puis aborde le partage d’état lorsque l’application fonctionne sur plusieurs instances.
 
 ## Le problème avec l’exemple basique
 

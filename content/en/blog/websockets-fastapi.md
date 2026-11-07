@@ -1,13 +1,13 @@
 ---
 slug: websockets-fastapi
-title: "WebSockets: Shared State, Authentication, and Disconnections"
+title: "WebSockets with FastAPI: connections, authentication and shared state"
 date: "2025-03-13"
 readTime: 10
 tags: ["FastAPI", "WebSockets", "Python", "Real-time"]
-excerpt: "FastAPI WebSocket tutorials all stop at the basic chat example. The real problems start after: authenticating a connection, managing a multi-client ConnectionManager, broadcasting events, and cleaning up dead connections in a multi-pod environment."
+excerpt: "Authenticating WebSocket connections, broadcasting events and handling disconnections in a FastAPI application running across multiple instances."
 ---
 
-The official FastAPI WebSocket tutorial fits in twenty lines. That is sufficient to understand the API, not to build something reliable. Here is what the examples do not show: authentication, distributed state management, broadcasting, and dead connection cleanup.
+A WebSocket application needs to track connections, authenticate users and deliver events to the appropriate clients. This article examines these responsibilities with FastAPI, then considers shared state when the application runs across multiple instances.
 
 ## The Problem with the Basic Example
 

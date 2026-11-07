@@ -21,6 +21,6 @@ tags:
   ]
 ---
 
-The Low Noise Underground Laboratory (LSBB), located in Rustrel (Vaucluse, France), is an interdisciplinary research facility set up in a former military base repurposed for science. It consists of a network of underground galleries excavated in a highly heterogeneous karstic massif, whose geological characteristics influence the propagation of mechanical waves and the distribution of stress fields around the tunnels.
+At the Low Noise Underground Laboratory (LSBB), I designed and built a numerical simulation application to study mechanical wave propagation through underground galleries. It analyses how the tunnel and surrounding ground respond to both harmonic and transient conditions.
 
-There, I designed and built a numerical-simulation application to study wave propagation in these galleries and analyse the dynamic response of the tunnel and its surroundings, under both harmonic and transient conditions.
+Located in Rustrel, Vaucluse, France, this interdisciplinary laboratory occupies a former military base. Its galleries run through a heterogeneous karst formation, where variations in the geology affect wave propagation and stress distribution around the tunnels.

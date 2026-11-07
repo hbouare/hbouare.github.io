@@ -13,4 +13,4 @@ flag: "🇫🇷"
 tags: ["Nuxt.js", "TypeScript", "AWS", "MongoDB", "GitHub Actions", "Terraform"]
 ---
 
-I helped rebuild the website of the Paris Institute for Advanced Study, a centre that hosts scholars from around the world. I developed the new features and reworked the interface to better showcase the institute’s research programmes, activities and visiting researchers.
+I helped rebuild the website of the Paris Institute for Advanced Study, which hosts researchers from around the world. I developed new features and reworked the interface to present its research programmes, activities and visiting researchers.

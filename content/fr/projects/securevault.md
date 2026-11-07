@@ -1,17 +1,17 @@
 ---
 slug: "securevault"
 order: 4
-title: "Gestionnaire de mots de passe sécurisé"
+title: "Gestionnaire de mots de passe"
 featured: false
 context: "Projet personnel / R&D sécurité"
-hook: "Un coffre à mots de passe où même une fuite de base ne révèle rien."
+hook: "Centraliser ses identifiants avec un chiffrement des secrets avant stockage et un accès à double facteur."
 
 status: "Fonctionnel"
-frontend: "Consulter, saisir et rechercher ses identifiants — sans jamais détenir les clés."
-backend: "Une frontière de chiffrement : rien n’atteint la base en clair."
-database: "Ne conserve que des données chiffrées, inexploitables en cas de fuite."
+frontend: "Consulter, saisir et rechercher ses identifiants, sans exposer la clé maître au navigateur."
+backend: "Chiffrer les secrets côté serveur avant leur stockage et contrôler les accès."
+database: "Conserver les secrets sous forme chiffrée."
 
-intro: "Un coffre à mots de passe centralisé où la confidentialité ne se négocie jamais : chaque secret est chiffré en AES-256-GCM avant stockage, si bien qu’une fuite de base ne révèle rien. L’accès est verrouillé par mot de passe fort (Argon2id) et 2FA TOTP, avec générateur avancé, tableau de bord de sécurité et audit des actions sensibles."
+intro: "SecureVault centralise les identifiants et chiffre les secrets côté serveur en AES-256-GCM avant stockage. L’authentification associe un mot de passe haché avec Argon2id et un second facteur TOTP. L’application comprend un générateur de mots de passe, un tableau de bord de sécurité et un journal des actions sensibles."
 
 highlights:
   - "Chiffrement enveloppe AES-256-GCM, clé maître versionnée, jamais exposée au client"
@@ -23,17 +23,17 @@ highlights:
 # verrouillage 15 min après 5 échecs, rotation des jetons + détection de rejeu.
 story:
   problem:
-    title: "Des mots de passe partout, protégés nulle part"
+    title: "Centraliser les identifiants et contrôler leur accès"
   constraints:
-    title: "Supposer que la base fuitera"
-    text: "Un coffre à mots de passe est une cible. Il faut partir du principe que la base fuitera un jour, que des robots essaieront des milliers de mots de passe, et qu’un jeton volé sera rejoué."
+    title: "Prévoir les principaux scénarios de compromission"
+    text: "Le projet prend en compte la fuite de la base de données, les tentatives de connexion répétées et la réutilisation de jetons. La protection des secrets stockés dépend aussi de celle de la clé maître, gérée côté serveur."
   approach:
-    title: "Chiffrer avant de stocker, verrouiller l’accès"
+    title: "Chiffrer les secrets et encadrer les accès"
   result:
-    title: "Des garanties vérifiées, pas promises"
-    text: "Chaque garantie de sécurité est fixée par un test automatisé ou par une règle de configuration."
+    title: "Des contrôles de sécurité testés"
+    text: "Les tests et la configuration couvrent le stockage chiffré, les limites de connexion et la gestion des jetons. Ils vérifient ces mécanismes sans constituer une garantie générale contre toute compromission."
     points:
-      - "Les secrets restent illisibles sans la clé maître : un test vérifie que le texte chiffré ne contient jamais le texte en clair"
+      - "Un test vérifie que la valeur stockée après chiffrement ne contient pas le secret en clair"
       - "Connexion limitée à 5 tentatives par minute ; compte verrouillé 15 minutes après 5 échecs"
       - "Jetons renouvelés à chaque rafraîchissement, réutilisation détectée ; jeton altéré rejeté"
       - "88 tests automatisés (69 côté API, 12 unitaires front, 7 parcours de bout en bout), couverture minimale de 80 % imposée en CI"
@@ -41,20 +41,20 @@ tags: ["FastAPI","Vue 3","TypeScript","MongoDB","AES-256-GCM"]
 
 cover:
   src: "/projects/securevault/hero.webp"
-  alt: "Tableau de bord SecureVault — santé de sécurité et alertes du coffre"
+  alt: "Tableau de bord SecureVault — indicateurs de sécurité et alertes du coffre"
 
 gallery:
   - src: "/projects/securevault/vault.webp"
     caption: "Le coffre : entrées chiffrées, recherche, favoris et catégories"
     span: 6
   - src: "/projects/securevault/entry.webp"
-    caption: "Édition d’une entrée — génération intégrée, valeurs jamais exposées"
+    caption: "Édition d’un identifiant avec générateur de mot de passe intégré"
     span: 3
   - src: "/projects/securevault/generator.webp"
     caption: "Générateur : entropie mesurée, longueur et jeux de caractères"
     span: 3
   - src: "/projects/securevault/login.webp"
-    caption: "Chiffrement de bout en bout — AES-256-GCM, Argon2id, 2FA"
+    caption: "Écran de connexion — mot de passe et authentification à double facteur"
     span: 4
   - src: "/projects/securevault/mobile.webp"
     caption: "Coffre responsive, accessible partout"

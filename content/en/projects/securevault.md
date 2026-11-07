@@ -1,17 +1,17 @@
 ---
 slug: "securevault"
 order: 4
-title: "Secure Password Manager"
+title: "Password manager"
 featured: false
 context: "Personal / security R&D project"
-hook: "A password vault where even a database leak reveals nothing."
+hook: "Keep credentials in one place, with secrets encrypted before storage and two-factor authentication."
 
 status: "Functional"
-frontend: "View, enter and search credentials — without ever holding the keys."
-backend: "An encryption boundary: nothing reaches the store in clear."
-database: "Holds only encrypted data, useless if the database leaks."
+frontend: "View, enter and search credentials without exposing the master key to the browser."
+backend: "Encrypt secrets on the server before storage and control access."
+database: "Store secrets in encrypted form."
 
-intro: "A centralised password vault where confidentiality is never negotiable: every secret is encrypted with AES-256-GCM before storage, so a database leak reveals nothing. Access is locked behind a strong password (Argon2id) and TOTP 2FA, with an advanced generator, a security dashboard and an audit trail of sensitive actions."
+intro: "SecureVault centralises credentials and encrypts secrets on the server using AES-256-GCM before storage. Authentication combines a password hashed with Argon2id and a TOTP second factor. The application includes a password generator, a security dashboard and an audit trail of sensitive actions."
 
 highlights:
   - "AES-256-GCM envelope encryption, versioned master key, never exposed to the client"
@@ -23,17 +23,17 @@ highlights:
 # lockout after 5 failures, token rotation + reuse detection.
 story:
   problem:
-    title: "Passwords everywhere, protected nowhere"
+    title: "Centralising credentials and controlling access"
   constraints:
-    title: "Assume the database will leak"
-    text: "A password vault is a target. The working assumption is that the database will leak one day, that bots will try thousands of passwords, and that a stolen token will be replayed."
+    title: "Accounting for key compromise scenarios"
+    text: "The project considers database leaks, repeated login attempts and token reuse. Protecting stored secrets also depends on protecting the master key, which is managed on the server."
   approach:
-    title: "Encrypt before storing, lock down access"
+    title: "Encrypting secrets and controlling access"
   result:
-    title: "Guarantees that are tested, not promised"
-    text: "Every security guarantee is pinned down by an automated test or a configuration rule."
+    title: "Tested security controls"
+    text: "Tests and configuration cover encrypted storage, login limits and token handling. They check these mechanisms without providing a blanket guarantee against compromise."
     points:
-      - "Secrets stay unreadable without the master key: a test checks the ciphertext never contains the plaintext"
+      - "A test checks that the stored encrypted value does not contain the plaintext secret"
       - "Login limited to 5 attempts per minute; account locked for 15 minutes after 5 failures"
       - "Tokens rotated on every refresh, reuse detected; tampered tokens rejected"
       - "88 automated tests (69 on the API, 12 front-end unit tests, 7 end-to-end journeys), 80% minimum coverage enforced in CI"
@@ -41,20 +41,20 @@ tags: ["FastAPI","Vue 3","TypeScript","MongoDB","AES-256-GCM"]
 
 cover:
   src: "/projects/securevault/hero.webp"
-  alt: "SecureVault dashboard — security health and vault alerts"
+  alt: "SecureVault dashboard — security indicators and vault alerts"
 
 gallery:
   - src: "/projects/securevault/vault.webp"
     caption: "The vault: encrypted entries, search, favourites and categories"
     span: 6
   - src: "/projects/securevault/entry.webp"
-    caption: "Editing an entry — inline generation, existing values never exposed"
+    caption: "Editing a credential with a built-in password generator"
     span: 3
   - src: "/projects/securevault/generator.webp"
     caption: "Generator: measured entropy, length and character sets"
     span: 3
   - src: "/projects/securevault/login.webp"
-    caption: "End-to-end encryption — AES-256-GCM, Argon2id, 2FA"
+    caption: "Sign-in screen — password and two-factor authentication"
     span: 4
   - src: "/projects/securevault/mobile.webp"
     caption: "Responsive vault, accessible anywhere"

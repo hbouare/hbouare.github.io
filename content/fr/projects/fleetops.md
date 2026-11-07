@@ -4,38 +4,38 @@ order: 1
 title: "Gestion de flotte automobile"
 featured: true
 context: "Projet personnel — transport & services"
-hook: "Piloter tout un parc de véhicules depuis un seul écran, et ne plus laisser passer une échéance."
+hook: "Centraliser le suivi des véhicules, des conducteurs et des échéances d’entretien."
 
 status: "Fonctionnel · données de démo"
 frontend: "Un poste unique pour suivre véhicules, conducteurs, documents et entretiens."
-backend: "Le cœur du système : un moteur qui détecte et hiérarchise chaque échéance."
+backend: "Un moteur d’alertes fondé sur les dates et le kilométrage."
 database: "Toutes les données du parc, centralisées et historisées."
 
-intro: "Une application de gestion de flotte qui remplace un suivi éclaté — tableurs, e-mails, rappels manuels — par un poste unique. Elle surveille trois sources d’échéances (permis, documents réglementaires, entretiens), par date ou par kilométrage, et transforme chaque échéance proche en alerte hiérarchisée qu’un gestionnaire acquitte puis résout."
+intro: "FleetOps regroupe les véhicules, les conducteurs et les opérations de maintenance dans une application. Les échéances des permis, des documents réglementaires et des entretiens alimentent des alertes que le gestionnaire peut prendre en charge, puis clôturer."
 
 highlights:
   - "Alertes sur trois domaines : permis, documents réglementaires et entretiens (par date ou par kilométrage)"
-  - "Sévérité avertissement / critique, avec acquittement puis résolution par le gestionnaire"
+  - "Deux niveaux de sévérité : avertissement et critique ; prise en charge puis résolution par le gestionnaire"
   - "Rôles admin / gestionnaire appliqués côté serveur, JWT en cookie httpOnly et hachage Argon2"
   - "Listes paginées et filtrables (recherche, statut, tri) et suivi des coûts"
 story:
   problem:
-    title: "Un suivi éclaté, des échéances qui passent"
-    text: "Une application de gestion de flotte qui remplace un suivi éclaté — tableurs, e-mails, rappels manuels — par un poste unique."
+    title: "Regrouper un suivi dispersé"
+    text: "Le suivi d’un parc peut être réparti entre tableurs, e-mails et rappels manuels. FleetOps rassemble ces informations pour donner au gestionnaire une vue commune des véhicules et des actions à prévoir."
   constraints:
-    title: "Trois sources d’échéances, deux rôles"
-    text: "Elle surveille trois sources d’échéances (permis, documents réglementaires, entretiens), par date ou par kilométrage."
+    title: "Des échéances de nature différente"
+    text: "Les permis et les documents réglementaires ont des dates de validité ; les entretiens dépendent aussi du kilométrage. Le système doit suivre ces règles et distinguer les droits des administrateurs de ceux des gestionnaires."
     points:
       - "Alertes sur trois domaines : permis, documents réglementaires et entretiens (par date ou par kilométrage)"
       - "Rôles admin / gestionnaire appliqués côté serveur, JWT en cookie httpOnly et hachage Argon2"
   approach:
-    title: "Sous le capot"
+    title: "Organiser les alertes et leur traitement"
     points:
-      - "Sévérité avertissement / critique, avec acquittement puis résolution par le gestionnaire"
+      - "Deux niveaux de sévérité : avertissement et critique ; prise en charge puis résolution par le gestionnaire"
       - "Listes paginées et filtrables (recherche, statut, tri) et suivi des coûts"
   result:
-    title: "Chaque échéance devient une alerte traitée"
-    text: "Chaque échéance proche est transformée en alerte hiérarchisée qu’un gestionnaire acquitte puis résout."
+    title: "Un suivi des alertes jusqu’à leur résolution"
+    text: "L’application fonctionne avec des données de démonstration. Elle classe les échéances proches par niveau de sévérité et permet au gestionnaire de suivre leur prise en charge et leur résolution."
     points:
       - "79 routes d’API sur 14 ressources : véhicules, conducteurs, affectations, documents, entretiens, carburant, incidents, dépenses, alertes…"
       - "Recalcul des alertes idempotent : relancé, il ne crée aucun doublon (vérifié par un test)"

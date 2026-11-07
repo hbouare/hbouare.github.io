@@ -1,13 +1,13 @@
 ---
 slug: asyncio-production
-title: "Asyncio in Production: The Pitfalls Tutorials Never Cover"
+title: "asyncio: managing tasks, errors and application shutdown"
 date: "2024-08-19"
 readTime: 9
 tags: ["Python", "asyncio", "FastAPI", "Concurrency"]
-excerpt: "gather, TaskGroup, exception handling in concurrent tasks, clean shutdown — what asyncio tutorials never address, and what it looks like in a real FastAPI application running in production."
+excerpt: "Handling exceptions with gather and TaskGroup, cancelling tasks and shutting down an application, with asyncio and FastAPI examples."
 ---
 
-asyncio tutorials almost invariably stop at the same point: `await asyncio.gather(task1(), task2())`, a handful of coroutine examples, and nothing further. Production is more demanding. Silent exceptions, tasks that never complete, shutdowns that hang — here are the real problems and how to address them.
+Asynchronous applications need to handle task failures, cancellation and shutdown. This article examines these situations using `asyncio.gather`, `TaskGroup` and examples of integration with FastAPI.
 
 ## The Problem with `asyncio.gather` and Exceptions
 

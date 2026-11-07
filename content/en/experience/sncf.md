@@ -21,4 +21,4 @@ tags:
   ]
 ---
 
-For SNCF’s DGII-VA-I division, I developed a web application that analyses the interaction between trains and the track. It uses numerical simulations to help maintenance teams spot at-risk sections of the network and plan their work ahead of time.
+For SNCF’s DGII-VA-I division, I developed the back-end of a web application that analyses interactions between trains and tracks. It uses numerical simulations to help maintenance teams identify at-risk sections of the network and plan interventions.

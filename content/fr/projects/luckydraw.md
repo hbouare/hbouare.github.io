@@ -4,17 +4,17 @@ order: 3
 title: "Plateforme de loterie en ligne"
 featured: false
 context: "Projet personnel — plateforme grand public"
-hook: "Des tirages au sort en ligne dont l’équité se prouve, au lieu de se promettre."
+hook: "Organiser des campagnes de tirage au sort et permettre aux joueurs de vérifier les résultats."
 
 status: "Fonctionnel · 6 phases livrées"
 frontend: "Un espace joueur et un back-office d’administration des campagnes."
-backend: "Un moteur de tirage vérifiable : l’équité se prouve, elle ne se promet pas."
+backend: "Un moteur de tirage qui publie une empreinte avant le tirage, puis révèle la graine utilisée."
 database: "Campagnes, tickets, participations et transactions."
 
-intro: "Une plateforme grand public de tirages au sort où la confiance repose sur la preuve, pas la promesse. Les joueurs créent un compte, achètent des tickets et suivent leur historique ; chaque tirage s’appuie sur un moteur vérifiable (provably-fair commit-reveal), piloté depuis un back-office complet : campagnes, résultats, statistiques."
+intro: "LuckyDraw permet de créer un compte, d’acheter des tickets et de consulter son historique de participation. Les campagnes, les résultats et les statistiques sont gérés depuis une interface d’administration. Le moteur de tirage utilise un mécanisme commit-reveal pour permettre la vérification du résultat."
 
 highlights:
-  - "Tirage provably-fair (commit-reveal) rejouable et vérifiable par le joueur"
+  - "Mécanisme commit-reveal permettant au joueur de recalculer et vérifier le résultat"
   - "Campagnes configurables (règles, calendrier, gains)"
   - "Achat de tickets et historique de participation"
   - "Back-office : résultats, transactions, statistiques, exports"
@@ -23,15 +23,15 @@ highlights:
 # provably-fair (hash SHA-256, graine falsifiée rejetée, tirage immuable).
 story:
   problem:
-    title: "Un tirage en ligne n’inspire pas confiance"
+    title: "Rendre le résultat d’un tirage vérifiable"
   constraints:
-    title: "Prouver l’équité, protéger l’argent"
-    text: "Un tirage au sort en ligne ne vaut que si chacun peut vérifier qu’il n’a pas été truqué — y compris par l’opérateur. Et les montants en jeu ne tolèrent aucune erreur d’arrondi."
+    title: "Vérifier les tirages et représenter les montants"
+    text: "Le joueur doit pouvoir vérifier le résultat à partir des informations publiées par le moteur. Les montants sont stockés en centimes entiers pour éviter les erreurs liées aux calculs en virgule flottante."
   approach:
     title: "Engager, révéler, vérifier"
   result:
-    title: "Un tirage que le joueur peut rejouer"
-    text: "Les garanties du moteur de tirage sont fixées par des tests automatisés."
+    title: "Des vérifications couvertes par des tests"
+    text: "Les tests portent notamment sur la vérification de la graine, le refus d’un second tirage et la représentation des montants."
     points:
       - "Graine engagée par un hash SHA-256 publié avant le tirage, révélée après : un tirage authentique est validé, une graine falsifiée est rejetée"
       - "Tirage immuable : un second tirage sur la même loterie est refusé"
@@ -55,6 +55,6 @@ gallery:
     caption: "Fiche loterie : gain, prix du ticket, tirage daté et règlement"
     span: 3
   - src: "/projects/luckydraw/landing.webp"
-    caption: "Tentez votre chance, en toute confiance"
+    caption: "Page d’accueil de la plateforme de tirages au sort"
     span: 3
 ---

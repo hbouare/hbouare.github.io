@@ -1,13 +1,13 @@
 ---
 slug: vueuse-essentiels
-title: "VueUse: The Composables That Actually Make a Difference"
+title: "VueUse: composables for common application needs"
 date: "2025-01-10"
 readTime: 10
 tags: ["Vue.js", "VueUse", "Composition API", "Frontend"]
-excerpt: "Not the exhaustive list from the docs — but the VueUse composables you will actually reach for on professional Vue.js and Nuxt projects, with concrete use cases and the pitfalls worth knowing about."
+excerpt: "Selected VueUse composables with examples for asynchronous state and interactions in Vue.js and Nuxt."
 ---
 
-VueUse ships over 200 composables. The documentation lists all of them, which does not help you determine which ones are genuinely worth learning. Here are the ones that appear consistently on professional projects, along with the concrete situations where they save meaningful time.
+Vue.js projects share recurring needs, from managing loading states to responding to interactions and keeping state in sync. This article introduces selected VueUse composables through practical examples and points to check when integrating them.
 
 ## Installation
 
