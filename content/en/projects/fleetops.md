@@ -4,38 +4,38 @@ order: 1
 title: "Vehicle Fleet Management"
 featured: true
 context: "Personal project — transport & services"
-hook: "Steer an entire vehicle fleet from a single screen, and never let a deadline slip."
+hook: "Track vehicles, drivers and maintenance deadlines in one place."
 
 status: "Functional · demo data"
 frontend: "A single place to track vehicles, drivers, documents and servicing."
-backend: "The core of the system: an engine that detects and ranks every deadline."
+backend: "An alert engine based on dates and mileage."
 database: "All fleet data, centralised and kept over time."
 
-intro: "A fleet-management application that replaces fragmented tracking — spreadsheets, emails, manual reminders — with a single operational view. It watches three sources of deadlines (driver licences, regulatory documents, servicing), by date or by mileage, and turns each approaching deadline into a ranked alert that a manager acknowledges and then resolves."
+intro: "FleetOps brings vehicles, drivers and maintenance operations into one application. Licence, regulatory document and servicing deadlines feed alerts that a manager can acknowledge and resolve."
 
 highlights:
   - "Alerts across three domains: licences, regulatory documents and servicing (by date or by mileage)"
-  - "Warning / critical severity, with manager acknowledge then resolve"
+  - "Warning and critical severity levels, with manager acknowledgement and resolution"
   - "Admin / manager roles enforced server-side, JWT httpOnly cookie and Argon2 hashing"
   - "Paginated, filterable lists (search, status, sort) and cost tracking"
 story:
   problem:
-    title: "Fragmented tracking, missed deadlines"
-    text: "A fleet-management application that replaces fragmented tracking — spreadsheets, emails, manual reminders — with a single operational view."
+    title: "Bringing scattered records together"
+    text: "Fleet records can be spread across spreadsheets, emails and manual reminders. FleetOps brings this information together so managers can see the vehicles and the work that needs to be planned."
   constraints:
-    title: "Three sources of deadlines, two roles"
-    text: "It watches three sources of deadlines (driver licences, regulatory documents, servicing), by date or by mileage."
+    title: "Different kinds of deadlines"
+    text: "Licences and regulatory documents have expiry dates; servicing can also depend on mileage. The system needs to handle these rules and distinguish administrator permissions from manager permissions."
     points:
       - "Alerts across three domains: licences, regulatory documents and servicing (by date or by mileage)"
       - "Admin / manager roles enforced server-side, JWT httpOnly cookie and Argon2 hashing"
   approach:
-    title: "Under the hood"
+    title: "Organising alerts and follow-up"
     points:
-      - "Warning / critical severity, with manager acknowledge then resolve"
+      - "Warning and critical severity levels, with manager acknowledgement and resolution"
       - "Paginated, filterable lists (search, status, sort) and cost tracking"
   result:
-    title: "Every deadline becomes a handled alert"
-    text: "Each approaching deadline is turned into a ranked alert that a manager acknowledges and then resolves."
+    title: "Tracking alerts through to resolution"
+    text: "The application runs with demonstration data. It assigns severity levels to approaching deadlines and lets managers track alerts from acknowledgement to resolution."
     points:
       - "79 API routes over 14 resources: vehicles, drivers, assignments, documents, servicing, fuel, incidents, expenses, alerts…"
       - "Idempotent alert recalculation: re-running it never creates a duplicate (covered by a test)"

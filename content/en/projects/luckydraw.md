@@ -4,17 +4,17 @@ order: 3
 title: "Online Lottery Platform"
 featured: false
 context: "Personal project — consumer platform"
-hook: "Online prize draws whose fairness is proven, not just promised."
+hook: "Run prize-draw campaigns and let players verify the results."
 
 status: "Functional · 6 phases delivered"
 frontend: "A player area and an admin back-office for campaigns."
-backend: "A verifiable draw engine: fairness is proven, not promised."
+backend: "A draw engine that publishes a hash before the draw and reveals the seed afterwards."
 database: "Campaigns, tickets, entries and transactions."
 
-intro: "A consumer prize-draw platform where trust rests on proof, not promises. Players create an account, buy tickets and follow their history; every draw runs on a verifiable engine (provably-fair commit-reveal), operated from a full back-office: campaigns, results, analytics."
+intro: "LuckyDraw lets players create accounts, buy tickets and view their participation history. An administration interface manages campaigns, results and statistics. The draw engine uses a commit-reveal mechanism so players can verify the result."
 
 highlights:
-  - "Provably-fair draw (commit-reveal), replayable and verifiable by the player"
+  - "Commit-reveal mechanism that lets players recalculate and verify the result"
   - "Configurable campaigns (rules, schedule, prizes)"
   - "Ticket purchase and participation history"
   - "Back-office: results, transactions, analytics, exports"
@@ -23,20 +23,20 @@ highlights:
 # tests (SHA-256 hash, tampered seed rejected, immutable draw).
 story:
   problem:
-    title: "Online draws do not inspire trust"
+    title: "Making draw results verifiable"
   constraints:
-    title: "Prove fairness, protect the money"
-    text: "An online draw is only worth something if anyone can check it was not rigged — including by the operator. And the amounts at stake tolerate no rounding error."
+    title: "Verifying draws and representing amounts"
+    text: "Players need to be able to verify the result using information published by the engine. Monetary amounts are stored as integer cents to avoid errors from floating-point calculations."
   approach:
     title: "Commit, reveal, verify"
   result:
-    title: "A draw the player can replay"
-    text: "The draw engine’s guarantees are pinned down by automated tests."
+    title: "Verification covered by tests"
+    text: "Tests cover seed verification, rejection of a second draw and the representation of monetary amounts."
     points:
       - "Seed committed as a SHA-256 hash published before the draw, revealed after: a genuine draw is validated, a tampered seed is rejected"
       - "Immutable draws: a second draw on the same lottery is refused"
       - "Amounts stored as integer cents, with no floating-point arithmetic"
-      - "45 automated tests (43 unit and integration, 2 end-to-end journeys); lint, type checks, tests and build blocking in CI"
+      - "45 automated tests (43 unit and integration, 2 end-to-end journeys); lint, type checks, tests and build required to pass in CI"
 tags: ["Node.js","Express","TypeScript","Vue 3","MongoDB","Redis"]
 
 cover:
@@ -55,6 +55,6 @@ gallery:
     caption: "Lottery page: prize, ticket price, scheduled draw and rules"
     span: 3
   - src: "/projects/luckydraw/landing.webp"
-    caption: "Try your luck, with full confidence"
+    caption: "Prize-draw platform home page"
     span: 3
 ---

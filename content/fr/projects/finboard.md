@@ -1,37 +1,37 @@
 ---
 slug: "finboard"
 order: 2
-title: "Socle d’un SaaS de suivi financier"
+title: "Application de suivi financier pour PME"
 featured: false
 context: "Projet personnel — PME, secteur financier"
-hook: "Les fondations d’un SaaS de suivi financier pour PME : une base technique carrée, posée avant les fonctionnalités."
+hook: "Réunir transactions, factures, imports et rapports dans une application organisée par domaines métier."
 
 status: "En cours · socle livré"
-frontend: "Le tableau de bord, pensé pour accueillir de nouveaux domaines métier."
-backend: "Une organisation par domaines : chacun s’ajoute sans toucher aux fondations."
+frontend: "Un tableau de bord pour consulter les données financières et accéder aux différents domaines."
+backend: "Un monolithe modulaire qui sépare les routes, les services et l’accès aux données de chaque domaine."
 database: "Un modèle de données commun, cohérent d’un domaine à l’autre."
 
-intro: "Le socle d’un SaaS de suivi financier pour PME : un monolithe modulaire par domaines où chaque nouveau domaine (catégories, factures, imports, rapports…) s’ajoute sans toucher aux fondations. Ce premier incrément livre l’architecture, le shell du tableau de bord et une chaîne qualité complète et bloquante — avant les domaines métier."
+intro: "Ce projet de SaaS pour PME regroupe le suivi financier, les imports de relevés, les factures, les alertes et les rapports. Son développement a commencé par un socle commun : architecture modulaire, structure du tableau de bord et contrôles automatisés. Les domaines métier ont ensuite été ajoutés progressivement."
 
 highlights:
-  - "Monolithe modulaire par domaines, extensible sans toucher aux fondations"
+  - "Monolithe modulaire organisé par domaines métier"
   - "Shell de tableau de bord et API REST versionnée (/api/v1)"
   - "Modèle de données commun : identifiants UUID, horodatages UTC, migrations réversibles"
-  - "Chaîne qualité complète et bloquante (lint, typage strict, tests) en CI"
+  - "Contrôles obligatoires en intégration continue : lint, typage strict et tests"
 # Chiffres relevés dans le dépôt (2026-11-06) : 42 routes d'API, 5
 # migrations Alembic (chacune avec un downgrade), 56 tests pytest + 24 Vitest
 # + 7 Playwright, seuils de couverture CI : API 90 %, front 80 % (branches 70 %).
 story:
   problem:
-    title: "Des fondations avant les fonctionnalités"
+    title: "Construire une application financière évolutive"
   constraints:
-    title: "Ajouter des domaines sans toucher au socle"
-    text: "Un SaaS financier pour PME s’enrichit domaine après domaine — finance, imports, factures, alertes, rapports. Chaque ajout doit se brancher sur l’existant sans le réécrire, et sans laisser la qualité se dégrader au fil des livraisons."
+    title: "Ajouter des fonctionnalités sur une base commune"
+    text: "Les domaines finance, imports, factures, alertes et rapports doivent partager les mêmes conventions de données. L’architecture doit permettre leur développement progressif, avec des contrôles de qualité à chaque livraison."
   approach:
-    title: "Un monolithe modulaire, une chaîne qualité bloquante"
+    title: "Séparer les domaines et automatiser les contrôles"
   result:
-    title: "Les domaines métier, branchés sur le socle"
-    text: "Sur ce socle, les domaines métier sont venus s’ajouter un à un, chacun avec ses routes, son service et son repository."
+    title: "Sept domaines intégrés à l’application"
+    text: "Le projet reste en cours. Le socle et les domaines décrits ci-dessous sont implémentés, chacun avec ses routes, son service et son accès aux données."
     points:
       - "42 routes d’API réparties en sept domaines métier : authentification, finance, imports CSV/XLSX, factures, alertes, rapports, recherche"
       - "5 migrations de schéma, chacune réversible"
@@ -55,6 +55,6 @@ gallery:
     caption: "Import de relevés CSV/XLSX : analyse, contrôle ligne à ligne, puis confirmation"
     span: 3
   - src: "/projects/finboard/login.webp"
-    caption: "Un espace fiable pour centraliser les flux financiers"
+    caption: "Écran de connexion à l’espace de suivi financier"
     span: 3
 ---
